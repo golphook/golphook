@@ -14,3 +14,7 @@ pub fn (mut i IVEngineClient) execute_client_cmd(text string) {
 	a := &P_execute_client_cmd(ex_cl_cmd_add)
 	a(&char(text.str))
 }
+
+struct IBaseClientDLL {
+	
+}

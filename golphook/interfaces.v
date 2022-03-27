@@ -9,6 +9,7 @@ struct Interfaces {
 pub mut:
 	cdll_int &valve.IVEngineClient = 0
 	i_cvar &valve.ICvar = 0
+	i_base_client &valve.IBaseClientDLL = 0
 }
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
@@ -35,4 +36,6 @@ fn (mut i Interfaces) bootstrap() {
 	utils.print("cdll_int -> ${voidptr(i.cdll_int).str()}")
 	i.i_cvar = i.get_interface<valve.ICvar>("VEngineCvar007", "vstdlib.dll")
 	utils.print("i_cvar -> ${voidptr(i.i_cvar).str()}")
+	i.i_base_client = i.get_interface<valve.IBaseClientDLL>("VClient018", "client.dll")
+	utils.print("i_base_client -> ${voidptr(i.i_base_client).str()}")
 }
