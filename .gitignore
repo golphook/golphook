@@ -49,4 +49,5 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+build/
 .DS_Store
