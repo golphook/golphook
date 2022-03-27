@@ -1,9 +1,8 @@
 module valve
 
-import utils
+import golphook.utils
 
 struct IVEngineClient {
-
 }
 
 type P_execute_client_cmd = fn (&char)
@@ -16,5 +15,4 @@ pub fn (mut i IVEngineClient) execute_client_cmd(text string) {
 }
 
 struct IBaseClientDLL {
-	
 }

@@ -15,13 +15,11 @@ fn hello(h_mod voidptr) {
 		}
 		C.Sleep(670)
 	}
-
-
 }
 
-[windows_stdcall; export: DllMain]
+[export: DllMain]
+[windows_stdcall]
 fn dll_main(h_mod voidptr, reason u32, res voidptr) bool {
-
 	if reason == u32(C.DLL_PROCESS_ATTACH) {
 		// mut ctx := unsafe { golphook.app() }
 		// ctx.bootstrap(h_mod)
