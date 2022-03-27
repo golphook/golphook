@@ -16,16 +16,16 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 
 	h_mod := C.GetModuleHandleA(&char(inModule.str))
 	if int(h_mod) == 0 {
-		utils.print("GetModuleHandleA returned 0")
+		utils.error_critical("Failed to get inferface", withName)
 	}
 	crt_itfc_add := C.GetProcAddress(h_mod, c"CreateInterface")
 	if int(crt_itfc_add) == 0 {
-		utils.print("GetProcAddress returned 0")
+		utils.error_critical("Failed to get inferface", withName)
 	}
 	o_create_interface := &P_create_interface(crt_itfc_add)
 	itfc_add := o_create_interface(&char(withName.str), 0)
 	if int(o_create_interface) == 0 {
-		utils.print("o_create_interface returned 0")
+		utils.error_critical("Failed to get inferface", withName)
 	}
 
 	return &T(itfc_add)

@@ -8,12 +8,12 @@ struct HookEntry<T> {
 pub mut:
 	name string [required]
 	original_addr voidptr [required]
-	original_save T
+	original_save &voidptr = 0
 	hooked voidptr [required]
 }
 
 fn (mut h HookEntry<T>) hook() {
-	if C.MH_CreateHook(h.original_addr, h.hooked, &(voidptr(h.original_save))) != C.MH_OK {
+	if C.MH_CreateHook(h.original_addr, h.hooked, h.original_save) != C.MH_OK {
 		utils.print("MH_CreateHook(h.original_addr, h.hooked, &h.original_save) failed")
 		return
 	}
@@ -25,6 +25,7 @@ pub mut:
 }
 
 fn (mut h Hooks) bootstrap() {
+
 
 	if C.MH_Initialize() != C.MH_OK {
 		utils.print("MH_Initialize() failed")
@@ -61,11 +62,12 @@ fn hk_frame_stage_notify(a u32) {
 	if !abc {
 		abc = true
 		utils.print("hk_frame_stage_notify() OK !")
+		C.Beep(670, 667)
 	}
 
 	if (C.GetAsyncKeyState(C.VK_SHIFT) & 1) == 1 {
 		utils.print("mom")
 	}
 
-	unsafe { app().hooks.frame_stage_notify.original_save(a) }
+	unsafe { &O_frame_stage_notify( app().hooks.frame_stage_notify.original_addr ) }
 }

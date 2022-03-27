@@ -14,6 +14,8 @@ pub mut:
 
 	interfaces Interfaces
 	hooks Hooks
+
+	is_ok bool
 }
 
 pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
@@ -21,8 +23,9 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 	a.v_mod = vmod.decode( @VMOD_FILE ) or { panic(err.msg) }
 
-	unsafe { utils.load_unload_console(true, a.file) }
-
+	$if debug {
+		utils.load_unload_console(true, a.file)
+	}
 	a.interfaces = Interfaces{}
 	a.interfaces.bootstrap()
 
@@ -32,7 +35,8 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	// valve.msg("hello")
 	// valve.msg_c(utils.Color{142, 68, 173, 255}, "no way !")
 }
-[inline]
+
+
 pub fn (mut a App) release() {
 
 	a.hooks.release()
@@ -55,6 +59,11 @@ pub fn app() &App {
 
 	if int(ctx) == 0 {
 		ctx = voidptr(&App{})
+
+		if int(ctx) == 0 {
+			utils.error_critical("Failed to initialize app", "")
+		}
+
 	}
 	return &App(ctx)
 }

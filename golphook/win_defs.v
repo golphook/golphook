@@ -14,6 +14,9 @@ module golphook
 
 // windows defs
 
+[typedef]
+struct C.FILE {}
+
 fn C.MessageBoxA(int, &char, &char, int) int
 fn C.FreeLibraryAndExitThread(voidptr, u32) bool
 fn C.Beep(u32, u32) bool
@@ -21,6 +24,12 @@ fn C.GetModuleHandleA(&char) C.HMODULE
 fn C.GetProcAddress(C.HMODULE, &char) voidptr
 fn C.GetAsyncKeyState(int) u16
 fn C.Sleep(u32)
+
+fn C.AllocConsole() bool
+fn C.FreeConsole() bool
+
+fn C.freopen_s(&&C.FILE, &char, &char, &C.FILE) u32
+fn C.fclose(&C.FILE) u32
 
 // minhook defs
 

@@ -1,28 +1,16 @@
 module utils
 
-#include "windows.h"
-
-// hi
-
-[typedef]
-struct C.FILE {}
-
-fn C.AllocConsole() bool
-fn C.FreeConsole() bool
-
-fn C.freopen_s(&&C.FILE, &char, &char, &C.FILE) u32
-fn C.fclose(&C.FILE) u32
-
 fn C.puts(&char)
 
-[unsafe]
 pub fn load_unload_console(switch bool, andFile &C.FILE) {
 
 	if switch {
-		C.Beep(670, 667)
-		C.AllocConsole()
-		C.freopen_s(&andFile, c"CONOUT$", c"w", C.stdout)
-		C.Beep(670, 667)
+		if !C.AllocConsole() {
+			error_critical("Failed to initialize console", "AllocConsole()")
+		}
+		if C.freopen_s(&andFile, c"CONOUT$", c"w", C.stdout) != 0 {
+			error_critical("Failed to initialize console", "freopen_s()")
+		}
 	} else {
 		//C.fclose(andFile)
 		//C.FreeConsole()
@@ -30,6 +18,40 @@ pub fn load_unload_console(switch bool, andFile &C.FILE) {
 
 }
 
+type P_con_color_msg = fn (&Color, &char)
+type P_con_msg = fn (&char)
+
+[unsafe]
+pub fn msg_c(withColor Color, text string) {
+	color := &withColor
+
+	mut static fn_add := voidptr(0)
+	if int(fn_add) == 0 {
+		fn_add = C.GetProcAddress(C.GetModuleHandleA(c"tier0.dll"), c"?ConColorMsg@@YAXABVColor@@PBDZZ")
+	}
+	o_fn := &P_con_color_msg(fn_add)
+
+	mut final := "[golphook] $text \n"
+
+	o_fn(color, &char(final.str))
+}
+
+[unsafe]
+pub fn msg(text string) {
+
+	mut static fn_add := voidptr(0)
+	if int(fn_add) == 0 {
+		fn_add = C.GetProcAddress(C.GetModuleHandleA(c"tier0.dll"), c"?ConMsg@@YAXPBDZZ")
+	}
+	o_fn := &P_con_msg(fn_add)
+
+	mut final := "[golphook] $text \n"
+
+	o_fn(&char(final.str))
+}
+
+
 pub fn print(withContent string) {
-	C.puts(&char(withContent.str))
+	//C.puts(&char(withContent.str))
+	unsafe {msg_c(utils.Color{142, 68, 173, 255}, withContent)}
 }
