@@ -13,6 +13,7 @@ fn C.FreeConsole() bool
 fn C.freopen_s(&&C.FILE, &char, &char, &C.FILE) u32
 fn C.fclose(&C.FILE) u32
 
+fn C.puts(&char)
 
 [unsafe]
 pub fn load_unload_console(switch bool, andFile &C.FILE) {
@@ -24,7 +25,11 @@ pub fn load_unload_console(switch bool, andFile &C.FILE) {
 		C.Beep(670, 667)
 	} else {
 		//C.fclose(andFile)
-		C.FreeConsole()
+		//C.FreeConsole()
 	}
 
+}
+
+pub fn print(withContent string) {
+	C.puts(&char(withContent.str))
 }

@@ -2,7 +2,6 @@ module main
 
 import golphook
 
-import time
 import golphook.utils
 
 #include "windows.h"
@@ -16,10 +15,11 @@ fn spawn(h_mod voidptr) {
 	mut a := &golphook.App{}
 	a.bootstrap(h_mod)
 
-	C.puts(c"hi")
+	utils.print("hi")
+
 	for {
 	    if (C.GetAsyncKeyState(C.VK_SHIFT) & 1) == 1 {
-	    	C.puts(c"mom")
+			utils.print("mom")
 	    }
 		if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
 			a.release()
