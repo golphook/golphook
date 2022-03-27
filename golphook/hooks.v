@@ -14,7 +14,7 @@ pub mut:
 
 fn (mut h HookEntry<T>) hook() {
 	if C.MH_CreateHook(h.original_addr, h.hooked, h.original_save) != C.MH_OK {
-		utils.print("MH_CreateHook(h.original_addr, h.hooked, &h.original_save) failed")
+		utils.error_critical("Failed to hook function", h.name)
 		return
 	}
 }
@@ -28,7 +28,7 @@ fn (mut h Hooks) bootstrap() {
 
 
 	if C.MH_Initialize() != C.MH_OK {
-		utils.print("MH_Initialize() failed")
+		utils.error_critical("Error with a minhook fn", "MH_Initialize()")
 		return
 	}
 
@@ -39,19 +39,19 @@ fn (mut h Hooks) bootstrap() {
 
 
 	if C.MH_EnableHook(C.MH_ALL_HOOKS) != C.MH_OK {
-		utils.print("MH_EnableHook(C.MH_ALL_HOOKS) failed")
+		utils.error_critical("Error with a minhook fn", "MH_EnableHook()")
 		return
 	}
 }
 
 fn (mut h Hooks) release() {
 	if C.MH_DisableHook(C.MH_ALL_HOOKS) != C.MH_OK {
-		utils.print("MH_DisableHook() failed")
+		utils.error_critical("Error with a minhook fn", "MH_DisableHook()")
 		return
 	}
 
 	if C.MH_Uninitialize() != C.MH_OK {
-		utils.print("MH_Uninitialize() failed")
+		utils.error_critical("Error with a minhook fn", "MH_Uninitialize()")
 		return
 	}
 }

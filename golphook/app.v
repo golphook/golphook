@@ -19,6 +19,9 @@ pub mut:
 }
 
 pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
+
+	utils.print("bootstraping..")
+
 	a.h_mod = withModuleHandle
 
 	a.v_mod = vmod.decode( @VMOD_FILE ) or { panic(err.msg) }
@@ -31,6 +34,11 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 	a.hooks = Hooks{}
 	a.hooks.bootstrap()
+
+	C.Beep( 670, 200 );
+    C.Beep( 730, 150 );
+
+	utils.print("all done !")
 
 	// valve.msg("hello")
 	// valve.msg_c(utils.Color{142, 68, 173, 255}, "no way !")

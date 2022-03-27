@@ -36,22 +36,7 @@ pub fn msg_c(withColor Color, text string) {
 	o_fn(color, &char(final.str))
 }
 
-[unsafe]
-pub fn msg(text string) {
-
-	mut static fn_add := voidptr(0)
-	if int(fn_add) == 0 {
-		fn_add = C.GetProcAddress(C.GetModuleHandleA(c"tier0.dll"), c"?ConMsg@@YAXPBDZZ")
-	}
-	o_fn := &P_con_msg(fn_add)
-
-	mut final := "[golphook] $text \n"
-
-	o_fn(&char(final.str))
-}
-
-
 pub fn print(withContent string) {
-	//C.puts(&char(withContent.str))
-	unsafe {msg_c(utils.Color{142, 68, 173, 255}, withContent)}
+	C.puts(&char(withContent.str))
+	//unsafe {msg_c(utils.Color{142, 68, 173, 255}, withContent)}
 }
