@@ -32,7 +32,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	// valve.msg("hello")
 	// valve.msg_c(utils.Color{142, 68, 173, 255}, "no way !")
 }
-
+[inline]
 pub fn (mut a App) release() {
 
 	a.hooks.release()
@@ -43,7 +43,7 @@ pub fn (mut a App) release() {
 }
 
 pub fn (a App) test() {
-	valve.msg_c(utils.Color{142, 68, 173, 255}, "test")
+	unsafe { valve.msg_c(utils.Color{142, 68, 173, 255}, "test") }
 }
 
 

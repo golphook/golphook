@@ -63,5 +63,9 @@ fn hk_frame_stage_notify(a u32) {
 		utils.print("hk_frame_stage_notify() OK !")
 	}
 
+	if (C.GetAsyncKeyState(C.VK_SHIFT) & 1) == 1 {
+		utils.print("mom")
+	}
+
 	unsafe { app().hooks.frame_stage_notify.original_save(a) }
 }

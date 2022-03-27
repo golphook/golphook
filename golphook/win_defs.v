@@ -19,6 +19,8 @@ fn C.FreeLibraryAndExitThread(voidptr, u32) bool
 fn C.Beep(u32, u32) bool
 fn C.GetModuleHandleA(&char) C.HMODULE
 fn C.GetProcAddress(C.HMODULE, &char) voidptr
+fn C.GetAsyncKeyState(int) u16
+fn C.Sleep(u32)
 
 // minhook defs
 
