@@ -23,7 +23,7 @@ pub fn load_unload_console(switch bool, andFile &C.FILE) {
 		C.freopen_s(&andFile, c"CONOUT$", c"w", C.stdout)
 		C.Beep(670, 667)
 	} else {
-		C.fclose(andFile)
+		//C.fclose(andFile)
 		C.FreeConsole()
 	}
 

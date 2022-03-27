@@ -22,8 +22,7 @@ fn spawn(h_mod voidptr) {
 	    	C.puts(c"mom")
 	    }
 		if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
-			unsafe { utils.load_unload_console(false, a.file) }
-			C.FreeLibraryAndExitThread(a.h_mod, 0)
+			a.release()
 			break
 	    }
   }
