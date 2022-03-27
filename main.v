@@ -12,7 +12,7 @@ fn C.puts(&char)
 fn C.GetAsyncKeyState(int) u16
 
 fn spawn(h_mod voidptr) {
-	mut a := &golphook.App{}
+	mut a := unsafe { golphook.app() }
 	a.bootstrap(h_mod)
 
 	utils.print("hi")
