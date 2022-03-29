@@ -29,6 +29,9 @@ jobs:
       - name: Install powershell Zip
         shell: powershell
         run: Install-Module 7Zip4PowerShell -Force
+      - name: version
+        run: echo "::set-output name=version::$(type version)-$(echo '${{ github.sha }}'.substring(0, 7))"
+        id: version
       - name: Build Zip artifact
         shell: powershell
         run: powershell Compress-7Zip "build" -Filter *.dll -ArchiveFileName "release.zip" -Format Zip
