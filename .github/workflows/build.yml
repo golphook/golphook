@@ -1,6 +1,7 @@
 name: Build Release
 
 on: [push]
+workflow_dispatch:
 jobs:
   build_release:
     name: build_release
@@ -15,14 +16,14 @@ jobs:
           cd ..
           git clone https://github.com/vlang/v.git --depth 1 v
           cd v
-          nmake
+          make
           ./v.exe symlink -githubci
       - name: checkout
         uses: actions/checkout@v2
       - name: build prod
-        run: nmake build-prod
+        run: make build-prod
       - name: build debug
-        run: nmake build-debug
+        run: make build-debug
       - name: Install powershell Zip
         shell: powershell
         run: Install-Module 7Zip4PowerShell -Force
