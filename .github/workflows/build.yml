@@ -25,9 +25,7 @@ jobs:
           mkdir build
           nmake ci-build-prod
       - name: build debug
-        run: |
-          mkdir build
-          nmake ci-build-debug
+        run: nmake ci-build-debug
       - name: Install powershell Zip
         shell: powershell
         run: Install-Module 7Zip4PowerShell -Force
