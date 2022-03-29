@@ -1,7 +1,5 @@
 name: Build Release
 
-workflow_dispatch:
-
 on: [push]
 
 jobs:
