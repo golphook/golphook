@@ -17,7 +17,8 @@ jobs:
           git clone https://github.com/vlang/v.git --depth 1 v
           cd v
           make
-          ./v.exe symlink -githubci
+          ls
+          v/v.exe symlink -githubci
       - name: checkout
         uses: actions/checkout@v2
       - name: build prod
