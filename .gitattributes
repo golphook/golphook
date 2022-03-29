@@ -6,4 +6,4 @@
 *.vsh linguist-language=V text=auto eol=lf
 **/v.mod linguist-language=V text=auto eol=lf
 
-exts/* linguist-vendored=false
+exts/*.h linguist-vendored=false
