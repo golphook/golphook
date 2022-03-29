@@ -1,7 +1,6 @@
 module golphook
 
 import utils
-import d3d
 
 type O_frame_stage_notify = fn (u32)
 type O_end_scene = fn (voidptr) bool
@@ -28,9 +27,6 @@ pub mut:
 	frame_stage_notify HookEntry<O_frame_stage_notify>
 	end_scene HookEntry<O_end_scene>
 }
-
-[typedef]
-struct C.IDirect3DDevice9 {}
 
 fn (mut h Hooks) bootstrap() {
 
