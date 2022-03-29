@@ -1,7 +1,9 @@
 name: Build Release
 
-on: [push]
 workflow_dispatch:
+
+on: [push]
+
 jobs:
   build_release:
     name: build_release
