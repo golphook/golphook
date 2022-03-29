@@ -1,2 +1,9 @@
 # golphook
  Cool golp in your game :)
+ 
+0xffffffff8876086c
+// 8B 0D ? ? ? ? 53 57 + 2 | **(u32**)(*(u32*))
+// A3 ? ? ? ? 8D 47 30 + 1 | *(u32*)
+// A1 ? ? ? ? 50 8B 08 FF 51 0C + 1 |
+// 68 ? ? ? ? 8b cf 8a d8 + 1 | *(u32**)&V -> devie | **(u32**)&V ->vtable
+// prob3 := base_addr + 0x000a5050

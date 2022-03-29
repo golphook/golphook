@@ -1,14 +1,16 @@
 module main
 
 import golphook
-
 // hi
 
 fn hello(h_mod voidptr) {
+
+
 	mut ctx := unsafe { golphook.app() }
 	C.Beep(670, 667)
 	ctx.bootstrap(h_mod)
 	C.Beep(670, 667)
+
 	for {
 		if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
 			ctx.release()

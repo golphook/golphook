@@ -17,7 +17,6 @@ pub fn load_unload_console(switch bool, andFile &C.FILE) {
 }
 
 type P_con_color_msg = fn (&Color, &char)
-
 type P_con_msg = fn (&char)
 
 [unsafe]
@@ -35,7 +34,7 @@ pub fn msg_c(withColor Color, text string) {
 	o_fn(color, &char(final.str))
 }
 
-pub fn print(withContent string) {
+pub fn pront(withContent string) {
 	C.puts(&char(withContent.str))
 	// unsafe {msg_c(utils.Color{142, 68, 173, 255}, withContent)}
 }

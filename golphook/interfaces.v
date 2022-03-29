@@ -32,9 +32,9 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 
 fn (mut i Interfaces) bootstrap() {
 	i.cdll_int = i.get_interface<valve.IVEngineClient>('VEngineClient014', 'engine.dll')
-	utils.print('cdll_int -> ${voidptr(i.cdll_int).str()}')
+	utils.pront('cdll_int -> ${voidptr(i.cdll_int).str()}')
 	i.i_cvar = i.get_interface<valve.ICvar>('VEngineCvar007', 'vstdlib.dll')
-	utils.print('i_cvar -> ${voidptr(i.i_cvar).str()}')
+	utils.pront('i_cvar -> ${voidptr(i.i_cvar).str()}')
 	i.i_base_client = i.get_interface<valve.IBaseClientDLL>('VClient018', 'client.dll')
-	utils.print('i_base_client -> ${voidptr(i.i_base_client).str()}')
+	utils.pront('i_base_client -> ${voidptr(i.i_base_client).str()}')
 }

@@ -10,6 +10,8 @@ module golphook
 #flag -l minhook
 
 #include "windows.h"
+#include "TlHelp32.h"
+
 #include "minhook.h"
 
 // windows defs
@@ -24,12 +26,19 @@ fn C.GetModuleHandleA(&char) C.HMODULE
 fn C.GetProcAddress(C.HMODULE, &char) voidptr
 fn C.GetAsyncKeyState(int) u16
 fn C.Sleep(u32)
+fn C.FindWindowA(&char, &char) C.HWND
 
 fn C.AllocConsole() bool
 fn C.FreeConsole() bool
 
 fn C.freopen_s(&&C.FILE, &char, &char, &C.FILE) u32
 fn C.fclose(&C.FILE) u32
+
+fn C.CreateToolhelp32Snapshot(int, int) C.HANDLE
+fn C.Module32FirstW(C.HANDLE, voidptr) bool
+fn C.Module32NextW(C.HANDLE, voidptr) bool
+
+fn C.GetCurrentProcessId() u32
 
 // minhook defs
 
