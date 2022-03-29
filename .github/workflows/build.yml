@@ -15,14 +15,14 @@ jobs:
           cd ..
           git clone https://github.com/vlang/v.git --depth 1 v
           cd v
-          make
-          ./v symlink -githubci
+          nmake
+          ./v.exe symlink -githubci
       - name: checkout
         uses: actions/checkout@v2
       - name: build prod
-        run: make build-prod
+        run: nmake build-prod
       - name: build debug
-        run: make build-debug
+        run: nmake build-debug
       - name: Install powershell Zip
         shell: powershell
         run: Install-Module 7Zip4PowerShell -Force
