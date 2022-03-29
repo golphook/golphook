@@ -21,9 +21,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: build prod
-        run: nmake ci-build-prod
+        run: |
+          mkdir build
+          nmake ci-build-prod
       - name: build debug
-        run: nmake ci-build-debug
+        run: |
+          mkdir build
+          nmake ci-build-debug
       - name: Install powershell Zip
         shell: powershell
         run: Install-Module 7Zip4PowerShell -Force
