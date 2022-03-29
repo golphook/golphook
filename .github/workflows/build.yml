@@ -1,0 +1,50 @@
+name: Build Release
+
+on: [push]
+jobs:
+  build_release:
+    name: build_release
+    runs-on: windows-latest
+    steps:
+      - name: Setup Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+      - name: Build V and symlink
+        run: |
+          cd ..
+          git clone https://github.com/vlang/v.git --depth 1 v
+          cd v
+          make
+          ./v symlink -githubci
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build prod
+        run: make build-prod
+      - name: build debug
+        run: make build-debug
+      - name: Install powershell Zip
+        shell: powershell
+        run: Install-Module 7Zip4PowerShell -Force
+      - name: Build Zip artifact
+        shell: powershell
+        run: powershell Compress-7Zip "build" -Filter *.dll -ArchiveFileName "release.zip" -Format Zip
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload release bin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: release.zip
+          asset_name: release.zip
+          asset_content_type: application/zip
