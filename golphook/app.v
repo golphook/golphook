@@ -1,9 +1,10 @@
 module golphook
 
 import v.vmod
-import golphook.utils
-import golphook.valve
+import utils
+import valve
 import d3d
+//import render
 
 [heap]
 pub struct App {
@@ -13,8 +14,9 @@ pub mut:
 	file  &C.FILE = 0
 	h_wnd C.HWND
 
-	interfaces Interfaces
-	hooks      Hooks
+	interfaces &Interfaces = 0
+	hooks      &Hooks = 0
+	d3d &d3d.D3d9 = 0
 
 	is_ok bool
 }
@@ -38,8 +40,12 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()
 
+	a.d3d = &d3d.D3d9{}
+	a.d3d.bootstrap()
+
 	a.hooks = &Hooks{}
 	a.hooks.bootstrap()
+
 
 	C.Beep(670, 200)
 	C.Beep(730, 150)
@@ -52,7 +58,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 pub fn (mut a App) release() {
 	a.hooks.release()
-
+	a.d3d.release()
 	utils.pront('bye :)')
 	unsafe { utils.load_unload_console(false, a.file) }
 	C.FreeLibraryAndExitThread(a.h_mod, 0)

@@ -47,8 +47,7 @@ fn (mut h Hooks) bootstrap() {
 	}
 	h.frame_stage_notify.hook()
 
-	mut device_scan := utils.patter_scan("shaderapidx9.dll", "A3 ? ? ? ? 8D 47 30") or { panic("$err") }
-	device_add := voidptr(**(&&&u32(voidptr(usize(device_scan) + 1))))
+	device_add := unsafe { app().d3d.device }
 	end_scene_add := utils.get_virtual(device_add, 42)
 
 	h.end_scene = HookEntry<O_end_scene>{
@@ -102,6 +101,12 @@ fn hk_end_scene(dev voidptr) bool {
 		is_called_once = true
 		utils.pront('hk_end_scene() OK !')
 	}
+
+	mut app_ctx := unsafe { app() }
+	//font := app_ctx.d3d.get_font("Lucida Console", 12)
+	app_ctx.d3d.tmp_fnt.draw_text("golphook v$app_ctx.v_mod.version", utils.new_vec2(4, 4).vec_3(), 0, utils.color_rbga(255, 255, 255, 255))
+	app_ctx.d3d.line.draw(utils.new_vec2(10, 20).vec_3(), utils.new_vec2(40, 50).vec_3(), 2, utils.color_rbga(255, 255, 255, 255))
+
 
 	unsafe {
 		ofn := &O_end_scene(app().hooks.end_scene.original_save)

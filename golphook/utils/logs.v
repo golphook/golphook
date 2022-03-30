@@ -21,7 +21,7 @@ type P_con_msg = fn (&char)
 
 [unsafe]
 pub fn msg_c(withColor Color, text string) {
-	color := &withColor
+	color := withColor
 
 	mut static fn_add := voidptr(0)
 	if int(fn_add) == 0 {
@@ -31,7 +31,7 @@ pub fn msg_c(withColor Color, text string) {
 
 	mut final := '[golphook] $text \n'
 
-	o_fn(color, &char(final.str))
+	o_fn(&color, &char(final.str))
 }
 
 pub fn pront(withContent string) {

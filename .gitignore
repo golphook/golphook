@@ -50,4 +50,5 @@ Mkfile.old
 dkms.conf
 
 build/
+tests/
 .DS_Store
