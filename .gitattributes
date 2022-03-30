@@ -7,3 +7,4 @@
 **/v.mod linguist-language=V text=auto eol=lf
 
 exts/** linguist-vendored
+ressources/** linguist-vendored
