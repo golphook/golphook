@@ -3,6 +3,7 @@ module golphook
 import v.vmod
 import golphook.utils
 import golphook.valve
+import d3d
 
 [heap]
 pub struct App {
@@ -58,7 +59,7 @@ pub fn (mut a App) release() {
 }
 
 pub fn (a App) test() {
-	unsafe { valve.msg_c(utils.Color{142, 68, 173, 255}, 'test') }
+	unsafe { valve.msg_c(utils.color_rbga<int>(142, 68, 173, 255), 'test') }
 }
 
 [unsafe]
