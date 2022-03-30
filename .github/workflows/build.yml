@@ -30,7 +30,9 @@ jobs:
         shell: powershell
         run: Install-Module 7Zip4PowerShell -Force
       - name: version
-        run: echo "::set-output name=version::$(type version)-$(echo '${{ github.sha }}'.substring(0, 7))"
+        run: |
+          v run script\version.vsh
+          echo "::set-output name=version::$(type version)-$(echo '${{ github.sha }}'.substring(0, 7))"
         id: version
       - name: Build Zip artifact
         shell: powershell

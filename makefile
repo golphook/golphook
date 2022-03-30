@@ -22,6 +22,6 @@ fmt:
 	$(move_to_temp) v fmt -w . $(move_back)
 
 ci-build-prod:
-	v $(cc) -prod -shared -o build\$(project_name).dll .
+	v $(cc) -obf -prod -shared -o build\$(project_name).dll .
 ci-build-debug:
 	v $(cc) -g -shared -o build\$(project_name)-debug.dll .
