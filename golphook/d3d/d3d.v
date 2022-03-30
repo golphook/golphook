@@ -22,20 +22,20 @@ pub fn (d D3d9Font) draw_text(withText string, withPos utils.Vec3, withTextForma
 	rect.top = int(withPos.x)
 	rect.left = int(withPos.y)
 
-	h_res := utils.h_res(o_fn(d.i_dxfont, voidptr(0), &char(withText.str), -1, &rect, u32(C.DT_LEFT | C.DT_NOCLIP), andColor.hex()))
+	h_res := utils.h_res(o_fn(d.i_dxfont, voidptr(0), &char(withText.str), -1, &rect, withTextFormat, andColor.hex()))
 
 	return h_res.bool()
 }
 
 [unsafe]
-pub fn (d D3d9Font) release() {
+pub fn (d D3d9Font) release() u32 {
 
 	mut static o_fn := &P_dx_release(0)
 	if int(o_fn) == 0 {
 		o_fn = &P_dx_release(utils.get_virtual(d.i_dxfont, 2))
 	}
 
-	res := o_fn(d.i_dxfont)
+	return o_fn(d.i_dxfont)
 }
 
 struct D3d9line {
@@ -78,14 +78,15 @@ pub fn (d D3d9line) draw(atPos utils.Vec3, toPos utils.Vec3, withWidth f32, andC
 }
 
 [unsafe]
-fn (d D3d9line) release() {
+fn (d D3d9line) release() u32 {
 
 	mut static o_fn := &P_dx_release(0)
 	if int(o_fn) == 0 {
 		o_fn = &P_dx_release(utils.get_virtual(d.i_dxline, 2))
 	}
-
-	res := o_fn(d.i_dxline)
+	// someone have to know that i spent litteraly 2h+ to debug this shit just
+	//beacuse calling o_fn without handming it's return make a crash to a random place in csgo pls kill me
+	return o_fn(d.i_dxline)
 }
 
 pub struct D3d9 {
@@ -127,16 +128,14 @@ pub fn (mut d D3d9) get_device() {
 }
 
 pub fn (d D3d9) get_font(withName string, andSize u16) &D3d9Font {
-	//font := &(d.fonts[withName][andSize])
-
 	for i in 0..d.fonts.len - 1 {
 		font := &d.fonts[i]
 		if font.name == withName && font.size == andSize {
 			return unsafe { font }
 		}
 	}
-	utils.pront("no")
-	return &D3d9Font(0)
+	utils.pront("Failed to find font retry for sure one")
+	return &d.fonts[0]
 }
 
 pub fn (mut d D3d9) bootstrap() {
@@ -146,20 +145,16 @@ pub fn (mut d D3d9) bootstrap() {
 	}
 
 	d.create_line()
-
-	d.tmp_fnt = d.get_font("Lucida Console", 12)
 }
 
 pub fn (mut d D3d9) release() {
-	d.line.release()
-
+	unsafe {
+		d.line.release()
+	}
 	for f in d.fonts {
-		f.release()
+		unsafe {
+			f.release()
+		}
 	}
 
-	// for _,v in d.fonts {
-	// 	for _,vv in v {
-	// 		vv.release()
-	// 	}
-	// }
 }

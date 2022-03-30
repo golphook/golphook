@@ -1,7 +1,5 @@
 module d3d
 
-import utils
-
 #flag -I @VMODROOT/exts/directx
 #flag -I @VMODROOT/golphook/d3d/c
 #flag -L @VMODROOT/exts/directx

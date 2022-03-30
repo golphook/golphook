@@ -13,6 +13,7 @@ fn hello(h_mod voidptr) {
 
 	for {
 		if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
+			ctx.is_ok = false
 			ctx.release()
 		}
 		C.Sleep(670)

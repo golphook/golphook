@@ -35,6 +35,8 @@ pub fn msg_c(withColor Color, text string) {
 }
 
 pub fn pront(withContent string) {
-	C.puts(&char(withContent.str))
+	$if debug {
+		C.puts(&char(withContent.str))
+	}
 	// unsafe {msg_c(utils.Color{142, 68, 173, 255}, withContent)}
 }

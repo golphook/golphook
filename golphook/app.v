@@ -4,7 +4,6 @@ import v.vmod
 import utils
 import valve
 import d3d
-//import render
 
 [heap]
 pub struct App {
@@ -17,6 +16,7 @@ pub mut:
 	interfaces &Interfaces = 0
 	hooks      &Hooks = 0
 	d3d &d3d.D3d9 = 0
+	rnd_queue &RenderQueue = 0
 
 	is_ok bool
 }
@@ -43,6 +43,8 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	a.d3d = &d3d.D3d9{}
 	a.d3d.bootstrap()
 
+	a.rnd_queue = &RenderQueue{}
+
 	a.hooks = &Hooks{}
 	a.hooks.bootstrap()
 
@@ -51,6 +53,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	C.Beep(730, 150)
 
 	utils.pront('all done ! | Hi golphook v$a.v_mod.version :)')
+	a.is_ok = true
 
 	// valve.msg("hello")
 	// valve.msg_c(utils.Color{142, 68, 173, 255}, "no way !")
@@ -64,8 +67,9 @@ pub fn (mut a App) release() {
 	C.FreeLibraryAndExitThread(a.h_mod, 0)
 }
 
-pub fn (a App) test() {
-	unsafe { valve.msg_c(utils.color_rbga<int>(142, 68, 173, 255), 'test') }
+pub fn (mut a App) test() {
+	//unsafe { valve.msg_c(utils.color_rbga<int>(142, 68, 173, 255), 'test') }
+	a.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v$a.v_mod.version", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(30,150,80,255)))
 }
 
 [unsafe]

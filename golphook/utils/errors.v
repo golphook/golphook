@@ -21,6 +21,6 @@ pub fn error_critical(withError string, andErrorComplement string) {
 	C.MessageBoxA(0, &char(err_msg.str), c'[golphook] Critical error', u32(C.MB_OK | C.MB_ICONERROR))
 
 	$if prod {
-		panic(err_msg)
+		//panic(err_msg)
 	}
 }

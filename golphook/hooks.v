@@ -87,6 +87,12 @@ fn hk_frame_stage_notify(a u32) {
 		utils.pront('hk_frame_stage_notify() OK !')
 	}
 
+	mut app_ctx := unsafe { app() }
+
+	if app_ctx.is_ok {
+		app_ctx.test()
+	}
+
 	unsafe {
 		ofn := &O_frame_stage_notify(app().hooks.frame_stage_notify.original_save)
 		ofn(a)
@@ -103,10 +109,12 @@ fn hk_end_scene(dev voidptr) bool {
 	}
 
 	mut app_ctx := unsafe { app() }
-	//font := app_ctx.d3d.get_font("Lucida Console", 12)
-	app_ctx.d3d.tmp_fnt.draw_text("golphook v$app_ctx.v_mod.version", utils.new_vec2(4, 4).vec_3(), 0, utils.color_rbga(255, 255, 255, 255))
-	app_ctx.d3d.line.draw(utils.new_vec2(10, 20).vec_3(), utils.new_vec2(40, 50).vec_3(), 2, utils.color_rbga(255, 255, 255, 255))
 
+	if app_ctx.is_ok {
+
+		app_ctx.rnd_queue.draw_queue()
+
+	}
 
 	unsafe {
 		ofn := &O_end_scene(app().hooks.end_scene.original_save)
