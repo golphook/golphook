@@ -1,32 +1,47 @@
-module golphook
+module offsets
 
 import utils
 
 import json
 
+pub const db = Offsets{}
+
 struct Offset_sigs {
+pub:
 	dw_entity_list  u32 [json: dwEntityList]
 	dw_force_attack u32 [json: dwForceAttack]
 }
 
 struct Offset_nets {
+pub:
 	m_zoom_level      u32 [json: m_zoomLevel]
 	m_vec_view_offset u32 [json: m_vecViewOffset]
+	m_health u32 [json: m_iHealth]
 }
 
 struct Offsets {
+pub:
 	timestamp  int
 	signatures Offset_sigs
 	netvars    Offset_nets
 }
 
-fn load_offsets() Offsets {
-	file := $embed_file('../ressources/offsets.json')
+pub fn load() Offsets {
+	file := $embed_file('../../ressources/offsets.json')
 	file_content := file.to_string()
-	utils.pront("ahllo ?? -")
+
 	offsets_ := json.decode(Offsets, file_content) or {
 		utils.error_critical("Failed to load offsets", "$err")
 		return Offsets{timestamp: -1}
 	}
+
+	// yes its definitly againt v rules but in plain v yout can do const my_const = load()
+	// but il this situation its not working the load() fn dont get call
+	// so initialized the const with an empty struct and initialized manualy here :/
+	// but it will stay "const" after
+	unsafe {
+		C.memcpy(voidptr(&db), voidptr(&offsets_), sizeof(Offsets))
+	}
+
 	return offsets_
 }

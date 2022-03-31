@@ -2,6 +2,7 @@ module golphook
 
 import v.vmod
 import utils
+import offsets
 import valve
 import d3d
 
@@ -17,7 +18,6 @@ pub mut:
 	hooks      &Hooks = 0
 	d3d &d3d.D3d9 = 0
 	rnd_queue &RenderQueue = 0
-	offsets Offsets
 
 	is_ok bool
 }
@@ -38,8 +38,8 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 		utils.error_critical('Failed to find window with name', 'Counter-Strike: Global Offensive - Direct3D 9')
 	}
 
-	a.offsets = load_offsets()
-
+	offsets.load()
+	//utils.pront("-- ${offsets.db.netvars.m_vec_view_offset == 264}")
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()
 
