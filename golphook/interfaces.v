@@ -10,6 +10,7 @@ pub mut:
 	cdll_int      &valve.IVEngineClient = 0
 	i_cvar        &valve.ICvar = 0
 	i_base_client &valve.IBaseClientDLL = 0
+	i_entity_list &valve.IEntityList = 0
 }
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
@@ -32,9 +33,11 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 
 fn (mut i Interfaces) bootstrap() {
 	i.cdll_int = i.get_interface<valve.IVEngineClient>('VEngineClient014', 'engine.dll')
-	//utils.pront('cdll_int -> ${voidptr(i.cdll_int).str()}')
+	utils.pront('cdll_int -> ${voidptr(i.cdll_int).str()}')
 	i.i_cvar = i.get_interface<valve.ICvar>('VEngineCvar007', 'vstdlib.dll')
-	//utils.pront('i_cvar -> ${voidptr(i.i_cvar).str()}')
+	utils.pront('i_cvar -> ${voidptr(i.i_cvar).str()}')
 	i.i_base_client = i.get_interface<valve.IBaseClientDLL>('VClient018', 'client.dll')
-	//utils.pront('i_base_client -> ${voidptr(i.i_base_client).str()}')
+	utils.pront('i_base_client -> ${voidptr(i.i_base_client).str()}')
+	i.i_entity_list = i.get_interface<valve.IEntityList>('VClientEntityList003', 'client.dll')
+	utils.pront('i_entity_list -> ${voidptr(i.i_entity_list).str()}')
 }
