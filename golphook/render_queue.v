@@ -28,10 +28,10 @@ pub fn (r RenderQueue) at(index int) &Drawable {
 	return to_ret
 }
 
-pub fn (mut r RenderQueue) clear() {
+pub fn (mut r RenderQueue) clear(i int) {
 	lock r.queue {
-		r.queue.clear()
-		// r.queue.delete_many(0, r.queue.len)
+		//r.queue.clear()
+		r.queue.delete_many(0, i)
 	}
 }
 
@@ -41,5 +41,5 @@ pub fn (mut r RenderQueue) draw_queue() {
 		r.at(i).draw()
 	}
 
-	r.clear()
+	r.clear(queue_lenght)
 }
