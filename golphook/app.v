@@ -69,7 +69,21 @@ pub fn (mut a App) release() {
 
 pub fn (mut a App) test() {
 	//unsafe { valve.msg_c(utils.color_rbga<int>(142, 68, 173, 255), 'test') }
-	a.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v$a.v_mod.version", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(30,150,80,255)))
+	a.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v$a.v_mod.version", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+	a.test_sdk()
+}
+
+pub fn (mut a App) test_sdk() {
+
+	if (C.GetAsyncKeyState(C.VK_SHIFT) & 1) == 1 {
+		utils.pront("Testing -----------")
+		for i in 0..16 {
+			ent := a.interfaces.i_entity_list.get_client_entity(i)
+			utils.pront("${ent.str()}")
+		}
+		utils.pront("Testing -----------")
+	}
+
 }
 
 [unsafe]

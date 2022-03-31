@@ -1,7 +1,6 @@
 module d3d
 
 #flag -I @VMODROOT/exts/directx
-#flag -I @VMODROOT/golphook/d3d/c
 #flag -L @VMODROOT/exts/directx
 
 #flag -l d3d9
