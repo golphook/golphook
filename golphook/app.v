@@ -17,6 +17,7 @@ pub mut:
 	hooks      &Hooks = 0
 	d3d &d3d.D3d9 = 0
 	rnd_queue &RenderQueue = 0
+	offsets Offsets
 
 	is_ok bool
 }
@@ -36,6 +37,8 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	if usize(a.h_wnd) == 0 {
 		utils.error_critical('Failed to find window with name', 'Counter-Strike: Global Offensive - Direct3D 9')
 	}
+
+	a.offsets = load_offsets()
 
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()

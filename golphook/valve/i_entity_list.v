@@ -31,13 +31,17 @@ pub fn (mut i IEntityList) get_client_entity(atIndex int) voidptr {
 pub fn (mut i IEntityList) get_client_entity_handle(withHandle u32) voidptr {
 	o_fn_add := utils.get_virtual(i, 4)
 
+	// to test if load_this(i) is needed here also
+
 	o_fn := &P_get_client_entity_handle(o_fn_add)
-	return o_fn(i, withHandle)
+	return o_fn(withHandle)
 }
 
 pub fn (mut i IEntityList) get_highest_index() u32 {
 	o_fn_add := utils.get_virtual(i, 6)
 
+	// to test if load_this(i) is needed here also
+
 	o_fn := &P_get_highest_index(o_fn_add)
-	return o_fn(i)
+	return o_fn()
 }
