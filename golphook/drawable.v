@@ -31,7 +31,7 @@ struct Text {
 pub fn (t Text) draw() {
 	mut app_ctx := unsafe { app() }
 	unsafe {
-		font := app_ctx.d3d.get_font("Lucida Console", 18)
+		font := app_ctx.d3d.get_font("Lucida Console", t.font_size)
 		font.draw_text(t.content, t.pos, t.format_falgs, t.color)
 	}
 }
