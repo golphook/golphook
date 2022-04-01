@@ -9,7 +9,7 @@ struct Line {
 	color utils.Color
 }
 
-pub fn (l Line) draw() {
+pub fn (l &Line) draw() {
 	mut app_ctx := unsafe { app() }
 	unsafe {
 		app_ctx.d3d.line.draw(l.from_pos, l.to_pos, l.thickness, l.color)
@@ -28,7 +28,7 @@ struct Text {
 	format_falgs u32
 }
 
-pub fn (t Text) draw() {
+pub fn (t &Text) draw() {
 	mut app_ctx := unsafe { app() }
 	unsafe {
 		font := app_ctx.d3d.get_font("Lucida Console", t.font_size)
@@ -38,6 +38,96 @@ pub fn (t Text) draw() {
 
 pub fn new_text(atPos utils.Vec3, withContent string, withFontSize u16, withTextFormatFlags int, andColor utils.Color) &Text {
 	return &Text {pos: atPos, content: withContent, color: andColor, font_size:withFontSize, format_falgs: u32(withTextFormatFlags)}
+}
+
+struct Rectangle {
+pub mut:
+	pos utils.Vec3
+	height f32
+	width f32
+	thickness f32
+	outline_thickness f32
+	color utils.Color
+}
+
+pub fn (_ Rectangle) draw_rect(r Rectangle) {
+	mut app_ctx := unsafe { app() }
+
+		/*
+	 *                 (-)
+	 *                  ^
+	 *                  |
+	 *                  |
+	 *  x (-) <- ---------------- -> (+)
+	 *                  |
+	 *                  |
+	 *                  v
+	 *                 (+)
+	 *                  y
+	 * */
+
+	mut v1 := utils.new_vec2(r.pos.x, r.pos.y)
+	mut v2 := utils.new_vec2(r.pos.x + r.width, r.pos.y)
+	unsafe {
+		app_ctx.d3d.line.draw(v1.vec_3(), v2.vec_3(), r.thickness, r.color)
+	}
+
+	v1 = utils.new_vec2(r.pos.x, r.pos.y - r.height)
+	v2 = utils.new_vec2(r.pos.x + r.width, r.pos.y - r.height)
+	unsafe {
+		app_ctx.d3d.line.draw(v1.vec_3(), v2.vec_3(), r.thickness, r.color)
+	}
+
+	v1 = utils.new_vec2(r.pos.x, r.pos.y + (r.thickness / 2))
+	v2 = utils.new_vec2(r.pos.x, (r.pos.y - r.height) - (r.thickness / 2))
+	unsafe {
+		app_ctx.d3d.line.draw(v1.vec_3(), v2.vec_3(), r.thickness, r.color)
+	}
+
+	v1 = utils.new_vec2(r.pos.x + r.width, r.pos.y + (r.thickness / 2))
+	v2 = utils.new_vec2(r.pos.x + r.width, (r.pos.y - r.height) - (r.thickness / 2))
+	unsafe {
+		app_ctx.d3d.line.draw(v1.vec_3(), v2.vec_3(), r.thickness, r.color)
+	}
+}
+
+pub fn (r &Rectangle) draw() {
+
+	if r.outline_thickness == f32(0) {
+		r.draw_rect(r)
+	} else {
+		mut new_rect := *(r)
+		new_rect.pos.x = new_rect.pos.x + r.thickness
+		new_rect.pos.y = new_rect.pos.y - r.thickness
+		new_rect.height = new_rect.height - (r.thickness * 2)
+		new_rect.width = new_rect.width - (r.thickness * 2)
+		new_rect.color = utils.color_rbga(245, 59, 87,255)
+		r.draw_rect(new_rect)
+		r.draw_rect(r)
+		new_rect = *(r)
+		new_rect.pos.x = new_rect.pos.x - r.thickness
+		new_rect.pos.y = new_rect.pos.y + r.thickness
+		new_rect.height = new_rect.height + (r.thickness * 2)
+		new_rect.width = new_rect.width + (r.thickness * 2)
+		new_rect.color = utils.color_rbga(245, 59, 87,255)
+		r.draw_rect(new_rect)
+	}
+	// if r.outline_thickness == f32(0) {
+	// 	//r.draw_rect()
+	// 	utils.pront("no thi")
+	// } else {
+	// 	mut app_ctx := unsafe { app() }
+	// 	mut inter_outline := r.pos
+	// 	//app_ctx.rnd_queue.push(new_rectangle(inter_outline, 30, 50, 3, 0, utils.color_rbga(255,255,255,255)))
+	// 	//r.draw_rect()
+	// 	utils.pront("thi")
+	// 	//app_ctx.rnd_queue.push(new_rectangle(screen_pos, 30, 50, 2, 2, utils.color_rbga(255,255,255,255)))
+	// }
+
+}
+
+pub fn new_rectangle(atPos utils.Vec3, withHeight f32, withWidth f32, withThickness f32, withOutlineThickness f32, andColor utils.Color) &Rectangle {
+	return &Rectangle { pos: atPos, height: withHeight, width: withWidth, thickness: withThickness, outline_thickness: withOutlineThickness, color: andColor }
 }
 
 interface Drawable {

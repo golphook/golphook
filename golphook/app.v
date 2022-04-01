@@ -73,72 +73,14 @@ pub fn (mut a App) release() {
 }
 
 pub fn (mut a App) on_frame() {
-	//unsafe { valve.msg_c(utils.color_rbga<int>(142, 68, 173, 255), 'test') }
-	a.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v$a.v_mod.version", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
-	//a.test_sdk()
-
-	// for i in 0..16 {
-	// 	ent := a.interfaces.i_entity_list.get_client_entity(i)
-	// 	if int(ent) != 0 {
-	// 		e_ent := &valve.Entity(ent)
-	// 		if e_ent.is_alive() {
-	//
-	// 			pos := e_ent.origin()
-	// 			screen_pos := utils.new_vec3(0,0,0)
-	// 			res := a.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
-	// 			if res == 0 {
-	// 				//C.printf(c"%i -> %f - %f - %f | %f - %f - %f (%i)\n",i ,pos.x, pos.y, pos.z, screen_pos.x, screen_pos.y, screen_pos.z, res)
-	// 				a.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "golphook v$a.v_mod.version", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	ents := a.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
-		return e.is_alive() && e.team() != ctx.local_player.team()
-	})
-	for ent in ents {
-		pos := ent.origin()
-		screen_pos := utils.new_vec3(0,0,0)
-		res := a.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
-		if res == 0 {
-			a.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "golphook v$a.v_mod.version", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+	if (C.GetAsyncKeyState(C.VK_SHIFT) & 1) == 1 {
+		mut p_info := valve.PlayerInfo{}
+		rs := a.interfaces.cdll_int.get_player_info(a.interfaces.cdll_int.get_local_player(), &p_info)
+		utils.pront("$rs")
+		if rs {
+			utils.pront(p_info.player_name())
 		}
 	}
-}
-
-pub fn (mut a App) test_sdk() {
-
-	if (C.GetAsyncKeyState(C.VK_SHIFT) & 1) == 1 {
-		utils.pront("Testing -----------")
-		// for i in 0..32 {
-		// 	ent := a.interfaces.i_entity_list.get_client_entity(i)
-		// 	if int(ent) != 0 {
-		// 		e_ent := &valve.Entity(ent)
-		// 		if e_ent.is_alive() {
-		// 			// pos := e_ent.abs_origin()
-		// 			// C.printf(c"%f - %f - %f \n", pos.x, pos.y, pos.z)
-		// 			// team := e_ent.team()
-		// 			// C.printf(c"%i - %i \n", i, team)
-		//
-		// 			// pos := e_ent.bone(7)
-		// 			// C.printf(c"%f - %f - %f \n", pos.x, pos.y, pos.z)
-		//
-		// 			pos := e_ent.origin()
-		// 			screen_pos := utils.new_vec3(0,0,0)
-		// 			res := a.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
-		//
-		// 			C.printf(c"%i -> %f - %f - %f | %f - %f - %f (%i)\n",i ,pos.x, pos.y, pos.z, screen_pos.x, screen_pos.y, screen_pos.z, res)
-		// 			a.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "golphook v$a.v_mod.version", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
-		//
-		// 		}
-		// 	}
-		// }
-		// utils.pront("Testing -----------")
-		C.printf(c"local player -> %i \n", a.interfaces.cdll_int.get_local_player())
-
-	}
-
 }
 
 [unsafe]
