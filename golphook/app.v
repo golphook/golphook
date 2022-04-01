@@ -13,6 +13,8 @@ pub mut:
 	v_mod vmod.Manifest
 	file  &C.FILE = 0
 	h_wnd C.HWND
+	wnd_height int
+	wnd_width int
 
 	interfaces &Interfaces = 0
 	hooks      &Hooks = 0
@@ -73,14 +75,7 @@ pub fn (mut a App) release() {
 }
 
 pub fn (mut a App) on_frame() {
-	if (C.GetAsyncKeyState(C.VK_SHIFT) & 1) == 1 {
-		mut p_info := valve.PlayerInfo{}
-		rs := a.interfaces.cdll_int.get_player_info(a.interfaces.cdll_int.get_local_player(), &p_info)
-		utils.pront("$rs")
-		if rs {
-			utils.pront(p_info.player_name())
-		}
-	}
+	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
 }
 
 [unsafe]

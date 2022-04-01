@@ -18,7 +18,7 @@ pub struct PlayerInfo {
 }
 
 pub fn (p &PlayerInfo) player_name() string {
-	return cstring_to_vstring(voidptr(&p.sz_name[0]))
+	return unsafe { cstring_to_vstring(voidptr(&p.sz_name[0])) }
 }
 
 struct IVEngineClient {}
@@ -29,6 +29,7 @@ type P_is_connected = fn () bool
 type P_get_app_id = fn () int
 type P_get_local_player = fn () int
 type P_get_player_info = fn (int, &PlayerInfo) bool
+type P_get_screen_size = fn (&int, &int)
 
 pub fn (mut i IVEngineClient) execute_client_cmd(text string) {
 	o_fn_add := utils.get_virtual(i, 108)
@@ -77,5 +78,11 @@ pub fn (mut i IVEngineClient) get_player_info(withEntNum int, andPlayerInfo &Pla
 	return res
 }
 
+pub fn (mut i IVEngineClient) get_screen_size(withOutWidth &int, withOutHeight &int) {
+	o_fn_add := utils.get_virtual(i, 5)
+
+	o_fn := &P_get_screen_size(o_fn_add)
+	o_fn(withOutWidth, withOutHeight)
+}
 
 struct IBaseClientDLL {}
