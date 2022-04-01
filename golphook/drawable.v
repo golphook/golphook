@@ -16,8 +16,8 @@ pub fn (l Line) draw() {
 	}
 }
 
-pub fn new_line(fromPos utils.Vec3, toPos utils.Vec3, withThickness f32, andColor utils.Color) Line {
-	return Line {from_pos: fromPos, to_pos: toPos, thickness: withThickness, color: andColor}
+pub fn new_line(fromPos utils.Vec3, toPos utils.Vec3, withThickness f32, andColor utils.Color) &Line {
+	return &Line {from_pos: fromPos, to_pos: toPos, thickness: withThickness, color: andColor}
 }
 
 struct Text {
@@ -36,8 +36,8 @@ pub fn (t Text) draw() {
 	}
 }
 
-pub fn new_text(atPos utils.Vec3, withContent string, withFontSize u16, withTextFormatFlags int, andColor utils.Color) Text {
-	return Text {pos: atPos, content: withContent, color: andColor, font_size:withFontSize, format_falgs: u32(withTextFormatFlags)}
+pub fn new_text(atPos utils.Vec3, withContent string, withFontSize u16, withTextFormatFlags int, andColor utils.Color) &Text {
+	return &Text {pos: atPos, content: withContent, color: andColor, font_size:withFontSize, format_falgs: u32(withTextFormatFlags)}
 }
 
 interface Drawable {

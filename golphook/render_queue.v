@@ -2,11 +2,11 @@ module golphook
 
 pub struct RenderQueue {
 pub mut:
-	queue shared []Drawable
+	queue shared []&Drawable
 
 }
 
-pub fn (mut r RenderQueue) push(drawable Drawable) {
+pub fn (mut r RenderQueue) push(drawable &Drawable) {
 	lock r.queue {
 		r.queue << drawable
 	}
@@ -31,14 +31,20 @@ pub fn (r RenderQueue) at(index int) &Drawable {
 pub fn (mut r RenderQueue) clear(i int) {
 	lock r.queue {
 		//r.queue.clear()
+		for o in 0..i {
+			free(r.queue[o])
+		}
 		r.queue.delete_many(0, i)
 	}
 }
 
 pub fn (mut r RenderQueue) draw_queue() {
 	queue_lenght := r.len()
-	for i in 0..queue_lenght -1 {
-		r.at(i).draw()
+
+	rlock r.queue {
+		for d in r.queue {
+			d.draw()
+		}
 	}
 
 	r.clear(queue_lenght)
