@@ -36,7 +36,7 @@ pub fn (e &Entity) life_state() LifeState {
 }
 
 pub fn (e &Entity) is_alive() bool {
-	return int(e.life_state()) == 0
+	return int(e.life_state()) == 0 && e.health() > 0
 }
 
 type P_ent_get_handle = fn () voidptr
@@ -63,7 +63,8 @@ pub fn (e &Entity) view_offset() utils.Vec3 {
 pub fn (e &Entity) bone(withBoneIndex usize) utils.Vec3 {
 
 	mut res := utils.new_vec3(0, 0, 0)
-	bones_mat := *(utils.get_val_offset<usize>(e, offsets.db.netvars.m_bone_matrix))
+
+	mut bones_mat := *(&usize(usize(e) + 0x26A8))
 
 	res.x = *(&f32(bones_mat + 0x30 * withBoneIndex + 0x0c))
 	res.y = *(&f32(bones_mat + 0x30 * withBoneIndex + 0x1c))
