@@ -17,6 +17,15 @@ pub:
 	m_zoom_level      u32 [json: m_zoomLevel]
 	m_vec_view_offset u32 [json: m_vecViewOffset]
 	m_health u32 [json: m_iHealth]
+	m_dormant u32 [json: m_bDormant]
+	m_life_tate u32 [json: m_lifeState]
+	m_vec_origin u32 [json: m_vecOrigin]
+	m_view_punch_angle u32 [json: m_viewPunchAngle]
+	client_state u32 [json: dwClientState]
+	client_state_view_angles u32 [json: dwClientState_ViewAngles]
+	m_team_num u32 [json: m_iTeamNum]
+	m_bone_matrix u32 [json: m_dwBoneMatrix]
+	m_flags u32 [json: m_fFlags]
 }
 
 struct Offsets {

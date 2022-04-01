@@ -80,9 +80,20 @@ pub fn (mut a App) test_sdk() {
 
 	if (C.GetAsyncKeyState(C.VK_SHIFT) & 1) == 1 {
 		utils.pront("Testing -----------")
-		for i in 0..16 {
+		for i in 0..32 {
 			ent := a.interfaces.i_entity_list.get_client_entity(i)
-			utils.pront("${ent.str()}")
+			if int(ent) != 0 {
+				e_ent := &valve.Entity(ent)
+				if e_ent.is_alive() && e_ent.team() == valve.Teams.counter_terrorists {
+					// pos := e_ent.abs_origin()
+					// C.printf(c"%f - %f - %f \n", pos.x, pos.y, pos.z)
+					// team := e_ent.team()
+					// C.printf(c"%i - %i \n", i, team)
+
+					pos := e_ent.bone(7)
+					C.printf(c"%f - %f - %f \n", pos.x, pos.y, pos.z)
+				}
+			}
 		}
 		utils.pront("Testing -----------")
 	}

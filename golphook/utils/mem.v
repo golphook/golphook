@@ -70,3 +70,9 @@ pub fn patter_scan(inModule string, andSing string) ?voidptr {
 
 	return error("Cannot find address with pattern: $andSing")
 }
+
+// ne pas passer de voidptr dans T sinon ca fait un &voidptr ce qui est egal a void**
+// alors que si a al palce on passe un usize ca fait usize* 
+pub fn get_val_offset<T>(inThis voidptr, withOffset usize) &T {
+	return unsafe { &T(usize(inThis) + withOffset) }
+}
