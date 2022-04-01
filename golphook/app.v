@@ -38,7 +38,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 		utils.error_critical('Failed to find window with name', 'Counter-Strike: Global Offensive - Direct3D 9')
 	}
 
-	offsets.load()
+	//offsets.load()
 	//utils.pront("-- ${offsets.db.netvars.m_vec_view_offset == 264}")
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()

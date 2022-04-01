@@ -1,5 +1,9 @@
 module utils
 
+pub struct Matrix {
+	m [4][4]f32
+}
+
 // present for fucntion which only allow a vec of 2 value
 pub struct Vec2 {
 pub mut:
