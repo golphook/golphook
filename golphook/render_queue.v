@@ -32,7 +32,9 @@ pub fn (mut r RenderQueue) clear(i int) {
 	lock r.queue {
 		//r.queue.clear()
 		for o in 0..i {
-			free(r.queue[o])
+			unsafe {
+				free(r.queue[o])
+			}
 		}
 		r.queue.delete_many(0, i)
 	}
