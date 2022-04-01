@@ -2,6 +2,25 @@ module valve
 
 import golphook.utils
 
+pub struct PlayerInfo {
+	pad i64
+	pod i64
+	sz_name [128]char
+	user_id int
+	sz_steam_id [20]char
+	pud [0x10]char
+	steam_id u32
+	friends_sz_name [128]char
+	fake_player bool
+	hltv bool
+	custom_files [4]int
+	files_downloaded u8
+}
+
+pub fn (p &PlayerInfo) player_name() string {
+	return cstring_to_vstring(voidptr(&p.sz_name[0]))
+}
+
 struct IVEngineClient {}
 
 type P_execute_client_cmd = fn (&char)
@@ -9,6 +28,7 @@ type P_is_in_game = fn () bool
 type P_is_connected = fn () bool
 type P_get_app_id = fn () int
 type P_get_local_player = fn () int
+type P_get_player_info = fn (int, &PlayerInfo) bool
 
 pub fn (mut i IVEngineClient) execute_client_cmd(text string) {
 	o_fn_add := utils.get_virtual(i, 108)
@@ -48,5 +68,14 @@ pub fn (mut i IVEngineClient) get_app_id() int {
 	res := o_fn()
 	return res
 }
+
+pub fn (mut i IVEngineClient) get_player_info(withEntNum int, andPlayerInfo &PlayerInfo) bool {
+	o_fn_add := utils.get_virtual(i, 8)
+
+	o_fn := &P_get_player_info(o_fn_add)
+	res := o_fn(withEntNum, andPlayerInfo)
+	return res
+}
+
 
 struct IBaseClientDLL {}
