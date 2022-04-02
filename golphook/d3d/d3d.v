@@ -156,5 +156,6 @@ pub fn (mut d D3d9) release() {
 			f.release()
 		}
 	}
+	d.fonts.clear()
 
 }
