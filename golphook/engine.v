@@ -32,31 +32,29 @@ pub mut:
 
 fn (mut e Engine) on_frame() {
 	mut app_ctx := unsafe { app() }
-	if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
-		e.do_a_shoot = false
+	e.do_a_shoot = false
 
-		if (C.GetAsyncKeyState(0x43) & 1) == 1 {
-			e.do_force_bone = !e.do_force_bone
-			utils.pront("$e.do_force_bone")
-		}
+	if (C.GetAsyncKeyState(0x43) & 1) == 1 {
+		e.do_force_bone = !e.do_force_bone
+		utils.pront("$e.do_force_bone")
+	}
 
-		if C.GetAsyncKeyState(0x5) > 1 {
-			e.do_a_shoot = true
-			e.targeted_entities.clear()
-			e.collect_targeted_ents()
+	if C.GetAsyncKeyState(0x5) > 1 {
+		e.do_a_shoot = true
+		e.targeted_entities.clear()
+		e.collect_targeted_ents()
 
-			if e.targeted_entities.len != 0 {
-				mut closest_target := e.targeted_entities.first()
+		if e.targeted_entities.len != 0 {
+			mut closest_target := e.targeted_entities.first()
 
-				for ent in e.targeted_entities {
-					if ent.closest_bone.pos.z < closest_target.closest_bone.pos.z {
-						closest_target = ent
-					}
+			for ent in e.targeted_entities {
+				if ent.closest_bone.pos.z < closest_target.closest_bone.pos.z {
+					closest_target = ent
 				}
-				e.aim_at(closest_target)
-				mut force_attack := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack)
-				unsafe { *force_attack = 6 }
 			}
+			e.aim_at(closest_target)
+			mut force_attack := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack)
+			unsafe { *force_attack = 6 }
 		}
 	}
 }
@@ -64,7 +62,7 @@ fn (mut e Engine) on_frame() {
 fn (e &Engine) aim_at(ent TargetedEntity) {
 	mut app_ctx := unsafe { app() }
 	local_player_eye_pos := app_ctx.ent_cacher.local_player.eye_pos()
-	target_bone_pos := ent.ent.bone(usize(ent.closest_bone.id))
+	target_bone_pos := ent.ent.bone(usize(ent.closest_bone.id)) or { return }
 
 	mut angle_out := utils.new_angle(0,0,0)
 
@@ -110,7 +108,7 @@ fn (mut e Engine) collect_targeted_ents() {
 		mut target := unsafe { TargetedEntity{ent: ent} }
 
 		for b_id in e.bones {
-			bone_pos = ent.bone(usize(b_id))
+			bone_pos = ent.bone(usize(b_id)) or { return }
 
 			if app_ctx.interfaces.i_debug_overlay.screen_pos(bone_pos, bone_screen) == 0 {
 

@@ -31,6 +31,11 @@ pub fn (r RenderQueue) at(index int) &Drawable {
 pub fn (mut r RenderQueue) clear(i int) {
 	lock r.queue {
 		//r.queue.clear()
+		if i == -1 {
+			r.queue.clear()
+			return
+		}
+
 		for o in 0..i {
 			unsafe {
 				free(r.queue[o])

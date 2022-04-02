@@ -5,22 +5,15 @@ import utils
 
 pub fn visuals_on_frame() {
 	mut app_ctx := unsafe { app() }
-	if app_ctx.interfaces.cdll_int.is_in_game() {
-		if app_ctx.interfaces.cdll_int.is_connected() {
-			ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
-				return e.is_alive() && e.team() != ctx.local_player.team()
-			})
-
-			for ent in ents {
-				visuals_name(ent)
-				visuals_box(ent)
-				visuals_snapline(ent)
-				//visuals_bones_id(ent)
-			}
-
-
-
-		}
+	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
+		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant()
+	})
+	for ent in ents {
+		id := app_ctx.ent_cacher.get_id(ent)
+		visuals_name(ent)
+		visuals_box(ent)
+		visuals_snapline(ent)
+		//visuals_bones_id(ent)
 	}
 	visuals_watermark()
 }
@@ -37,7 +30,7 @@ pub fn visuals_namess() {
 		return e.is_alive() && e.team() != ctx.local_player.team()
 	})
 	for ent in ents {
-		pos := ent.bone(7)
+		pos := ent.bone(7) or { return }
 		screen_pos := utils.new_vec3(0,0,0)
 		res := app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
 		if res == 0 {
@@ -55,7 +48,7 @@ pub fn visuals_bones_id(ent &valve.Entity) {
 	bones := [usize(0), 8, 9, 6, 5]
 	mut app_ctx := unsafe { app() }
 	for b in bones {
-		mut pos := ent.bone(b)
+		mut pos := ent.bone(b) or { return }
 		mut screen_pos := utils.new_vec3(0,0,0)
 		mut res := app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
 		if res == 0 {
@@ -92,8 +85,8 @@ pub fn visuals_bones() {
 	})
 	for ent in ents {
 		for b in bones {
-			mut pos := ent.bone(b.from_bone)
-			mut pos2 := ent.bone(b.to_bone)
+			mut pos := ent.bone(b.from_bone) or { return }
+			mut pos2 := ent.bone(b.to_bone) or { return }
 			mut screen_pos2 := utils.new_vec3(0,0,0)
 			mut screen_pos := utils.new_vec3(0,0,0)
 			res := app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
@@ -182,12 +175,12 @@ pub fn visuals_name(ent &valve.Entity) {
 
 pub fn calculate_box(withEnt &valve.Entity, andZOffset f32) ?(utils.Vec3, f32, f32) {
 	mut app_ctx := unsafe { app() }
-	pos := withEnt.bone(1)
+	pos := withEnt.bone(1) ?
 	mut screen_pos := utils.new_vec3(0,0,0)
 	mut res := app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
 	if res != 0 { return error("failed to retreive screen pos") }
 
-	mut head_pos := withEnt.bone(8)
+	mut head_pos := withEnt.bone(8) ?
 	head_pos.z += 13 + andZOffset
 	head_screen_pos := utils.new_vec3(0,0,0)
 	res = app_ctx.interfaces.i_debug_overlay.screen_pos(head_pos, head_screen_pos)

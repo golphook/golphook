@@ -23,7 +23,7 @@ struct Entity {
 
 }
 
-pub fn (e &Entity) dormant2() bool {
+pub fn (e &Entity) dormant() bool {
 	return *(utils.get_val_offset<bool>(e, offsets.db.netvars.m_dormant))
 }
 
@@ -60,12 +60,14 @@ pub fn (e &Entity) view_offset() utils.Vec3 {
 	return *(utils.get_val_offset<utils.Vec3>(e, offsets.db.netvars.m_vec_view_offset))
 }
 
-pub fn (e &Entity) bone(withBoneIndex usize) utils.Vec3 {
+pub fn (e &Entity) bone(withBoneIndex usize) ?utils.Vec3 {
 
 	mut res := utils.new_vec3(0, 0, 0)
 
-	mut bones_mat := *(&usize(usize(e) + 0x26A8))
-
+	mut bones_mat := *(&usize(usize(e) + offsets.db.netvars.m_bone_matrix))
+	if bones_mat == 0 {
+		return error("bone_mat not available")
+	}
 	res.x = *(&f32(bones_mat + 0x30 * withBoneIndex + 0x0c))
 	res.y = *(&f32(bones_mat + 0x30 * withBoneIndex + 0x1c))
 	res.z = *(&f32(bones_mat + 0x30 * withBoneIndex + 0x2c))
@@ -82,5 +84,5 @@ pub fn (e &Entity) flags() int {
 }
 
 pub fn (e &Entity) in_reload() bool {
-	return *(utils.get_val_offset<boll>(e, offsets.db.netvars.m_in_reload))
+	return *(utils.get_val_offset<bool>(e, offsets.db.netvars.m_in_reload))
 }

@@ -4,6 +4,7 @@ import utils
 
 type O_frame_stage_notify = fn (u32)
 type O_end_scene = fn (voidptr) bool
+type O_reset = fn (voidptr, voidptr) int
 
 struct HookEntry<T> {
 pub mut:
@@ -26,6 +27,7 @@ struct Hooks {
 pub mut:
 	frame_stage_notify HookEntry<O_frame_stage_notify>
 	end_scene HookEntry<O_end_scene>
+	reset HookEntry<O_reset>
 }
 
 fn (mut h Hooks) bootstrap() {
@@ -48,6 +50,15 @@ fn (mut h Hooks) bootstrap() {
 	h.frame_stage_notify.hook()
 
 	device_add := unsafe { app().d3d.device }
+	reset_add := utils.get_virtual(device_add, 16)
+
+	h.reset = HookEntry<O_reset>{
+		name: 'Reset()'
+		original_addr: reset_add
+		hooked: &hk_reset
+	}
+	h.reset.hook()
+
 	end_scene_add := utils.get_virtual(device_add, 42)
 
 	h.end_scene = HookEntry<O_end_scene>{
@@ -88,12 +99,14 @@ fn hk_frame_stage_notify(a u32) {
 	}
 
 	mut app_ctx := unsafe { app() }
-
 	if app_ctx.is_ok {
-		app_ctx.ent_cacher.on_frame()
-		app_ctx.on_frame()
-		app_ctx.engine.on_frame()
-		visuals_on_frame()
+		if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
+			app_ctx.ent_cacher.on_frame()
+			app_ctx.on_frame()
+			app_ctx.engine.on_frame()
+			visuals_on_frame()
+		}
+
 	}
 
 	unsafe {
@@ -124,4 +137,32 @@ fn hk_end_scene(dev voidptr) bool {
 		return ofn(dev)
 	}
 
+}
+
+[unsafe; windows_stdcall]
+fn hk_reset(dev voidptr, params voidptr) int {
+
+	mut static is_called_once := false
+	if !is_called_once {
+		is_called_once = true
+		utils.pront('hk_reset() OK !')
+	}
+
+	mut app_ctx := unsafe { app() }
+	if app_ctx.is_ok {
+		app_ctx.is_ok = false
+		app_ctx.rnd_queue.clear(-1)
+		app_ctx.d3d.release()
+	}
+
+	unsafe {
+		ofn := &O_reset(app().hooks.reset.original_save)
+		ret := ofn(dev, params)
+
+		if !app_ctx.is_ok {
+			app_ctx.d3d.bootstrap()
+			app_ctx.is_ok = true
+		}
+		return ret
+	}
 }
