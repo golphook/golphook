@@ -92,6 +92,7 @@ fn hk_frame_stage_notify(a u32) {
 	if app_ctx.is_ok {
 		app_ctx.ent_cacher.on_frame()
 		app_ctx.on_frame()
+		app_ctx.engine.on_frame()
 		visuals_on_frame()
 	}
 

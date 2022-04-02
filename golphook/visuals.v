@@ -15,6 +15,7 @@ pub fn visuals_on_frame() {
 				visuals_name(ent)
 				visuals_box(ent)
 				visuals_snapline(ent)
+				//visuals_bones_id(ent)
 			}
 
 
@@ -48,6 +49,20 @@ pub fn visuals_namess() {
 struct BoneLink {
 	from_bone usize
 	to_bone usize
+}
+
+pub fn visuals_bones_id(ent &valve.Entity) {
+	bones := [usize(0), 8, 9, 6, 5]
+	mut app_ctx := unsafe { app() }
+	for b in bones {
+		mut pos := ent.bone(b)
+		mut screen_pos := utils.new_vec3(0,0,0)
+		mut res := app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
+		if res == 0 {
+			app_ctx.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "${f32(b)}", 10, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+
+		}
+	}
 }
 
 pub fn visuals_bones() {

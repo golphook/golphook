@@ -13,6 +13,7 @@ pub mut:
 	v_mod vmod.Manifest
 	file  &C.FILE = 0
 	h_wnd C.HWND
+	h_client voidptr
 	wnd_height int
 	wnd_width int
 
@@ -22,13 +23,15 @@ pub mut:
 	rnd_queue &RenderQueue = 0
 	ent_cacher &EntityCacher = 0
 
+	engine &Engine = 0
+
 	is_ok bool
 }
 
 pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	utils.pront('bootstraping..')
 	a.h_mod = withModuleHandle
-
+	a.h_client = voidptr(C.GetModuleHandleA(c"client.dll"))
 	a.v_mod = vmod.decode(@VMOD_FILE) or { panic(err.msg) }
 
 	$if debug {
@@ -51,6 +54,8 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 	a.rnd_queue = &RenderQueue{}
 	a.ent_cacher = &EntityCacher{}
+
+	a.engine = &Engine{}
 
 	a.hooks = &Hooks{}
 	a.hooks.bootstrap()

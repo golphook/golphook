@@ -80,3 +80,7 @@ pub fn (e &Entity) eye_pos() utils.Vec3 {
 pub fn (e &Entity) flags() int {
 	return *(utils.get_val_offset<int>(e, offsets.db.netvars.m_flags))
 }
+
+pub fn (e &Entity) in_reload() bool {
+	return *(utils.get_val_offset<boll>(e, offsets.db.netvars.m_in_reload))
+}

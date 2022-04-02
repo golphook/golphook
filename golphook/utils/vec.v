@@ -18,8 +18,8 @@ pub fn (v Vec2) vec_3() Vec3 {
 
 pub struct Angle {
 pub mut:
-	yaw f32
 	pitch f32
+	yaw f32
 	roll f32
 }
 
@@ -86,8 +86,8 @@ pub fn op_vec(withVal f32) Vec3 {
 }
 
 
-pub fn new_angle<T>(x T, y T, z T) Vec3 {
-	return Angle{ yaw: f32(x), pitch: f32(y), roll: f32(z) }
+pub fn new_angle<T>(x T, y T, z T) Angle {
+	return Angle{ pitch: f32(x), yaw: f32(y), roll: f32(z) }
 }
 
 pub fn new_vec3<T>(x T, y T, z T) Vec3 {

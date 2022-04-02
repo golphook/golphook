@@ -8,8 +8,8 @@ pub const db = Offsets{}
 
 struct Offset_sigs {
 pub:
-	dw_entity_list  u32 [json: dwEntityList]
-	dw_force_attack u32 [json: dwForceAttack]
+	entity_list  u32 [json: dwEntityList]
+	force_attack u32 [json: dwForceAttack]
 }
 
 struct Offset_nets {
@@ -26,6 +26,7 @@ pub:
 	m_team_num u32 [json: m_iTeamNum]
 	m_bone_matrix u32 [json: m_dwBoneMatrix]
 	m_flags u32 [json: m_fFlags]
+	m_in_reload u32 [json: m_bInReload]
 }
 
 struct Offsets {

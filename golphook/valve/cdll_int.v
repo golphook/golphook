@@ -30,6 +30,7 @@ type P_get_app_id = fn () int
 type P_get_local_player = fn () int
 type P_get_player_info = fn (int, &PlayerInfo) bool
 type P_get_screen_size = fn (&int, &int)
+type P_set_view_angle = fn(&utils.Angle)
 
 pub fn (mut i IVEngineClient) execute_client_cmd(text string) {
 	o_fn_add := utils.get_virtual(i, 108)
@@ -83,6 +84,13 @@ pub fn (mut i IVEngineClient) get_screen_size(withOutWidth &int, withOutHeight &
 
 	o_fn := &P_get_screen_size(o_fn_add)
 	o_fn(withOutWidth, withOutHeight)
+}
+
+pub fn (mut i IVEngineClient) set_view_angle(withAngle &utils.Angle) {
+	o_fn_add := utils.get_virtual(i, 19)
+
+	o_fn := &P_set_view_angle(o_fn_add)
+	o_fn(withAngle)
 }
 
 struct IBaseClientDLL {}
