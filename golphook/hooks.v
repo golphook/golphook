@@ -32,8 +32,6 @@ pub mut:
 
 fn (mut h Hooks) bootstrap() {
 
-
-
 	if C.MH_Initialize() != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_Initialize()')
 		return
@@ -105,6 +103,7 @@ fn hk_frame_stage_notify(a u32) {
 			app_ctx.on_frame()
 			app_ctx.engine.on_frame()
 			visuals_on_frame()
+			others_on_frame()
 		}
 
 	}

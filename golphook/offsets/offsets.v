@@ -10,6 +10,7 @@ struct Offset_sigs {
 pub:
 	entity_list  u32 [json: dwEntityList]
 	force_attack u32 [json: dwForceAttack]
+	force_jump u32 [json: dwForceJump]
 }
 
 struct Offset_nets {
