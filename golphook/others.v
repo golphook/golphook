@@ -7,7 +7,7 @@ import valve
 pub fn others_on_frame() {
 	bop()
 	kalambite()
-	//kalambite_t()
+	specs()
 }
 
 
@@ -82,4 +82,35 @@ pub fn kalambite() {
 
 	}
 
+}
+
+pub fn specs() {
+	mut app_ctx := unsafe { app() }
+
+	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
+		return (!e.is_alive() && e.team() == ctx.local_player.team()) || e.team() == .specs
+	})
+
+	mut specs_cout := 0
+	for ent in ents {
+
+		mut p_info := valve.PlayerInfo{}
+
+
+		h_observer_target := ent.observer_target()
+		observer_target := &valve.Entity(app_ctx.interfaces.i_entity_list.get_client_entity_handle(h_observer_target))
+		if u32(observer_target) != 0 {
+
+			if voidptr(observer_target) == voidptr(app_ctx.ent_cacher.local_player) {
+				mut rs := app_ctx.interfaces.cdll_int.get_player_info(app_ctx.ent_cacher.get_id(ent), &p_info)
+				if !rs {
+					return
+				}
+				specs_cout++
+				app_ctx.rnd_queue.push(new_text(utils.new_vec2(16 + specs_cout*10, 4).vec_3(), p_info.player_name(), 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+			}
+
+		}
+	}
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2(16, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
 }

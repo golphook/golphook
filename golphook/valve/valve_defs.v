@@ -87,3 +87,32 @@ pub enum ItemDefinitionIndex {
     glove_specialist = 5034
     glove_hydra = 5035
 }
+
+pub enum Teams {
+	no_team = 0
+	specs
+	terrorists
+	counter_terrorists
+}
+
+pub enum LifeState {
+	alive = 0
+	dying
+	dead
+	respawnable
+	discard_body
+}
+
+enum MoveType {
+	movetype_none = 0
+	movetype_isometric
+	movetype_walk
+	movetype_step
+	movetype_fly
+	movetype_flygravity
+	movetype_vphysics
+	movetype_push
+	movetype_noclip
+	movetype_ladder
+	movetype_observer	
+}

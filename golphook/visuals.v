@@ -9,11 +9,9 @@ pub fn visuals_on_frame() {
 		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant()
 	})
 	for ent in ents {
-		id := app_ctx.ent_cacher.get_id(ent)
 		visuals_name(ent)
 		visuals_box(ent)
 		visuals_snapline(ent)
-		//visuals_bones_id(ent)
 	}
 	visuals_watermark()
 	indicators()

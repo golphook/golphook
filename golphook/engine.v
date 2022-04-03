@@ -33,6 +33,11 @@ pub mut:
 fn (mut e Engine) on_frame() {
 	mut app_ctx := unsafe { app() }
 	e.do_a_shoot = false
+	e.fov = 20
+
+	if app_ctx.ent_cacher.local_player.is_scoped() {
+		e.fov *= 2
+	}
 
 	if (C.GetAsyncKeyState(0x43) & 1) == 1 {
 		e.do_force_bone = !e.do_force_bone
@@ -40,6 +45,7 @@ fn (mut e Engine) on_frame() {
 	}
 
 	if C.GetAsyncKeyState(0x5) > 1 {
+
 		e.do_a_shoot = true
 		e.targeted_entities.clear()
 		e.collect_targeted_ents()

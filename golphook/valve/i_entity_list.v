@@ -31,7 +31,7 @@ pub fn (mut i IEntityList) get_client_entity(atIndex int) voidptr {
 pub fn (mut i IEntityList) get_client_entity_handle(withHandle u32) voidptr {
 	o_fn_add := utils.get_virtual(i, 4)
 
-	// to test if load_this(i) is needed here also
+	C.load_this(i)
 
 	o_fn := &P_get_client_entity_handle(o_fn_add)
 	return o_fn(withHandle)

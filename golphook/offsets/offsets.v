@@ -38,6 +38,10 @@ pub:
 	m_fallback_wear u32 [json: m_flFallbackWear]
 	m_active_weapon u32 [json: m_hActiveWeapon]
 	m_view_model u32 [json: m_hViewModel]
+	m_is_scoped u32 [json: m_bIsScoped]
+	//m_iShotsFired u32 [json: m_iShotsFired]
+	m_move_type u32 [json: m_MoveType]
+	m_observer_target u32 [json: m_hObserverTarget]
 }
 
 struct Offsets {
