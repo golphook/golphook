@@ -1,6 +1,7 @@
 module golphook
 
 import utils
+import math
 
 struct Line {
 	from_pos utils.Vec3
@@ -128,6 +129,30 @@ pub fn (r &Rectangle) draw() {
 
 pub fn new_rectangle(atPos utils.Vec3, withHeight f32, withWidth f32, withThickness f32, withOutlineThickness f32, andColor utils.Color) &Rectangle {
 	return &Rectangle { pos: atPos, height: withHeight, width: withWidth, thickness: withThickness, outline_thickness: withOutlineThickness, color: andColor }
+}
+
+
+struct Circle {
+	at_pos utils.Vec3
+	thickness f32
+	radius f32
+	color utils.Color
+}
+
+pub fn (c &Circle) draw() {
+	mut app_ctx := unsafe { app() }
+	for i := f32(1); i <= 360; i += 10 {
+		mut x := f32(i + 10)
+		mut from := utils.new_vec2( c.at_pos.x + ( c.radius * math.cosf( i * math.pi / 180 ) ), c.at_pos.y + ( c.radius * math.sinf( i* math.pi / 180 ) ) )
+		mut to := utils.new_vec2( c.at_pos.x + ( c.radius * math.cosf( x * math.pi / 180 ) ) , c.at_pos.y + ( c.radius * math.sinf( x* math.pi / 180 ) ) )
+		unsafe {
+			app_ctx.d3d.line.draw(from.vec_3(), to.vec_3(), c.thickness, c.color)
+		}
+	}
+}
+
+pub fn new_circle(atPos utils.Vec3, withThickness f32, withRadius f32, andColor utils.Color) &Circle {
+	return &Circle {at_pos: atPos, thickness: withThickness, radius: withRadius, color: andColor}
 }
 
 interface Drawable {

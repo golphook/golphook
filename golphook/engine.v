@@ -27,7 +27,7 @@ pub mut:
 	bones []int = [0, 8, 9, 6, 5]
 	pref_bone int = 8
 	force_bone int = 5
-	fov int = 20
+	fov f32 = 20
 }
 
 fn (mut e Engine) on_frame() {

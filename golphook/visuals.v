@@ -16,6 +16,8 @@ pub fn visuals_on_frame() {
 		//visuals_bones_id(ent)
 	}
 	visuals_watermark()
+	indicators()
+	fov_circle()
 }
 
 
@@ -191,4 +193,28 @@ pub fn calculate_box(withEnt &valve.Entity, andZOffset f32) ?(utils.Vec3, f32, f
 	box_width := box_height / 1.7
 
 	return screen_pos, box_height, box_width
+}
+
+pub fn fov_circle() {
+	mut app_ctx := unsafe { app() }
+	app_ctx.rnd_queue.push(new_circle(utils.new_vec2(app_ctx.wnd_width / 2, app_ctx.wnd_height / 2).vec_3(), 1, f32(app_ctx.engine.fov), utils.color_rbga(255, 142, 68, 173)))
+}
+
+pub fn indicators() {
+	mut app_ctx := unsafe { app() }
+
+	mut indicators_cnt := 0
+
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20), (app_ctx.wnd_width / 2)).vec_3(), "Fov: ${f32(app_ctx.engine.fov / 10)}", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+
+	if app_ctx.engine.do_a_shoot {
+		indicators_cnt++
+		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "Automatic fire", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+	}
+
+	if app_ctx.engine.do_force_bone {
+		indicators_cnt++
+		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "Force body", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+	}
+
 }
