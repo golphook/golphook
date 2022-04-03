@@ -1,5 +1,5 @@
 {
-  "timestamp": 1648978277,
+  "timestamp": 1648983494,
   "signatures": {
     "anim_overlays": 10640,
     "clientstate_choked_commands": 19760,
@@ -46,7 +46,7 @@
     "dwZoomSensitivityRatioPtr": 14426544,
     "dwbSendPackets": 890226,
     "dwppDirect3DDevice9": 675920,
-    "find_hud_element": 704532720,
+    "find_hud_element": 708137200,
     "force_update_spectator_glow": 3913738,
     "interface_engine_cvar": 256492,
     "is_c4_owner": 3967120,
@@ -118,7 +118,6 @@
     "m_hOwner": 10716,
     "m_hOwnerEntity": 332,
     "m_hViewModel": 13064,
-    "m_hViewModel2": 13064,
     "m_iAccountID": 12248,
     "m_iClip1": 12916,
     "m_iCompetitiveRanking": 6788,

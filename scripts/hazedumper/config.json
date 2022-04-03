@@ -1029,6 +1029,11 @@
       "prop": "m_nModelIndex",
       "table": "DT_BaseEntity"
     },
+    {
+      "name": "m_iViewModelIndex",
+      "prop": "m_iViewModelIndex",
+      "table": "DT_BaseCombatWeapon"
+    },
 	{
       "name": "m_nViewModelIndex",
       "prop": "m_nViewModelIndex",
