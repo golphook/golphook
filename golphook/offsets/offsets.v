@@ -28,6 +28,16 @@ pub:
 	m_bone_matrix u32 [json: m_dwBoneMatrix]
 	m_flags u32 [json: m_fFlags]
 	m_in_reload u32 [json: m_bInReload]
+	m_my_weapons u32 [json: m_hMyWeapons]
+	m_item_definition_index u32 [json: m_iItemDefinitionIndex]
+	m_model_index u32 [json: m_nModelIndex]
+	m_view_model_index u32 [json: m_iViewModelIndex]
+	m_entity_quality u32 [json: m_iEntityQuality]
+	m_item_id_high u32 [json: m_iItemIDHigh]
+	m_fallback_paint_kit u32 [json: m_nFallbackPaintKit]
+	m_fallback_wear u32 [json: m_flFallbackWear]
+	m_active_weapon u32 [json: m_hActiveWeapon]
+	m_view_model u32 [json: m_hViewModel]
 }
 
 struct Offsets {

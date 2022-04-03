@@ -86,3 +86,16 @@ pub fn (e &Entity) flags() int {
 pub fn (e &Entity) in_reload() bool {
 	return *(utils.get_val_offset<bool>(e, offsets.db.netvars.m_in_reload))
 }
+
+pub fn (e &Entity) weapons(withWeaponIndex u32 , andOffset u32) u32 {
+	return *(utils.get_val_offset<u32>(e, offsets.db.netvars.m_my_weapons + withWeaponIndex * andOffset))
+}
+
+pub fn (e &Entity) active_weapon() u32 {
+	return *(utils.get_val_offset<u32>(e, offsets.db.netvars.m_active_weapon))
+}
+
+pub fn (e &Entity) viewmodel() u32 {
+	es := *(utils.get_val_offset<u32>(e, offsets.db.netvars.m_view_model))
+	return es
+}

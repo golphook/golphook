@@ -12,6 +12,7 @@ pub mut:
 	i_base_client &valve.IBaseClientDLL = 0
 	i_entity_list &valve.IEntityList = 0
 	i_debug_overlay &valve.IVDebugOverlay = 0
+	i_model_info &valve.IVModelInfo = 0
 }
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
@@ -43,4 +44,7 @@ fn (mut i Interfaces) bootstrap() {
 	utils.pront('i_entity_list -> ${voidptr(i.i_entity_list).str()}')
 	i.i_debug_overlay = i.get_interface<valve.IVDebugOverlay>("VDebugOverlay004", "engine.dll")
 	utils.pront('i_debug_overlay -> ${voidptr(i.i_debug_overlay).str()}')
+	i.i_model_info = i.get_interface<valve.IVModelInfo>("VModelInfoClient004", "engine.dll")
+	utils.pront('i_model_info -> ${voidptr(i.i_model_info).str()}')
+
 }
