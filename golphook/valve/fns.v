@@ -8,6 +8,9 @@ type P_con_msg = fn (&char)
 
 [unsafe]
 pub fn msg_c(withColor utils.Color, text string) {
+
+	// TODO: ici memory leak a cause de color = 
+
 	color := &withColor
 
 	mut static fn_add := voidptr(0)

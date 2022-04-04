@@ -112,5 +112,7 @@ pub fn specs() {
 
 		}
 	}
-	app_ctx.rnd_queue.push(new_text(utils.new_vec2(16, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+	if specs_cout != 0 {
+		app_ctx.rnd_queue.push(new_text(utils.new_vec2(16, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+	}
 }
