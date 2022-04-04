@@ -17,8 +17,14 @@ pub fn (l &Line) draw() {
 	}
 }
 
-pub fn new_line(fromPos utils.Vec3, toPos utils.Vec3, withThickness f32, andColor utils.Color) &Line {
-	return &Line {from_pos: fromPos, to_pos: toPos, thickness: withThickness, color: andColor}
+fn (l &Line) free() {
+	unsafe {
+		free(l)
+	}
+}
+
+pub fn new_line(fromPos utils.Vec3, toPos utils.Vec3, withThickness f32, andColor utils.Color) Line {
+	return Line {from_pos: fromPos, to_pos: toPos, thickness: withThickness, color: andColor}
 }
 
 struct Text {
@@ -37,8 +43,15 @@ pub fn (t &Text) draw() {
 	}
 }
 
-pub fn new_text(atPos utils.Vec3, withContent string, withFontSize u16, withTextFormatFlags int, andColor utils.Color) &Text {
-	return &Text {pos: atPos, content: withContent, color: andColor, font_size:withFontSize, format_falgs: u32(withTextFormatFlags)}
+fn (t &Text) free() {
+	unsafe {
+		t.content.free()
+		free(t)
+	}
+}
+
+pub fn new_text(atPos utils.Vec3, withContent string, withFontSize u16, withTextFormatFlags int, andColor utils.Color) Text {
+	return Text {pos: atPos, content: withContent, color: andColor, font_size:withFontSize, format_falgs: u32(withTextFormatFlags)}
 }
 
 struct Rectangle {
@@ -127,8 +140,14 @@ pub fn (r &Rectangle) draw() {
 
 }
 
-pub fn new_rectangle(atPos utils.Vec3, withHeight f32, withWidth f32, withThickness f32, withOutlineThickness f32, andColor utils.Color) &Rectangle {
-	return &Rectangle { pos: atPos, height: withHeight, width: withWidth, thickness: withThickness, outline_thickness: withOutlineThickness, color: andColor }
+fn (r &Rectangle) free() {
+	unsafe {
+		free(r)
+	}
+}
+
+pub fn new_rectangle(atPos utils.Vec3, withHeight f32, withWidth f32, withThickness f32, withOutlineThickness f32, andColor utils.Color) Rectangle {
+	return Rectangle { pos: atPos, height: withHeight, width: withWidth, thickness: withThickness, outline_thickness: withOutlineThickness, color: andColor }
 }
 
 
@@ -151,10 +170,17 @@ pub fn (c &Circle) draw() {
 	}
 }
 
-pub fn new_circle(atPos utils.Vec3, withThickness f32, withRadius f32, andColor utils.Color) &Circle {
-	return &Circle {at_pos: atPos, thickness: withThickness, radius: withRadius, color: andColor}
+fn (c &Circle) free() {
+	unsafe {
+		free(c)
+	}
+}
+
+pub fn new_circle(atPos utils.Vec3, withThickness f32, withRadius f32, andColor utils.Color) Circle {
+	return Circle {at_pos: atPos, thickness: withThickness, radius: withRadius, color: andColor}
 }
 
 interface Drawable {
 	draw()
+	free()
 }
