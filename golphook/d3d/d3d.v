@@ -22,7 +22,7 @@ pub fn (d D3d9Font) draw_text(withText string, withPos utils.Vec3, withTextForma
 	rect.top = int(withPos.x)
 	rect.left = int(withPos.y)
 
-	h_res := utils.h_res(o_fn(d.i_dxfont, voidptr(0), &char(withText.str), -1, &rect, withTextFormat, andColor.hex()))
+	h_res := utils.h_res(o_fn(d.i_dxfont, voidptr(0), &char(withText.str), -1, &rect, withTextFormat, andColor.rgba()))
 
 	return h_res.bool()
 }
@@ -72,7 +72,7 @@ pub fn (d D3d9line) draw(atPos utils.Vec3, toPos utils.Vec3, withWidth f32, andC
 		return false
 	}
 
-	h_res := utils.h_res(o_fn(d.i_dxline, &dx_vec_2_vertex, 2, andColor.hex()))
+	h_res := utils.h_res(o_fn(d.i_dxline, &dx_vec_2_vertex, 2, andColor.rgba()))
 	return h_res.bool()
 
 }

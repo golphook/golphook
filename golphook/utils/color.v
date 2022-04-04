@@ -1,45 +1,67 @@
 module utils
 
+pub struct ColorRgbaF {
+mut:
+	r f32
+	g f32
+	b f32
+	a f32
+}
+
 struct ColorRgba {
 mut:
-	a byte = 255
-	b byte
-	g byte
 	r byte
+	g byte
+	b byte
+	a byte
+
 }
 
 union Color {
 	ColorRgba
 mut:
-	hex u32
+	rgba u32
 }
 
 // Get methods to avoid using unsafe to access union in the code
 
 [inline]
-pub fn (c Color) r() byte {
+pub fn (c &Color) r() byte {
 	return unsafe { c.r }
 }
 
 [inline]
-pub fn (c Color) g() byte {
+pub fn (c &Color) g() byte {
 	return unsafe { c.g }
 }
 
 [inline]
-pub fn (c Color) b() byte {
+pub fn (c &Color) b() byte {
 	return unsafe { c.b }
 }
 
 [inline]
-pub fn (c Color) a() byte {
+pub fn (c &Color) a() byte {
 	return unsafe { c.a }
 }
 
 [inline]
-pub fn (c Color) hex() u32 {
-	return unsafe { c.hex }
+pub fn (c &Color) rgba() u32 {
+	return unsafe { c.rgba }
 }
+
+[inline]
+pub fn (c &Color) rgbaf() ColorRgbaF {
+
+	mut r_ := f32(c.r()) / 255.0
+	mut g_ := f32(c.g()) / 255.0
+	mut b_ := f32(c.b()) / 255.0
+	mut a_ := f32(c.a()) / 255.0
+
+	return ColorRgbaF{r: r_, g: g_, b: b_, a: a_}
+}
+
+
 
 pub fn color_rbga<T>(r_ T, g_ T, b_ T, a_ T) Color {
 	return Color{ColorRgba: ColorRgba{r:byte(r_), g:byte(g_), b:byte(b_), a:byte(a_)}}
@@ -50,5 +72,6 @@ pub fn color_f_rbga<T>(r_ T, g_ T, b_ T, a_ T) Color {
 }
 
 pub fn color_hex(withHex u32) Color {
-	return Color{hex: withHex}
+	no := Color{rgba: withHex}
+	return Color{ColorRgba: ColorRgba{r:no.a(), g:no.r(), b:no.g(), a:no.b()}}
 }
