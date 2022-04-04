@@ -11,6 +11,7 @@ pub:
 	entity_list  u32 [json: dwEntityList]
 	force_attack u32 [json: dwForceAttack]
 	force_jump u32 [json: dwForceJump]
+	glow_object_manager u32 [json: dwGlowObjectManager]
 }
 
 struct Offset_nets {
@@ -42,6 +43,7 @@ pub:
 	//m_iShotsFired u32 [json: m_iShotsFired]
 	m_move_type u32 [json: m_MoveType]
 	m_observer_target u32 [json: m_hObserverTarget]
+	glow_index u32 [json: m_iGlowIndex]
 }
 
 struct Offsets {

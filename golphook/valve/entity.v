@@ -98,3 +98,7 @@ pub fn (e &Entity) viewmodel() u32 {
 pub fn (e &Entity) observer_target() u32 {
 	return *(utils.get_val_offset<u32>(e, offsets.db.netvars.m_observer_target))
 }
+
+pub fn (e &Entity) glow_index() int {
+	return *(utils.get_val_offset<int>(e, offsets.db.netvars.glow_index))
+}
