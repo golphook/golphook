@@ -12,7 +12,7 @@ pub mut:
 }
 
 [inline]
-pub fn (v Vec2) vec_3() Vec3 {
+pub fn (v &Vec2) vec_3() Vec3 {
 	return Vec3 {x: v.x, y: v.y, z:0.0}
 }
 
@@ -24,7 +24,7 @@ pub mut:
 }
 
 [inline]
-pub fn (a Angle) vec_3() Vec3 {
+pub fn (a &Angle) vec_3() Vec3 {
 	return Vec3 {x: a.yaw, y: a.pitch, z: a.roll}
 }
 
@@ -36,14 +36,20 @@ pub mut:
 }
 
 [inline]
-pub fn (v Vec3) vec_2() Vec2 {
+pub fn (v &Vec3) vec_2() Vec2 {
 	return Vec2{x: v.x, y: v.y}
 }
 
 [inline]
-pub fn (v Vec3) angle() Angle {
+pub fn (v &Vec3) angle() Angle {
 	return Angle{yaw: v.x, pitch: v.y, roll: v.z}
 }
+
+[inline]
+pub fn (v &Vec3) lenght_sqr() f32 {
+	return f32((v.x * v.x) + (v.y * v.y) + (v.z * v.z))
+}
+
 
 [inline]
 pub fn (l &Vec3) + (r &Vec3) Vec3 {
@@ -66,12 +72,12 @@ pub fn (l &Vec3) / (r &Vec3) Vec3 {
 }
 
 [inline]
-pub fn (l Vec3) == (r Vec3) bool {
+pub fn (l &Vec3) == (r &Vec3) bool {
 	return l.x == r.x && l.y == r.y && l.z == r.z
 }
 
 [inline]
-pub fn (l Vec3) < (r Vec3) bool {
+pub fn (l &Vec3) < (r &Vec3) bool {
 	return l.x < r.x && l.y < r.y && l.z < r.z
 }
 
