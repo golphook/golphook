@@ -24,3 +24,9 @@ pub fn error_critical(withError string, andErrorComplement string) {
 		//panic(err_msg)
 	}
 }
+
+pub fn client_error(withError string) {
+
+	C.MessageBoxA(0, &char(withError.str), c'[golphook] error', u32(C.MB_OK | C.MB_ICONERROR))
+
+}
