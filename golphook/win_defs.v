@@ -39,7 +39,6 @@ fn C.Module32FirstW(C.HANDLE, voidptr) bool
 fn C.Module32NextW(C.HANDLE, voidptr) bool
 
 fn C.GetCurrentProcessId() u32
-
 // minhook defs
 
 fn C.MH_Initialize() int

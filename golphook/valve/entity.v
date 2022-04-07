@@ -3,12 +3,7 @@ module valve
 import utils
 import offsets
 
-
-
-
-struct Entity {
-
-}
+struct Entity {}
 
 pub fn (e &Entity) dormant() bool {
 	return *(utils.get_val_offset<bool>(e, offsets.db.netvars.m_dormant))

@@ -27,13 +27,13 @@ pub mut:
 	bones []int = [0, 8, 9, 6, 5]
 	pref_bone int = 8
 	force_bone int = 5
-	fov f32 = 20
+	fov f32 = 60
 }
 
 fn (mut e Engine) on_frame() {
 	mut app_ctx := unsafe { app() }
 	e.do_a_shoot = false
-	e.fov = 20
+	e.fov = 60
 
 	if app_ctx.ent_cacher.local_player.is_scoped() {
 		e.fov *= 2

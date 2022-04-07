@@ -28,6 +28,7 @@ pub mut:
 	frame_stage_notify HookEntry<O_frame_stage_notify>
 	end_scene HookEntry<O_end_scene>
 	reset HookEntry<O_reset>
+	wnd_proc HookEntry<O_end_scene>
 }
 
 fn (mut h Hooks) bootstrap() {
@@ -65,7 +66,6 @@ fn (mut h Hooks) bootstrap() {
 		hooked: &hk_end_scene
 	}
 	h.end_scene.hook()
-
 
 	if C.MH_EnableHook(C.MH_ALL_HOOKS) != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_EnableHook()')
