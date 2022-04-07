@@ -38,7 +38,7 @@ fn (mut e Engine) on_frame() {
 	e.fov = app_ctx.config.active_config.fov
 
 	if app_ctx.ent_cacher.local_player.is_scoped() {
-		e.fov *= 2
+		e.adjust_fov_by_zoom()
 	}
 
 	if (C.GetAsyncKeyState(0x43) & 1) == 1 {
@@ -118,6 +118,16 @@ pub fn can_shoot() bool {
 		return weapon.next_primary_attack() <= app_ctx.interfaces.c_global_vars.curtime
 	}
 	return false
+}
+
+pub fn (mut e Engine) adjust_fov_by_zoom() {
+	mut app_ctx := unsafe { app() }
+
+	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.active_weapon())
+	if int(prob_weapon) != 0 {
+		weapon := &valve.Weapon(prob_weapon)
+		e.fov *= (weapon.zoom_level() + 1)
+	}
 }
 
 
