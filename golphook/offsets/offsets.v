@@ -13,6 +13,7 @@ pub:
 	force_jump u32 [json: dwForceJump]
 	glow_object_manager u32 [json: dwGlowObjectManager]
 	m_dormant u32 [json: m_bDormant]
+	global_vars u32 [json: dwGlobalVars]
 }
 
 struct Offset_nets {
@@ -45,6 +46,13 @@ pub:
 	m_observer_target u32 [json: m_hObserverTarget]
 	glow_index u32 [json: m_iGlowIndex]
 	spotted_by_mask u32 [json: m_bSpottedByMask]
+	postpone_fire_ready_time u32 [json: m_flPostponeFireReadyTime]
+	last_shot_time u32 [json: m_fLastShotTime]
+	next_attack u32 [json: m_flNextAttack]
+	owner_entity u32 [json: m_hOwnerEntity]
+	next_primary_attack u32 [json: m_flNextPrimaryAttack]
+	tick_base u32 [json: m_nTickBase]
+	clip1 u32 [json: m_iClip1]
 }
 
 struct Offsets {

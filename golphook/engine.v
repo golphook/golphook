@@ -43,12 +43,14 @@ fn (mut e Engine) on_frame() {
 
 	if (C.GetAsyncKeyState(0x43) & 1) == 1 {
 		e.do_force_bone = !e.do_force_bone
-		utils.pront("$e.do_force_bone")
 	}
 
 	if C.GetAsyncKeyState(0x5) > 1 {
 
 		e.do_a_shoot = true
+		if !can_shoot() {
+			return
+		}
 		e.targeted_entities.clear()
 		e.collect_targeted_ents()
 
@@ -99,6 +101,23 @@ fn (e &Engine) is_in_fov(bone_pos_on_screen &utils.Vec3) (bool, f32) {
 		return true, f32(c)
 	}
 	return false, f32(c)
+}
+
+pub fn can_shoot() bool {
+	mut app_ctx := unsafe { app() }
+
+	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.active_weapon())
+	if int(prob_weapon) != 0 {
+		weapon := &valve.Weapon(prob_weapon)
+		if weapon.in_reload() || weapon.clip1() <= 0 {
+			return false
+		}
+		if app_ctx.ent_cacher.local_player.next_attack() > app_ctx.interfaces.c_global_vars.curtime {
+			return false
+		}
+		return weapon.next_primary_attack() <= app_ctx.interfaces.c_global_vars.curtime
+	}
+	return false
 }
 
 

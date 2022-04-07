@@ -3,6 +3,42 @@ module valve
 import utils
 import offsets
 
+struct Weapon {}
+
+
+pub fn (w &Weapon) in_reload() bool {
+	return *(utils.get_val_offset<bool>(w, offsets.db.netvars.m_in_reload))
+}
+
+pub fn (w &Weapon) owner_entity() u32 {
+	return *(utils.get_val_offset<u32>(w, offsets.db.netvars.owner_entity))
+}
+
+
+pub fn (w &Weapon) zoom_level() int {
+	return *(utils.get_val_offset<int>(w, offsets.db.netvars.m_zoom_level))
+}
+
+pub fn (w &Weapon) postpone_fire_ready_time() f32 {
+	return *(utils.get_val_offset<f32>(w, offsets.db.netvars.postpone_fire_ready_time))
+}
+
+pub fn (w &Weapon) last_shot_time() f32 {
+	return *(utils.get_val_offset<f32>(w, offsets.db.netvars.last_shot_time))
+}
+
+pub fn (w &Weapon) next_primary_attack() f32 {
+	return *(utils.get_val_offset<f32>(w, offsets.db.netvars.next_primary_attack))
+}
+
+pub fn (w &Weapon) clip1() int {
+	return *(utils.get_val_offset<int>(w, offsets.db.netvars.clip1))
+}
+
+
+
+
+
 struct Entity {}
 
 pub fn (e &Entity) dormant() bool {
@@ -65,10 +101,6 @@ pub fn (e &Entity) flags() int {
 	return *(utils.get_val_offset<int>(e, offsets.db.netvars.m_flags))
 }
 
-pub fn (e &Entity) in_reload() bool {
-	return *(utils.get_val_offset<bool>(e, offsets.db.netvars.m_in_reload))
-}
-
 pub fn (e &Entity) move_type() int {
 	return *(utils.get_val_offset<int>(e, offsets.db.netvars.m_move_type))
 }
@@ -100,4 +132,12 @@ pub fn (e &Entity) glow_index() int {
 
 pub fn (e &Entity) spotted_by_mask() int {
 	return *(utils.get_val_offset<int>(e, offsets.db.netvars.spotted_by_mask))
+}
+
+pub fn (e &Entity) next_attack() f32 {
+	return *(utils.get_val_offset<f32>(e, offsets.db.netvars.next_attack))
+}
+
+pub fn (e &Entity) tick_base() int {
+	return *(utils.get_val_offset<int>(e, offsets.db.netvars.tick_base))
 }

@@ -1,5 +1,5 @@
 {
-  "timestamp": 1648983494,
+  "timestamp": 1649339465,
   "signatures": {
     "anim_overlays": 10640,
     "clientstate_choked_commands": 19760,
@@ -46,7 +46,7 @@
     "dwZoomSensitivityRatioPtr": 14426544,
     "dwbSendPackets": 890226,
     "dwppDirect3DDevice9": 675920,
-    "find_hud_element": 708137200,
+    "find_hud_element": 663310576,
     "force_update_spectator_glow": 3913738,
     "interface_engine_cvar": 256492,
     "is_c4_owner": 3967120,
@@ -96,6 +96,7 @@
     "m_dwBoneMatrix": 9896,
     "m_fAccuracyPenalty": 13120,
     "m_fFlags": 260,
+    "m_fLastShotTime": 13240,
     "m_flC4Blow": 10656,
     "m_flCustomAutoExposureMax": 2528,
     "m_flCustomAutoExposureMin": 2524,
@@ -109,6 +110,7 @@
     "m_flLowerBodyYawTarget": 39644,
     "m_flNextAttack": 11648,
     "m_flNextPrimaryAttack": 12872,
+    "m_flPostponeFireReadyTime": 13148,
     "m_flSimulationTime": 616,
     "m_flTimerLength": 10660,
     "m_hActiveWeapon": 12040,

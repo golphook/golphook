@@ -1034,6 +1034,16 @@
       "prop": "m_iViewModelIndex",
       "table": "DT_BaseCombatWeapon"
     },
+    {
+      "name": "m_flPostponeFireReadyTime",
+      "prop": "m_flPostponeFireReadyTime",
+      "table": "DT_WeaponCSBase"
+    },
+    {
+      "name": "m_fLastShotTime",
+      "prop": "m_fLastShotTime",
+      "table": "DT_WeaponCSBase"
+    },
 	{
       "name": "m_nViewModelIndex",
       "prop": "m_nViewModelIndex",

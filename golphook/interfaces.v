@@ -2,6 +2,7 @@ module golphook
 
 import golphook.valve
 import golphook.utils
+import offsets
 
 type P_create_interface = fn (&char, int) voidptr
 
@@ -14,6 +15,7 @@ pub mut:
 	i_debug_overlay &valve.IVDebugOverlay = 0
 	i_model_info &valve.IVModelInfo = 0
 	//i_engine_trace &valve.IEngineTrace = 0
+	c_global_vars &valve.CGlobalVarsBase = 0
 }
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
@@ -35,6 +37,8 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 }
 
 fn (mut i Interfaces) bootstrap() {
+	mut app_ctx := unsafe { app() }
+
 	i.cdll_int = i.get_interface<valve.IVEngineClient>('VEngineClient014', 'engine.dll')
 	utils.pront('cdll_int -> ${voidptr(i.cdll_int).str()}')
 	i.i_cvar = i.get_interface<valve.ICvar>('VEngineCvar007', 'vstdlib.dll')
@@ -49,5 +53,9 @@ fn (mut i Interfaces) bootstrap() {
 	utils.pront('i_model_info -> ${voidptr(i.i_model_info).str()}')
 	// i.i_engine_trace = i.get_interface<valve.IEngineTrace>("EngineTraceClient004", "engine.dll")
 	// utils.pront('i_engine_trace -> ${voidptr(i.i_engine_trace).str()}')
+
+	mut device_scan := utils.patter_scan("client.dll", "A1 ? ? ? ? 5E 8B 40 10") or { panic("$err") }
+	i.c_global_vars = **(&&&valve.CGlobalVarsBase(voidptr(usize(device_scan) + 1)))
+	utils.pront('c_global_vars -> ${voidptr(i.c_global_vars).str()}')
 
 }
