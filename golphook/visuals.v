@@ -7,7 +7,7 @@ import offsets
 pub fn visuals_on_frame() {
 	mut app_ctx := unsafe { app() }
 	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
-		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant()
+		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant() == false
 	})
 	for ent in ents {
 		if app_ctx.config.active_config.glow {
@@ -64,7 +64,7 @@ pub fn visuals_name(ent &valve.Entity) {
 		return
 	}
 
-	text := p_info.player_name()
+	mut text := p_info.player_name()
 
 	mut font := 12
 	mut text_size := f32( (font * text.len)) * 0.57

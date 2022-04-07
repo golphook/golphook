@@ -12,6 +12,7 @@ pub:
 	force_attack u32 [json: dwForceAttack]
 	force_jump u32 [json: dwForceJump]
 	glow_object_manager u32 [json: dwGlowObjectManager]
+	m_dormant u32 [json: m_bDormant]
 }
 
 struct Offset_nets {
@@ -19,7 +20,6 @@ pub:
 	m_zoom_level      u32 [json: m_zoomLevel]
 	m_vec_view_offset u32 [json: m_vecViewOffset]
 	m_health u32 [json: m_iHealth]
-	m_dormant u32 [json: m_bDormant]
 	m_life_tate u32 [json: m_lifeState]
 	m_vec_origin u32 [json: m_vecOrigin]
 	m_view_punch_angle u32 [json: m_viewPunchAngle]

@@ -6,7 +6,7 @@ import offsets
 struct Entity {}
 
 pub fn (e &Entity) dormant() bool {
-	return *(utils.get_val_offset<bool>(e, offsets.db.netvars.m_dormant))
+	return *(utils.get_val_offset<bool>(e, offsets.db.signatures.m_dormant))
 }
 
 pub fn (e &Entity) health() int {
