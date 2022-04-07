@@ -97,3 +97,7 @@ pub fn (e &Entity) observer_target() u32 {
 pub fn (e &Entity) glow_index() int {
 	return *(utils.get_val_offset<int>(e, offsets.db.netvars.glow_index))
 }
+
+pub fn (e &Entity) spotted_by_mask() int {
+	return *(utils.get_val_offset<int>(e, offsets.db.netvars.spotted_by_mask))
+}

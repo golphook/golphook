@@ -12,6 +12,7 @@ struct EntityCacher {
 pub mut:
 	cache shared []EntityEntry
 	local_player &valve.Entity = 0
+	local_player_id int
 }
 
 pub fn (mut e EntityCacher) on_frame() {
@@ -25,6 +26,7 @@ pub fn (mut e EntityCacher) on_frame() {
 		if ent_idx == app_ctx.interfaces.cdll_int.get_local_player() {
 			p_ent := app_ctx.interfaces.i_entity_list.get_client_entity(ent_idx)
 			e.local_player = p_ent
+			e.local_player_id = ent_idx
 			continue
 		}
 

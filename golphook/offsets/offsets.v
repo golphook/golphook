@@ -44,6 +44,7 @@ pub:
 	m_move_type u32 [json: m_MoveType]
 	m_observer_target u32 [json: m_hObserverTarget]
 	glow_index u32 [json: m_iGlowIndex]
+	spotted_by_mask u32 [json: m_bSpottedByMask]
 }
 
 struct Offsets {

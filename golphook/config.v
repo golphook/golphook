@@ -18,20 +18,20 @@ pub mut:
 	spectator_color utils.Color = utils.color_rbga(255,255,255,255)
 	// visuals
 	glow bool = true
-	glow_color_if_visible utils.Color = utils.color_rbga(236, 240, 241, 100)
-	glow_color_if_not_visible utils.Color  = utils.color_rbga(1,1,1,255)
+	glow_color_if_visible utils.Color = utils.color_rbga(236, 240, 241, 255)
+	glow_color_if_not_visible utils.Color  = utils.color_rbga(236, 0, 241 ,255)
 
 	box bool = true
 	box_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
-	box_color_if_not_visible utils.Color  = utils.color_rbga(1,1,1,255)
+	box_color_if_not_visible utils.Color  = utils.color_rbga(236, 240, 241,255)
 
 	names bool = true
 	names_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
-	names_color_if_not_visible utils.Color = utils.color_rbga(1,1,1,255)
+	names_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241,255)
 
 	snapline bool = true
-	snapline_color_if_visible utils.Color = utils.color_rbga(255,255,255,255)
-	snapline_color_if_not_visible utils.Color = utils.color_rbga(1,1,1,255)
+	snapline_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
+	snapline_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241,255)
 
 	watermark bool = true
 	watermark_color utils.Color = utils.color_rbga(236, 240, 241,255)
