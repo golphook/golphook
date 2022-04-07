@@ -24,16 +24,18 @@ pub mut:
 	do_force_bone bool
 	targeted_entities []TargetedEntity
 
-	bones []int = [0, 8, 9, 6, 5]
-	pref_bone int = 8
-	force_bone int = 5
-	fov f32 = 60
+	fov f32
 }
 
 fn (mut e Engine) on_frame() {
 	mut app_ctx := unsafe { app() }
+
+	if !app_ctx.config.active_config.engine  {
+		return
+	}
+
 	e.do_a_shoot = false
-	e.fov = 60
+	e.fov = app_ctx.config.active_config.fov
 
 	if app_ctx.ent_cacher.local_player.is_scoped() {
 		e.fov *= 2
@@ -113,7 +115,7 @@ fn (mut e Engine) collect_targeted_ents() {
 		mut bone_screen := utils.new_vec3(0,0,0)
 		mut target := unsafe { TargetedEntity{ent: ent} }
 
-		for b_id in e.bones {
+		for b_id in app_ctx.config.active_config.engine_bones_list {
 			bone_pos = ent.bone(usize(b_id)) or { return }
 
 			if app_ctx.interfaces.i_debug_overlay.screen_pos(bone_pos, bone_screen) == 0 {
@@ -124,11 +126,11 @@ fn (mut e Engine) collect_targeted_ents() {
 				if in_fov {
 					target.bones_on_screen << Bone{id: b_id, pos: bone_screen}
 
-					if bone_screen.z < target.closest_bone.pos.z || b_id == e.force_bone || b_id == e.pref_bone {
-						if target.closest_bone.id != e.pref_bone {
+					if bone_screen.z < target.closest_bone.pos.z || b_id == app_ctx.config.active_config.engine_force_bone_id || b_id == app_ctx.config.active_config.engine_pref_bone_id {
+						if target.closest_bone.id != app_ctx.config.active_config.engine_pref_bone_id {
 							target.closest_bone = target.bones_on_screen.last(	)
 						}
-						if target.closest_bone.id != e.force_bone && e.do_force_bone {
+						if target.closest_bone.id != app_ctx.config.active_config.engine_force_bone_id && e.do_force_bone {
 							target.closest_bone = target.bones_on_screen.last(	)
 						}
 					}

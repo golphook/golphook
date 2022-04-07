@@ -22,6 +22,7 @@ pub mut:
 	d3d &d3d.D3d9 = 0
 	rnd_queue &RenderQueue = 0
 	ent_cacher &EntityCacher = 0
+	config &ConfigManager = 0
 
 	engine &Engine = 0
 
@@ -46,6 +47,10 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 	offsets.load()
 	//utils.pront("-- ${offsets.db.netvars.m_vec_view_offset == 264}")
+
+	a.config = &ConfigManager{}
+	a.config.bootstrap()
+
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()
 

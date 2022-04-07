@@ -5,9 +5,20 @@ import offsets
 import valve
 
 pub fn others_on_frame() {
-	bop()
-	kalambite()
-	specs()
+	mut app_ctx := unsafe { app() }
+
+	if app_ctx.config.active_config.bop {
+		bop()
+	}
+
+	if app_ctx.config.active_config.knife_changer {
+		kalambite()
+	}
+
+	if app_ctx.config.active_config.spectator {
+		specs()
+	}
+
 }
 
 
@@ -107,12 +118,12 @@ pub fn specs() {
 					return
 				}
 				specs_cout++
-				app_ctx.rnd_queue.push(new_text(utils.new_vec2(16 + specs_cout*10, 4).vec_3(), p_info.player_name(), 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+				app_ctx.rnd_queue.push(new_text(utils.new_vec2(16 + specs_cout*10, 4).vec_3(), p_info.player_name(), 12, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_color))
 			}
 
 		}
 	}
 	if specs_cout != 0 {
-		app_ctx.rnd_queue.push(new_text(utils.new_vec2(16, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+		app_ctx.rnd_queue.push(new_text(utils.new_vec2(16, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_color))
 	}
 }
