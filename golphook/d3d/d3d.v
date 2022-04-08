@@ -100,9 +100,9 @@ pub mut:
 
 }
 
-pub fn (mut d D3d9) create_font(withFontName string, withFontSize int, withFontWeight u32) {
+pub fn (mut d D3d9) create_font(withFontName string, withNameComplement string, withFontSize int, withFontWeight u32) {
 
-	mut font := D3d9Font{name: withFontName, size: withFontSize}
+	mut font := D3d9Font{name: "$withFontName$withNameComplement", size: withFontSize}
 
 	h_res := utils.h_res(C.D3DXCreateFontA(d.device, withFontSize, 0, withFontWeight, 1, false, C.DEFAULT_CHARSET ,C.OUT_DEFAULT_PRECIS, C.ANTIALIASED_QUALITY, C.DEFAULT_PITCH | C.FF_DONTCARE, &char(withFontName.str), &font.i_dxfont))
 
@@ -140,9 +140,19 @@ pub fn (d D3d9) get_font(withName string, andSize u16) &D3d9Font {
 
 pub fn (mut d D3d9) bootstrap() {
 	d.get_device()
+	// for font_size in 1..20 {
+	// 	d.create_font("Lucida Console", font_size, 500)
+	// }
+
 	for font_size in 1..20 {
-		d.create_font("Lucida Console", font_size, 500)
+		d.create_font("Lucida Console", "", font_size, 100)
 	}
+
+	for font_size in 1..20 {
+		d.create_font("Lucida Console", " bold", font_size, 600)
+	}
+
+
 
 	d.create_line()
 }

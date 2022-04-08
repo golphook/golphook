@@ -30,6 +30,8 @@ pub fn new_line(fromPos utils.Vec3, toPos utils.Vec3, withThickness f32, andColo
 struct Text {
 	pos utils.Vec3
 	content string
+	bold bool
+	shadow bool
 	color utils.Color
 	font_size u16
 	format_falgs u32
@@ -38,7 +40,13 @@ struct Text {
 pub fn (t &Text) draw() {
 	mut app_ctx := unsafe { app() }
 	unsafe {
-		font := app_ctx.d3d.get_font("Lucida Console", t.font_size)
+		mut font := app_ctx.d3d.get_font("Lucida Console", t.font_size)
+		if t.bold {
+			font = app_ctx.d3d.get_font("Lucida Console bold", t.font_size)
+		}
+		if t.shadow {
+			font.draw_text(t.content, t.pos + utils.op_vec(1), t.format_falgs, utils.color_rbga(1,1,1,255))
+		}
 		font.draw_text(t.content, t.pos, t.format_falgs, t.color)
 	}
 }
@@ -50,8 +58,8 @@ fn (t &Text) free() {
 	}
 }
 
-pub fn new_text(atPos utils.Vec3, withContent string, withFontSize u16, withTextFormatFlags int, andColor utils.Color) Text {
-	return Text {pos: atPos, content: withContent, color: andColor, font_size:withFontSize, format_falgs: u32(withTextFormatFlags)}
+pub fn new_text(atPos utils.Vec3, withContent string, withFontSize u16, isBold bool, withShadow bool, withTextFormatFlags int, andColor utils.Color) Text {
+	return Text {pos: atPos, content: withContent, color: andColor, font_size:withFontSize, format_falgs: u32(withTextFormatFlags), bold: isBold, shadow: withShadow}
 }
 
 struct Rectangle {
