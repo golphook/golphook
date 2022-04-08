@@ -33,7 +33,6 @@ fn (mut e Engine) on_frame() {
 	if !app_ctx.config.active_config.engine  {
 		return
 	}
-
 	e.do_a_shoot = false
 	e.fov = app_ctx.config.active_config.fov
 
@@ -62,8 +61,9 @@ fn (mut e Engine) on_frame() {
 					closest_target = ent
 				}
 			}
-			e.aim_at(closest_target)
+
 			mut force_attack := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack)
+			e.aim_at(closest_target)
 			unsafe { *force_attack = 6 }
 		}
 	}
@@ -129,7 +129,6 @@ pub fn (mut e Engine) adjust_fov_by_zoom() {
 		e.fov *= (weapon.zoom_level() + 1)
 	}
 }
-
 
 fn (mut e Engine) collect_targeted_ents() {
 	mut app_ctx := unsafe { app() }

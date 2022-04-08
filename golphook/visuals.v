@@ -40,7 +40,8 @@ pub fn visuals_on_frame() {
 
 pub fn visuals_watermark() {
 	mut app_ctx := unsafe { app() }
-	app_ctx.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v$app_ctx.v_mod.version", 12, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.watermark_color))
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v$app_ctx.v_mod.version", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.watermark_color))
+
 }
 
 pub fn visuals_box(ent &valve.Entity, visible bool) {
@@ -78,6 +79,10 @@ pub fn visuals_name(ent &valve.Entity, visible bool) {
 	}
 	mut text := p_info.player_name()
 
+	if app_ctx.config.active_config.hp {
+		text = "$text (${f32(ent.health())})"
+	}
+
 	mut color := app_ctx.config.active_config.names_color_if_not_visible
 	if visible {
 		color = app_ctx.config.active_config.names_color_if_visible
@@ -96,7 +101,7 @@ pub fn visuals_name(ent &valve.Entity, visible bool) {
 		off = text_size / 2
 	}
 
-	app_ctx.rnd_queue.push(new_text(utils.new_vec2((screen_pos.y - box_height), screen_pos.x - off).vec_3(), text, u16(font), C.DT_LEFT | C.DT_NOCLIP, color))
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2((screen_pos.y - box_height), screen_pos.x - off).vec_3(), text, u16(font), false, false, C.DT_LEFT | C.DT_NOCLIP, color))
 }
 
 pub fn calculate_box(withEnt &valve.Entity, andZOffset f32) ?(utils.Vec3, f32, f32) {
@@ -138,16 +143,16 @@ pub fn indicators() {
 
 	mut indicators_cnt := 0
 
-	app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20), (app_ctx.wnd_width / 2)).vec_3(), "Fov: ${f32(app_ctx.engine.fov / 10)}", 12, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_on))
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20), (app_ctx.wnd_width / 2)).vec_3(), "Fov: ${f32(app_ctx.engine.fov / 10)}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(236, 240, 241, 255)))
 
 	if app_ctx.engine.do_a_shoot {
 		indicators_cnt++
-		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "Automatic fire", 12, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_on))
+		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "Automatic fire", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_on))
 	}
 
 	if app_ctx.engine.do_force_bone {
 		indicators_cnt++
-		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "Force body", 12, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_on))
+		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "Force body", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_on))
 	}
 
 }

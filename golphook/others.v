@@ -118,12 +118,12 @@ pub fn specs() {
 					return
 				}
 				specs_cout++
-				app_ctx.rnd_queue.push(new_text(utils.new_vec2(16 + specs_cout*10, 4).vec_3(), p_info.player_name(), 12, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_color))
+				app_ctx.rnd_queue.push(new_text(utils.new_vec2(20 + specs_cout*10, 4).vec_3(), p_info.player_name(), 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectators_color))
 			}
 
 		}
 	}
 	if specs_cout != 0 {
-		app_ctx.rnd_queue.push(new_text(utils.new_vec2(16, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_color))
+		app_ctx.rnd_queue.push(new_text(utils.new_vec2(20, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_count_color))
 	}
 }

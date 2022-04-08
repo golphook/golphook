@@ -37,8 +37,6 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 }
 
 fn (mut i Interfaces) bootstrap() {
-	mut app_ctx := unsafe { app() }
-
 	i.cdll_int = i.get_interface<valve.IVEngineClient>('VEngineClient014', 'engine.dll')
 	utils.pront('cdll_int -> ${voidptr(i.cdll_int).str()}')
 	i.i_cvar = i.get_interface<valve.ICvar>('VEngineCvar007', 'vstdlib.dll')

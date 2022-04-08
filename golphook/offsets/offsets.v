@@ -14,6 +14,10 @@ pub:
 	glow_object_manager u32 [json: dwGlowObjectManager]
 	m_dormant u32 [json: m_bDormant]
 	global_vars u32 [json: dwGlobalVars]
+	force_backward u32 [json: dwForceBackward]
+	force_forward u32 [json: dwForceForward]
+	force_left u32 [json: dwForceLeft]
+	force_right u32 [json: dwForceRight]
 }
 
 struct Offset_nets {
@@ -53,6 +57,7 @@ pub:
 	next_primary_attack u32 [json: m_flNextPrimaryAttack]
 	tick_base u32 [json: m_nTickBase]
 	clip1 u32 [json: m_iClip1]
+	velocity u32 [json: m_vecVelocity]
 }
 
 struct Offsets {

@@ -1,6 +1,7 @@
 module golphook
 
 import utils
+import valve
 
 type O_frame_stage_notify = fn (u32)
 type O_end_scene = fn (voidptr) bool

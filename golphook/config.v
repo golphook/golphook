@@ -15,17 +15,19 @@ pub mut:
 	bop bool = true
 
 	spectator bool = true
-	spectator_color utils.Color = utils.color_rbga(255,255,255,255)
+	spectator_count_color utils.Color = utils.color_rbga(108, 92, 231, 255)
+	spectators_color utils.Color = utils.color_rbga(255,255,255,255)
 	// visuals
 	glow bool = true
-	glow_color_if_visible utils.Color = utils.color_rbga(236, 240, 241, 255)
-	glow_color_if_not_visible utils.Color  = utils.color_rbga(236, 0, 241 ,255)
+	glow_color_if_visible utils.Color = utils.color_rbga(236, 240, 241, 130)
+	glow_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241, 130)
 
 	box bool = true
 	box_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
 	box_color_if_not_visible utils.Color  = utils.color_rbga(236, 240, 241,255)
 
 	names bool = true
+	hp bool = true
 	names_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
 	names_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241,255)
 
@@ -37,7 +39,7 @@ pub mut:
 	watermark_color utils.Color = utils.color_rbga(236, 240, 241,255)
 
 	indicator bool = true
-	indicator_color_if_on utils.Color = utils.color_rbga(255,255,255,255)
+	indicator_color_if_on utils.Color = utils.color_rbga(108, 92, 231, 255)
 	indicator_color_if_off utils.Color  = utils.color_rbga(1,1,1,255)
 
 	fov_circle bool = true

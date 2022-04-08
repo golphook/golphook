@@ -141,3 +141,7 @@ pub fn (e &Entity) next_attack() f32 {
 pub fn (e &Entity) tick_base() int {
 	return *(utils.get_val_offset<int>(e, offsets.db.netvars.tick_base))
 }
+
+pub fn (e &Entity) velocity() utils.Vec3 {
+	return *(utils.get_val_offset<utils.Vec3>(e, offsets.db.netvars.velocity))
+}
