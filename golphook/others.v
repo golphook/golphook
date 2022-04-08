@@ -31,6 +31,10 @@ pub fn bop() {
 	}
 }
 
+// karambit 507 v_knife_karam.mdl
+// m9 508 v_knife_m9_bay.mdl
+// butterfly 515 v_knife_butterfly.mdl
+
 pub fn kalambite() {
 
 	mut app_ctx := unsafe { app() }
@@ -39,6 +43,8 @@ pub fn kalambite() {
 	if !local_player.is_alive() {
 		return
 	}
+
+	knife_id, knife_model_name := get_knife_data(app_ctx.config.active_config.knife_type)
 
 	for i in 0..8 {
 
@@ -49,17 +55,17 @@ pub fn kalambite() {
 		if current_weapon_id == 0 { continue }
 		cs_current_weapon_id := valve.ItemDefinitionIndex(current_weapon_id)
 
-		if cs_current_weapon_id == .weapon_knife || cs_current_weapon_id == .weapon_knife_t || int(cs_current_weapon_id) == 507 {
-			karambit_model_index := u32(app_ctx.interfaces.i_model_info.get_model_index("models/weapons/v_knife_karam.mdl"))
-
+		if cs_current_weapon_id == .weapon_knife || cs_current_weapon_id == .weapon_knife_t || int(cs_current_weapon_id) == knife_id {
+			knife_model_index := u32(app_ctx.interfaces.i_model_info.get_model_index("models/weapons/$knife_model_name"))
+			C.printf(c"%u \n", knife_model_index)
 			mut item_def_inde := (&i16(current_weapon + offsets.db.netvars.m_item_definition_index))
-			unsafe { *item_def_inde = 507 }
+			unsafe { *item_def_inde = i16(knife_id) }
 
 			mut model_index := (&u32(current_weapon + offsets.db.netvars.m_model_index))
-			unsafe { *model_index = karambit_model_index }
+			unsafe { *model_index = knife_model_index }
 
 			mut view_model_index := (&u32(current_weapon + offsets.db.netvars.m_view_model_index))
-			unsafe { *view_model_index = karambit_model_index }
+			unsafe { *view_model_index = knife_model_index }
 
 			mut ent_quality := (&int(current_weapon + offsets.db.netvars.m_entity_quality))
 			unsafe { *ent_quality = 7 }
@@ -79,14 +85,14 @@ pub fn kalambite() {
 			if active_weapon == 0 { continue }
 
 			mut active_weapon_id := *(&i16(active_weapon + offsets.db.netvars.m_item_definition_index))
-			if active_weapon_id != 507 { continue }
+			if active_weapon_id != knife_id { continue }
 
 			mut active_view_model := local_player.viewmodel() & 0xFFF
 			active_view_model = *(&u32(usize(app_ctx.h_client) + usize(offsets.db.signatures.entity_list) + usize(active_view_model - 1) * 0x10))
 			if active_view_model == 0 { continue }
 
 			mut set := &u32(active_view_model + offsets.db.netvars.m_model_index)
-			unsafe { *set = karambit_model_index }
+			unsafe { *set = knife_model_index }
 
 
 		}

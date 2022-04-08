@@ -4,13 +4,22 @@ import utils
 import json
 import encoding.base64
 
+fn get_knife_data(knife_id int) (int, string) {
+	match knife_id {
+		0 { return 507, "v_knife_karam.mdl" }
+		1 { return 508, "v_knife_m9_bay.mdl" }
+		2 { return 515, "v_knife_butterfly.mdl" }
+		else { return 507, "v_knife_karam.mdl" }
+	}
+}
+
 struct Config {
 pub:
 	name string = "default"
 pub mut:
 	// others
 	knife_changer bool = true
-	knife_type int // not implemented
+	knife_type int = 2
 
 	bop bool = true
 
