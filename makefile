@@ -17,7 +17,7 @@ build-debug:
 debug-c:
 	$(move_to_temp) v $(cc) -g -shared -autofree -o $(bin_folder)\$(project_name)-debug.c $(temp_project_path)  $(move_back)
 debug-cp:
-	$(move_to_temp) v $(cc) -prod -shared -o $(bin_folder)\$(project_name)-debug.c $(temp_project_path)  $(move_back)
+	$(move_to_temp) v $(cc) -prod -autofree -shared -o $(bin_folder)\$(project_name)-debug_p.c $(temp_project_path)  $(move_back)
 fmt:
 	$(move_to_temp) v fmt -w . $(move_back)
 

@@ -24,6 +24,9 @@ pub fn visuals_on_frame() {
 		if app_ctx.config.active_config.snapline {
 			visuals_snapline(ent, is_visible)
 		}
+		if app_ctx.config.active_config.radar {
+			visuals_radar(ent)
+		}
 	}
 
 	if app_ctx.config.active_config.watermark {
@@ -179,7 +182,14 @@ pub fn visuals_glow(ent &valve.Entity, visible bool) {
 	mut glow_colorf := &utils.ColorRgbaF(glow_object_manager + usize(glow_index * 0x38) + 0x8)
 	unsafe { *glow_colorf = color.rgbaf()}
 	mut render_when_ocluded := &bool(glow_object_manager + usize(glow_index * 0x38) + 0x27)
-	unsafe { *render_when_ocluded = true }
+	unsafe { *render_when_ocluded = false }
 	mut render_when_unocluded := &bool(glow_object_manager + usize(glow_index * 0x38) + 0x28)
 	unsafe { *render_when_unocluded = true }
+}
+
+pub fn visuals_radar(ent &valve.Entity) {
+	mut app_ctx := unsafe { app() }
+
+	mut spotted := ent.spotted()
+	unsafe { *spotted = true }
 }

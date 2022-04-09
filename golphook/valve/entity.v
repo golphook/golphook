@@ -145,3 +145,7 @@ pub fn (e &Entity) tick_base() int {
 pub fn (e &Entity) velocity() utils.Vec3 {
 	return *(utils.get_val_offset<utils.Vec3>(e, offsets.db.netvars.velocity))
 }
+
+pub fn (e &Entity) spotted() &bool {
+	return utils.get_val_offset<bool>(e, offsets.db.netvars.spotted)
+}

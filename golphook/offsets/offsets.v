@@ -58,6 +58,7 @@ pub:
 	tick_base u32 [json: m_nTickBase]
 	clip1 u32 [json: m_iClip1]
 	velocity u32 [json: m_vecVelocity]
+	spotted u32 [json: m_bSpotted]
 }
 
 struct Offsets {

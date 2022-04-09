@@ -15,3 +15,13 @@
 // 	off = 0
 
 // }
+
+prod
+  -m32  /F 16777216 /O2 /MD /DNDEBUG /LD  kernel32.lib user32.lib advapi32.lib dbghelp.lib advapi32.lib d3d9.lib d3dx9.lib minhook.lib /link /NOLOGO  /DEBUG:FULL
+
+debug:
+  -m32 /F 16777216 /MDd /D_DEBUG /Zi /Fd/LD  kernel32.lib user32.lib advapi32.lib dbghelp.lib advapi32.lib d3d9.lib d3dx9.lib minhook.lib /link /NOLOGO /DEBUG:FULL
+
+no -g
+  -m32 -w /we4013 /volatile:ms /Fo /F 16777216 /MD /DNDEBUG /LD  kernel32.lib user32.lib advapi32.lib dbghelp.lib advapi32.lib d3d9.lib d3dx9.lib minhook.lib /link /NOLOGO  /DEBUG:FULL
+/OPT:REF /OPT:ICF /INCREMENTAL:NO

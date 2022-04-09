@@ -44,6 +44,8 @@ pub mut:
 	snapline_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
 	snapline_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241,255)
 
+	radar bool = true
+
 	watermark bool = true
 	watermark_color utils.Color = utils.color_rbga(236, 240, 241,255)
 

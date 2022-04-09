@@ -149,6 +149,7 @@ fn (mut m Menu) render() {
 	}
 	m.item_bool("glow", mut &app_ctx.config.active_config.glow)
 	m.item_bool("snapline", mut &app_ctx.config.active_config.snapline)
+	m.item_bool("radar", mut &app_ctx.config.active_config.radar)
 
 	m.tab()
 	m.sep("misc")
