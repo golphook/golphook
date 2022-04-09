@@ -56,7 +56,7 @@ pub mut:
 
 	// engine
 
-	engine bool = false
+	engine bool = true
 	fov f32 = 20
 	engine_bones_list []int = [0, 8, 9, 6, 5]
 	engine_force_bone_id u32 = 5

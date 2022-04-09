@@ -7,9 +7,9 @@ struct Menu {
 pub mut:
 	is_open bool
 	base_menu_pos utils.Vec3 = utils.new_vec2(37, 280).vec_3()
-	items_count int = 0
-	tab_items_count int = 0
-	selected int = 0
+	items_count int
+	tab_items_count int
+	selected int
 
 	should_change bool
 	should_increment bool
@@ -177,7 +177,6 @@ fn (mut m Menu) render() {
 
 
 fn (mut m Menu) on_send_scene() {
-	mut app_ctx := unsafe { app() }
 
 	if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
 		m.is_open = !m.is_open
