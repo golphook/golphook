@@ -57,7 +57,6 @@ pub fn kalambite() {
 
 		if cs_current_weapon_id == .weapon_knife || cs_current_weapon_id == .weapon_knife_t || int(cs_current_weapon_id) == knife_id {
 			knife_model_index := u32(app_ctx.interfaces.i_model_info.get_model_index("models/weapons/$knife_model_name"))
-			C.printf(c"%u \n", knife_model_index)
 			mut item_def_inde := (&i16(current_weapon + offsets.db.netvars.m_item_definition_index))
 			unsafe { *item_def_inde = i16(knife_id) }
 

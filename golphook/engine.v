@@ -40,11 +40,11 @@ fn (mut e Engine) on_frame() {
 		e.adjust_fov_by_zoom()
 	}
 
-	if (C.GetAsyncKeyState(0x43) & 1) == 1 {
+	if (C.GetAsyncKeyState(app_ctx.config.active_config.engine_force_bone_key) & 1) == 1 {
 		e.do_force_bone = !e.do_force_bone
 	}
 
-	if C.GetAsyncKeyState(0x5) > 1 {
+	if C.GetAsyncKeyState(app_ctx.config.active_config.engine_automatic_fire_key) > 1 {
 
 		e.do_a_shoot = true
 		if !can_shoot() {
