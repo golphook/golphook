@@ -12,7 +12,7 @@ fn hello(h_mod voidptr) {
 	C.Beep(670, 667)
 
 	for {
-		if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
+		if (C.GetAsyncKeyState(C.VK_END) & 1) == 1 {
 			ctx.is_ok = false
 			ctx.release()
 		}

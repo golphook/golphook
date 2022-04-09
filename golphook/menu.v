@@ -108,12 +108,12 @@ fn (mut m Menu) handle_keys() {
 	m.should_change = false
 	m.should_increment = false
 	m.should_decrement = false
-	if (C.GetAsyncKeyState(C.VK_PRIOR) & 1) == 1 {
+	if (C.GetAsyncKeyState(C.VK_UP) & 1) == 1 {
 		if m.selected != 0 {
 			m.selected--
 		}
 	}
-	if (C.GetAsyncKeyState(C.VK_NEXT) & 1) == 1 {
+	if (C.GetAsyncKeyState(C.VK_DOWN) & 1) == 1 {
 
 		if m.selected < m.items_count - 1 {
 			m.selected++
@@ -179,7 +179,7 @@ fn (mut m Menu) render() {
 fn (mut m Menu) on_send_scene() {
 	mut app_ctx := unsafe { app() }
 
-	if (C.GetAsyncKeyState(C.VK_HOME) & 1) == 1 {
+	if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
 		m.is_open = !m.is_open
 	}
 
