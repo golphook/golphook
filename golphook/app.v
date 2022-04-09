@@ -23,8 +23,8 @@ pub mut:
 	rnd_queue &RenderQueue = 0
 	ent_cacher &EntityCacher = 0
 	config &ConfigManager = 0
-
 	engine &Engine = 0
+	menu &Menu = 0
 
 	is_ok bool
 }
@@ -53,6 +53,8 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()
+
+	a.menu = &Menu{}
 
 	a.d3d = &d3d.D3d9{}
 	a.d3d.bootstrap()
