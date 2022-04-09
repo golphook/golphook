@@ -135,11 +135,20 @@ pub fn check_ent_visible_by_mask(ent &valve.Entity) bool {
 
 pub fn fov_circle() {
 	mut app_ctx := unsafe { app() }
+
+	if !app_ctx.ent_cacher.local_player.is_alive() {
+		return
+	}
+
 	app_ctx.rnd_queue.push(new_circle(utils.new_vec2(app_ctx.wnd_width / 2, app_ctx.wnd_height / 2).vec_3(), 1, f32(app_ctx.engine.fov), app_ctx.config.active_config.fov_circle_color))
 }
 
 pub fn indicators() {
 	mut app_ctx := unsafe { app() }
+
+	if !app_ctx.ent_cacher.local_player.is_alive() {
+		return
+	}
 
 	mut indicators_cnt := 0
 
