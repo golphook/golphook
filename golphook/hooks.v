@@ -128,6 +128,7 @@ fn hk_end_scene(dev voidptr) bool {
 
 	if app_ctx.is_ok {
 
+		app_ctx.menu.on_send_scene()
 		app_ctx.rnd_queue.draw_queue()
 
 	}
