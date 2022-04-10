@@ -2,6 +2,7 @@ module golphook
 
 import utils
 import math
+import clipboard
 
 struct Menu {
 pub mut:
@@ -104,6 +105,20 @@ fn (mut m Menu) tab() {
 	m.tab_items_count = m.items_count
 }
 
+fn (mut m Menu) item_callback(name string , callback fn (&App)) {
+	mut color := utils.color_rbga(255,255,255,255)
+	if m.selected == m.items_count {
+		color = utils.color_rbga(108, 92, 231, 255)
+	}
+
+	if m.should_change && m.selected == m.items_count {
+		mut app_ctx := unsafe { app() }
+		callback(app_ctx)
+	}
+
+	new_text(m.relative_menu_pos + utils.new_vec2(m.relative_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "$name", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, color).draw()
+	m.items_count++
+}
 fn (mut m Menu) handle_keys() {
 	m.should_change = false
 	m.should_increment = false
@@ -168,6 +183,20 @@ fn (mut m Menu) render() {
 	m.item_i<f32>("fov", mut &app_ctx.config.active_config.fov, 1, 0, 300)
 	m.item_pair<u32>("as key", mut &app_ctx.config.active_config.engine_automatic_fire_key, [{u32(0x5): "mouse 4"}, {u32(0x01): "mouse 1"}, {u32(0x12): "alt"}, {u32(0x06): "mouse 5"}])
 	m.item_pair<u32>("fb key", mut &app_ctx.config.active_config.engine_force_bone_key, [{u32(0x58): "X"}, {u32(0x43): "C"}, {u32(0x42): "B"}, {u32(0x5): "mouse 4"}, {u32(0x06): "mouse 5"}, {u32(0x41): "mouse 5"}])
+
+	m.tab()
+	m.sep("config")
+
+	m.item_callback("import", fn (mut app_ctx &App) {
+		mut c := clipboard.new()
+		app_ctx.config.load(c.get_text())
+	})
+	m.item_callback("export", fn (mut app_ctx &App) {
+		mut c := clipboard.new()
+		exported_cfg := app_ctx.config.export()
+		unsafe { utils.msg_c(utils.color_rbga(108, 92, 231, 255), exported_cfg) }
+		c.copy(exported_cfg)
+	})
 
 	m.handle_keys()
 	m.items_count = 0
