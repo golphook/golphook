@@ -31,14 +31,19 @@ pub fn visuals_on_frame() {
 		}
 	}
 
-	if app_ctx.config.active_config.watermark {
-		visuals_watermark()
-	}
 	if app_ctx.config.active_config.indicator {
 		indicators()
 	}
 	if app_ctx.config.active_config.fov_circle {
 		fov_circle()
+	}
+}
+
+pub fn visuals_on_end_scene() {
+	mut app_ctx := unsafe { app() }
+	
+	if app_ctx.config.active_config.watermark {
+		visuals_watermark()
 	}
 }
 

@@ -13,6 +13,8 @@ pub mut:
 	cache shared []EntityEntry
 	local_player &valve.Entity = 0
 	local_player_id int
+
+	abc []&valve.Entity
 }
 
 pub fn (mut e EntityCacher) on_frame() {
