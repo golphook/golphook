@@ -7,6 +7,7 @@ struct Menu {
 pub mut:
 	is_open bool
 	base_menu_pos utils.Vec3 = utils.new_vec2(37, 280).vec_3()
+	relative_menu_pos utils.Vec3
 	items_count int
 	tab_items_count int
 	selected int
@@ -26,8 +27,8 @@ fn (mut m Menu) item_bool(name string ,mut value &bool) {
 		value = !(*value)
 	}
 
-	new_text(m.base_menu_pos + utils.new_vec2(m.base_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "$name:", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, color).draw()
-	new_text(m.base_menu_pos + utils.new_vec2(m.base_menu_pos.x + (m.items_count - m.tab_items_count)*15, 130).vec_3(), "${*value}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)).draw()
+	new_text(m.relative_menu_pos + utils.new_vec2(m.relative_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "$name:", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, color).draw()
+	new_text(m.relative_menu_pos + utils.new_vec2(m.relative_menu_pos.x + (m.items_count - m.tab_items_count)*15, 130).vec_3(), "${*value}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)).draw()
 	m.items_count++
 }
 
@@ -39,7 +40,6 @@ fn (mut m Menu) item_i<T>(name string ,mut value &T, step T, min T ,max T) {
 
 	if m.selected == m.items_count {
 		if m.should_increment {
-			utils.pront("+")
 			if value < max {
 				value = (*value) + step
 			}
@@ -51,8 +51,8 @@ fn (mut m Menu) item_i<T>(name string ,mut value &T, step T, min T ,max T) {
 		}
 	}
 
-	new_text(m.base_menu_pos + utils.new_vec2(m.base_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "$name:", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, color).draw()
-	new_text(m.base_menu_pos + utils.new_vec2(m.base_menu_pos.x + (m.items_count - m.tab_items_count)*15, 130).vec_3(), "${f32(*value)}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)).draw()
+	new_text(m.relative_menu_pos + utils.new_vec2(m.relative_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "$name:", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, color).draw()
+	new_text(m.relative_menu_pos + utils.new_vec2(m.relative_menu_pos.x + (m.items_count - m.tab_items_count)*15, 130).vec_3(), "${f32(*value)}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)).draw()
 	m.items_count++
 }
 
@@ -88,19 +88,19 @@ fn (mut m Menu) item_pair<T>(name string ,mut value &T, pairs []map[u32]string) 
 
 	value = new.keys()[0]
 
-	new_text(m.base_menu_pos + utils.new_vec2(m.base_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "$name:", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, color).draw()
-	new_text(m.base_menu_pos + utils.new_vec2(m.base_menu_pos.x + (m.items_count - m.tab_items_count)*15, 130).vec_3(), "${new[new.keys()[0]]}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)).draw()
+	new_text(m.relative_menu_pos + utils.new_vec2(m.relative_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "$name:", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, color).draw()
+	new_text(m.relative_menu_pos + utils.new_vec2(m.relative_menu_pos.x + (m.items_count - m.tab_items_count)*15, 130).vec_3(), "${new[new.keys()[0]]}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)).draw()
 	m.items_count++
 }
 
 fn (mut m Menu) sep(name string) {
-	new_text(m.base_menu_pos + utils.new_vec2(m.base_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "- $name", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)).draw()
-	m.base_menu_pos.x += 8
+	new_text(m.relative_menu_pos + utils.new_vec2(m.relative_menu_pos.x + (m.items_count - m.tab_items_count)*15, 0).vec_3(), "- $name", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)).draw()
+	m.relative_menu_pos.x += 8
 }
 
 fn (mut m Menu) tab() {
-	m.base_menu_pos.y += 200
-	m.base_menu_pos.x = 37
+	m.relative_menu_pos.y += 200
+	m.relative_menu_pos.x = m.base_menu_pos.x
 	m.tab_items_count = m.items_count
 }
 
@@ -138,7 +138,7 @@ fn (mut m Menu) handle_keys() {
 fn (mut m Menu) render() {
 	mut app_ctx := unsafe { app() }
 
-	old := m.base_menu_pos
+	old := m.relative_menu_pos
 
 	m.sep("esp")
 
@@ -172,19 +172,28 @@ fn (mut m Menu) render() {
 	m.handle_keys()
 	m.items_count = 0
 	m.tab_items_count = 0
-	m.base_menu_pos = old
+	m.relative_menu_pos = old
 
 }
 
 
 fn (mut m Menu) on_send_scene() {
-
+	mut app_ctx := unsafe { app() }
 	if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
 		m.is_open = !m.is_open
+	}
+	m.relative_menu_pos = m.base_menu_pos
+	mut save := m.base_menu_pos
+	if !(app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected()) {
+		m.base_menu_pos.y += 570
+		m.base_menu_pos.x -= 11
+		m.relative_menu_pos = m.base_menu_pos
 	}
 
 	if m.is_open {
 
 		m.render()
 	}
+
+	m.base_menu_pos = save
 }
