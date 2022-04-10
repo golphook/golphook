@@ -166,8 +166,8 @@ fn (mut m Menu) render() {
 	m.sep("engine")
 	m.item_bool("engine", mut &app_ctx.config.active_config.engine)
 	m.item_i<f32>("fov", mut &app_ctx.config.active_config.fov, 1, 0, 300)
-	m.item_pair<u32>("as key", mut &app_ctx.config.active_config.engine_automatic_fire_key, [{u32(0x5): "mouse 4"}, {u32(0x01): "mouse 1"}])
-	m.item_pair<u32>("fb key", mut &app_ctx.config.active_config.engine_force_bone_key, [{u32(0x58): "X"}, {u32(0x43): "C"}, {u32(0x42): "B"}])
+	m.item_pair<u32>("as key", mut &app_ctx.config.active_config.engine_automatic_fire_key, [{u32(0x5): "mouse 4"}, {u32(0x01): "mouse 1"}, {u32(0x12): "alt"}, {u32(0x06): "mouse 5"}])
+	m.item_pair<u32>("fb key", mut &app_ctx.config.active_config.engine_force_bone_key, [{u32(0x58): "X"}, {u32(0x43): "C"}, {u32(0x42): "B"}, {u32(0x5): "mouse 4"}, {u32(0x06): "mouse 5"}, {u32(0x41): "mouse 5"}])
 
 	m.handle_keys()
 	m.items_count = 0
