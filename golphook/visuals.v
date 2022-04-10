@@ -4,6 +4,8 @@ import valve
 import utils
 import offsets
 
+import strconv
+
 pub fn visuals_on_frame() {
 	mut app_ctx := unsafe { app() }
 	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
@@ -154,8 +156,7 @@ pub fn indicators() {
 	}
 
 	mut indicators_cnt := 0
-
-	app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20), (app_ctx.wnd_width / 2)).vec_3(), "Fov: ${f32(app_ctx.engine.fov / 10)}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(236, 240, 241, 255)))
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20), (app_ctx.wnd_width / 2)).vec_3(), "Fov: ${app_ctx.engine.fov}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(236, 240, 241, 255)))
 
 	if app_ctx.engine.do_a_shoot {
 		indicators_cnt++
@@ -188,8 +189,6 @@ pub fn visuals_glow(ent &valve.Entity, visible bool) {
 }
 
 pub fn visuals_radar(ent &valve.Entity) {
-	mut app_ctx := unsafe { app() }
-
 	mut spotted := ent.spotted()
 	unsafe { *spotted = true }
 }
