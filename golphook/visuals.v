@@ -4,8 +4,6 @@ import valve
 import utils
 import offsets
 
-import strconv
-
 pub fn visuals_on_frame() {
 	mut app_ctx := unsafe { app() }
 	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
@@ -41,7 +39,7 @@ pub fn visuals_on_frame() {
 
 pub fn visuals_on_end_scene() {
 	mut app_ctx := unsafe { app() }
-	
+
 	if app_ctx.config.active_config.watermark {
 		visuals_watermark()
 	}

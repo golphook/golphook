@@ -82,16 +82,29 @@ pub fn (mut c ConfigManager) bootstrap() {
 
 pub fn (mut c ConfigManager) export() string {
 	json := json.encode(c.active_config)
-	return base64.encode_str(json)
+	return json
+	//return base64.encode_str(json)
 }
 
 pub fn (mut c ConfigManager) load(withConfig string) {
-	clear_json := base64.decode_str(withConfig)
-	cfg := json.decode(Config, clear_json) or {
-		utils.client_error("Failed to load config")
+
+	//clear_json := base64.decode_str(withConfig)
+	cfg := json.decode(Config, withConfig) or {
+		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "failed to decode config") }
 		return
 	}
+
+	// for cf in c.configs {
+	// 	if cf.name == cfg.name {
+	// 		utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "Config name already exist")
+	// 	}
+	// }
+
 	c.configs << cfg
+	c.change_to(cfg.name)
+	unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "loaded config: $cfg.name") }
+
+
 }
 
 
