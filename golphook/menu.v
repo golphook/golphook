@@ -159,7 +159,7 @@ fn (mut m Menu) render() {
 	m.item_bool("bop", mut &app_ctx.config.active_config.bop)
 	m.item_bool("knife changer", mut &app_ctx.config.active_config.knife_changer)
 	if app_ctx.config.active_config.knife_changer {
-		m.item_pair<int>("knife", mut &app_ctx.config.active_config.knife_type, [{u32(0): "karambit"}, {u32(1): "m9"}, {u32(2): "butterfly"}])
+		m.item_pair<int>("knife", mut &app_ctx.config.active_config.knife_type, [{u32(0): "karambit"}, {u32(1): "m9"}, {u32(2): "butterfly"}, {u32(3): "flop"}, {u32(4): "gut"}, {u32(5): "bayonet"}])
 	}
 
 	m.tab()
