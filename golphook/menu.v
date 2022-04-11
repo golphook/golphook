@@ -16,6 +16,7 @@ pub mut:
 	selected int
 
 	in_menu bool
+	in_secret_menu_enabled bool
 
 	should_change bool
 	should_increment bool
@@ -180,6 +181,10 @@ fn (mut m Menu) render() {
 	if app_ctx.config.active_config.knife_changer {
 		m.item_pair<int>("knife", mut &app_ctx.config.active_config.knife_type, [{u32(0): "karambit"}, {u32(1): "m9"}, {u32(2): "butterfly"}, {u32(3): "flop"}, {u32(4): "gut"}, {u32(5): "bayonet"}])
 	}
+	if m.in_secret_menu_enabled {
+		m.sep("secret")
+		m.item_bool("killsound", mut &app_ctx.config.active_config.killsound)
+	}
 
 	m.tab()
 	m.sep("engine")
@@ -214,7 +219,13 @@ fn (mut m Menu) on_send_scene() {
 	mut app_ctx := unsafe { app() }
 	if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
 		m.is_open = !m.is_open
+		if C.GetAsyncKeyState(0x4B) > 1 {
+			C.Beep(670, 200)
+			m.in_secret_menu_enabled = !m.in_secret_menu_enabled
+		}
 	}
+
+
 	m.relative_menu_pos = m.base_menu_pos
 	m.in_menu = false
 	mut save := m.base_menu_pos
