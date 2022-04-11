@@ -203,3 +203,32 @@ pub fn visuals_radar(ent &valve.Entity) {
 	mut spotted := ent.spotted()
 	unsafe { *spotted = true }
 }
+
+pub fn visuals_bones_id(ent &valve.Entity) {
+ 	bones := [usize(0), 8, 9, 6, 5]
+ 	mut app_ctx := unsafe { app() }
+ 	for b in bones {
+ 		mut pos := ent.bone(b) or { return }
+		mut _ ,box_height, box_width := calculate_box(ent, (utils.distance_from(app_ctx.ent_cacher.local_player.origin(), ent.origin()) / 57)) or { return }
+ 		mut screen_pos := utils.new_vec3(0,0,0)
+ 		mut res := app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos)
+ 		if res == 0 {
+			dist := utils.distance_from(app_ctx.ent_cacher.local_player.origin(), pos)
+			app_ctx.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "${f32(b)}", u16(10), false, false, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+
+			mut diviser := f32(10)
+
+			match b {
+				0 { diviser = 7 }
+				8 { diviser = 11 }
+				9 { diviser = 10 }
+				6 { diviser = 7 }
+				5 { diviser = 7 }
+				else { diviser = 10 }
+			}
+
+			app_ctx.rnd_queue.push(new_circle(utils.new_vec2(screen_pos.x, screen_pos.y).vec_3(), 1, f32(box_width / diviser), app_ctx.config.active_config.fov_circle_color))
+
+		}
+ 	}
+ }
