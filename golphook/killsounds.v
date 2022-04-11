@@ -75,6 +75,11 @@ fn (mut k KillSound) is_freeze_time() bool {
 
 
 fn (mut k KillSound) on_frame() {
+	mut app_ctx := unsafe { app() }
+	
+	if !app_ctx.config.active_config.killsound {
+		return
+	}
 
 	if k.is_freeze_time() {
 		k.kill_streak = 0
