@@ -2,7 +2,6 @@ module golphook
 import utils
 
 import json
-import encoding.base64
 
 fn get_knife_data(knife_id int) (int, string) {
 	match knife_id {

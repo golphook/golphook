@@ -39,10 +39,18 @@ pub fn visuals_on_frame() {
 
 pub fn visuals_on_end_scene() {
 	mut app_ctx := unsafe { app() }
-
 	if app_ctx.config.active_config.watermark {
 		visuals_watermark()
 	}
+
+	// if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
+	// 	if app_ctx.config.active_config.watermark {
+	// 		visuals_watermark()
+	// 	}
+	// 	if app_ctx.config.active_config.indicator {
+	// 		indicators()
+	// 	}
+	// }
 }
 
 
