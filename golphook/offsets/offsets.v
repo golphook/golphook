@@ -18,6 +18,8 @@ pub:
 	force_forward u32 [json: dwForceForward]
 	force_left u32 [json: dwForceLeft]
 	force_right u32 [json: dwForceRight]
+	player_resource u32 [json: dwPlayerResource]
+	game_rules_proxy u32 [json: dwGameRulesProxy]
 }
 
 struct Offset_nets {
@@ -59,6 +61,13 @@ pub:
 	clip1 u32 [json: m_iClip1]
 	velocity u32 [json: m_vecVelocity]
 	spotted u32 [json: m_bSpotted]
+	kills u32 [json: m_iKills]
+	match_stats_kills_total u32 [json: m_iMatchStats_Kills_Total]
+	match_stats_headshot_kills_total u32 [json: m_iMatchStats_HeadShotKills_Total]
+	match_stats_damage_total u32 [json: m_iMatchStats_Damage_Total]
+	competitive_wins u32 [json: m_iCompetitiveWins]
+
+	freeze_period u32 [json: m_bFreezePeriod]
 }
 
 struct Offsets {

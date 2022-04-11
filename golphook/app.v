@@ -25,6 +25,7 @@ pub mut:
 	config &ConfigManager = 0
 	engine &Engine = 0
 	menu &Menu = 0
+	kill_sound &KillSound = 0
 
 	is_ok bool
 }
@@ -58,6 +59,9 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 	a.d3d = &d3d.D3d9{}
 	a.d3d.bootstrap()
+
+	a.kill_sound = &KillSound{}
+	a.kill_sound.bootstrap()
 
 	a.rnd_queue = &RenderQueue{}
 	a.ent_cacher = &EntityCacher{}

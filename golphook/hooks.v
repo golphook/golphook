@@ -105,6 +105,7 @@ fn hk_frame_stage_notify(a u32) {
 			app_ctx.engine.on_frame()
 			visuals_on_frame()
 			others_on_frame()
+			app_ctx.kill_sound.on_frame()
 		}
 
 	}
@@ -131,7 +132,6 @@ fn hk_end_scene(dev voidptr) bool {
 		app_ctx.menu.on_send_scene()
 		visuals_on_end_scene()
 		app_ctx.rnd_queue.draw_queue()
-
 	}
 
 	unsafe {

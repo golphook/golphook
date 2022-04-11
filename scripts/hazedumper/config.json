@@ -1044,6 +1044,51 @@
       "prop": "m_fLastShotTime",
       "table": "DT_WeaponCSBase"
     },
+    {
+      "name": "m_iKills",
+      "prop": "m_iKills",
+      "table": "DT_CSPlayerResource"
+    },
+    {
+      "name": "m_iKills",
+      "prop": "m_iKills",
+      "table": "DT_CSPlayerResource"
+    },
+    {
+      "name": "m_iCompetitiveRanking",
+      "prop": "m_iCompetitiveRanking",
+      "table": "DT_CSPlayerResource"
+    },
+    {
+      "name": "m_iCompetitiveWins",
+      "prop": "m_iCompetitiveWins",
+      "table": "DT_CSPlayerResource"
+    },
+    {
+      "name": "m_iMatchStats_Kills_Total",
+      "prop": "m_iMatchStats_Kills_Total",
+      "table": "DT_CSPlayerResource"
+    },
+    {
+      "name": "m_iMatchStats_Damage_Total",
+      "prop": "m_iMatchStats_Damage_Total",
+      "table": "DT_CSPlayerResource"
+    },
+    {
+      "name": "m_iMatchStats_HeadShotKills_Total",
+      "prop": "m_iMatchStats_HeadShotKills_Total",
+      "table": "DT_CSPlayerResource"
+    },
+    {
+      "name": "m_totalRoundsPlayed",
+      "prop": "m_totalRoundsPlayed",
+      "table": "DT_CSGameRulesProxy"
+    },
+    {
+      "name": "m_bRoundInProgress",
+      "prop": "m_bRoundInProgress",
+      "table": "DT_CSGameRulesProxy"
+    },
 	{
       "name": "m_nViewModelIndex",
       "prop": "m_nViewModelIndex",
