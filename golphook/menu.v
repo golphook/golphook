@@ -4,6 +4,8 @@ import utils
 import math
 import clipboard
 
+import offsets
+
 struct Menu {
 pub mut:
 	is_open bool
@@ -12,6 +14,8 @@ pub mut:
 	items_count int
 	tab_items_count int
 	selected int
+
+	in_menu bool
 
 	should_change bool
 	should_increment bool
@@ -212,11 +216,13 @@ fn (mut m Menu) on_send_scene() {
 		m.is_open = !m.is_open
 	}
 	m.relative_menu_pos = m.base_menu_pos
+	m.in_menu = false
 	mut save := m.base_menu_pos
 	if !(app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected()) {
 		m.base_menu_pos.y += 570
 		m.base_menu_pos.x -= 11
 		m.relative_menu_pos = m.base_menu_pos
+		m.in_menu = true
 	}
 
 	if m.is_open {
