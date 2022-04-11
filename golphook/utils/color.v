@@ -20,7 +20,7 @@ mut:
 union Color {
 	ColorRgba
 mut:
-	rgba u32
+	rgba u32 [skip]
 }
 
 // Get methods to avoid using unsafe to access union in the code

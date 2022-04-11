@@ -2,6 +2,7 @@ module golphook
 import utils
 
 import json
+import rand
 
 fn get_knife_data(knife_id int) (int, string) {
 	match knife_id {
@@ -16,9 +17,8 @@ fn get_knife_data(knife_id int) (int, string) {
 }
 
 struct Config {
-pub:
-	name string = "default"
 pub mut:
+	name string = "default"
 	// others
 	knife_changer bool = true
 	knife_type int = 2
@@ -28,6 +28,9 @@ pub mut:
 	spectator bool = true
 	spectator_count_color utils.Color = utils.color_rbga(108, 92, 231, 255)
 	spectators_color utils.Color = utils.color_rbga(255,255,255,255)
+
+	killsound bool
+
 	// visuals
 	glow bool = true
 	glow_color_if_visible utils.Color = utils.color_rbga(236, 240, 241, 130)
@@ -63,7 +66,7 @@ pub mut:
 	engine bool = true
 	fov f32 = 15
 	engine_bones_list []int = [0, 8, 9, 6, 5]
-	engine_force_bone_id u32 = 5
+	engine_force_bone_id u32 = 0
 	engine_pref_bone_id u32 = 8
 	engine_automatic_fire_key u32 = 0x5
 	engine_force_bone_key u32 = 0x43
@@ -88,7 +91,7 @@ pub fn (mut c ConfigManager) export() string {
 pub fn (mut c ConfigManager) load(withConfig string) {
 
 	//clear_json := base64.decode_str(withConfig)
-	cfg := json.decode(Config, withConfig) or {
+	mut cfg := json.decode(Config, withConfig) or {
 		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "failed to decode config") }
 		return
 	}
@@ -98,7 +101,7 @@ pub fn (mut c ConfigManager) load(withConfig string) {
 	// 		utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "Config name already exist")
 	// 	}
 	// }
-
+	cfg.name = f32(c.configs.len).str()
 	c.configs << cfg
 	c.change_to(cfg.name)
 	unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "loaded config: $cfg.name") }
