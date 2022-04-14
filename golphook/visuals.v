@@ -86,7 +86,7 @@ pub fn visuals_snapline(ent &valve.Entity, visible bool) {
 
 pub fn visuals_name(ent &valve.Entity, visible bool) {
 	mut app_ctx := unsafe { app() }
-	mut screen_pos ,box_height, box_width := calculate_box(ent, (utils.distance_from(app_ctx.ent_cacher.local_player.origin(), ent.origin()) / 57)) or { return }
+	mut screen_pos ,box_height, box_width := calculate_box(ent, adjust_text_spacing_by_zoom(ent)) or { return }
 
 	mut p_info := valve.PlayerInfo{}
 	rs := app_ctx.interfaces.cdll_int.get_player_info(app_ctx.ent_cacher.get_id(ent), &p_info)
@@ -230,4 +230,22 @@ pub fn visuals_bones_id(ent &valve.Entity) {
 
 		}
  	}
+}
+
+ pub fn adjust_text_spacing_by_zoom(ent &valve.Entity) f32 {
+ 	mut app_ctx := unsafe { app() }
+
+	dist := utils.distance_from(app_ctx.ent_cacher.local_player.origin(), ent.origin())
+
+	if !app_ctx.ent_cacher.local_player.is_scoped() {
+		return dist / 67
+	}
+	mut r := 0
+ 	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.active_weapon())
+ 	if int(prob_weapon) != 0 {
+ 		weapon := &valve.Weapon(prob_weapon)
+ 		r += 67 * (weapon.zoom_level() + 1)
+ 	}
+
+	return dist / r
  }

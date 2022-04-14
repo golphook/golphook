@@ -145,7 +145,7 @@ fn (mut e Engine) collect_targeted_ents() {
 
 		mut bones_list := app_ctx.config.active_config.engine_bones_list
 		if e.do_force_bone {
-			bones_list = b.filter(it == app_ctx.config.active_config.engine_force_bone_id)
+			bones_list = bones_list.filter(it == app_ctx.config.active_config.engine_force_bone_id)
 		}
 
 		for b_id in bones_list {
