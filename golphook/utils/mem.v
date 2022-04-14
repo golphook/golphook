@@ -53,7 +53,7 @@ pub fn patter_scan(inModule string, andSing string) ?voidptr {
 		mut is_match_pattern := true
 		for j in 0..pattern_size {
 			unsafe {
-				if base_addr[i + j] != bytes_patten[j] && bytes_patten[j] != -1 {
+				if base_addr[i + j] != byte(bytes_patten[j]) && bytes_patten[j] != -1 {
 					is_match_pattern = false
 					break
 				}
@@ -72,7 +72,7 @@ pub fn patter_scan(inModule string, andSing string) ?voidptr {
 }
 
 // ne pas passer de voidptr dans T sinon ca fait un &voidptr ce qui est egal a void**
-// alors que si a al palce on passe un usize ca fait usize* 
+// alors que si a al palce on passe un usize ca fait usize*
 pub fn get_val_offset<T>(inThis voidptr, withOffset usize) &T {
 	return unsafe { &T(usize(inThis) + withOffset) }
 }

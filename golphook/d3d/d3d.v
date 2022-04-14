@@ -130,7 +130,7 @@ pub fn (mut d D3d9) get_device() {
 pub fn (d D3d9) get_font(withName string, andSize u16) &D3d9Font {
 	for i in 0..d.fonts.len - 1 {
 		font := &d.fonts[i]
-		if font.name == withName && font.size == andSize {
+		if font.name == withName && font.size == int(andSize) {
 			return unsafe { font }
 		}
 	}
