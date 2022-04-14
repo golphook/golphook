@@ -8,7 +8,7 @@ pub fn others_on_frame() {
 	mut app_ctx := unsafe { app() }
 
 	if app_ctx.config.active_config.bop {
-		bop()
+		unsafe { bop() }
 	}
 
 	if app_ctx.config.active_config.knife_changer {
@@ -21,8 +21,13 @@ pub fn others_on_frame() {
 
 }
 
+[unsafe]
 pub fn bop() {
 	mut app_ctx := unsafe { app() }
+
+	if !app_ctx.ent_cacher.local_player.is_moving() {
+		return
+	}
 
 	if C.GetAsyncKeyState(C.VK_SPACE) > 1 && (app_ctx.ent_cacher.local_player.flags() & (1 << 0) == 1) {
 		mut force_jump := utils.get_val_offset<u32>(app_ctx.h_client, offsets.db.signatures.force_jump)
