@@ -76,8 +76,8 @@ fn (mut k KillSound) is_freeze_time() bool {
 
 fn (mut k KillSound) on_frame() {
 	mut app_ctx := unsafe { app() }
-	
-	if !app_ctx.config.active_config.killsound {
+
+	if !app_ctx.config.active_config.killsound || !app_ctx.menu.in_secret_menu_enabled {
 		return
 	}
 

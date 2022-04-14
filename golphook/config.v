@@ -22,7 +22,7 @@ pub mut:
 	name string = "golp"
 	// others
 	knife_changer bool = true
-	knife_type int = 2
+	knife_type int = 0
 
 	bop bool = true
 
@@ -30,13 +30,13 @@ pub mut:
 	spectator_count_color utils.Color = utils.color_rbga(108, 92, 231, 255)
 	spectators_color utils.Color = utils.color_rbga(255,255,255,255)
 
-	killsound bool
+	killsound bool = true
 
 	viewmodel_override bool = true
-	viewmodel_override_x f32
-	viewmodel_override_y f32
-	viewmodel_override_z f32
-	viewmodel_override_fov f32 = 68.0
+	viewmodel_override_x f32 = 4
+	viewmodel_override_y f32 = 2
+	viewmodel_override_z f32 = -2
+	viewmodel_override_fov f32 = 80
 
 	// visuals
 	glow bool = true
@@ -52,7 +52,7 @@ pub mut:
 	names_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
 	names_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241,255)
 
-	snapline bool = true
+	snapline bool
 	snapline_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
 	snapline_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241,255)
 
