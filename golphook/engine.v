@@ -143,7 +143,12 @@ fn (mut e Engine) collect_targeted_ents() {
 		mut bone_screen := utils.new_vec3(0,0,0)
 		mut target := unsafe { TargetedEntity{ent: ent} }
 
-		for b_id in app_ctx.config.active_config.engine_bones_list {
+		mut bones_list := app_ctx.config.active_config.engine_bones_list
+		if e.do_force_bone {
+			bones_list = b.filter(it == app_ctx.config.active_config.engine_force_bone_id)
+		}
+
+		for b_id in bones_list {
 			bone_pos = ent.bone(usize(b_id)) or { return }
 
 			if app_ctx.interfaces.i_debug_overlay.screen_pos(bone_pos, bone_screen) == 0 {
