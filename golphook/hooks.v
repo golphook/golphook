@@ -7,6 +7,11 @@ type O_frame_stage_notify = fn (u32)
 type O_end_scene = fn (voidptr) bool
 type O_reset = fn (voidptr, voidptr) int
 
+[callconv: "stdcall"]
+type O_set_viewmodel_offets = fn (int, f32, f32, f32) int
+
+type O_get_viewmodel_fov = fn () f32
+
 struct HookEntry<T> {
 pub mut:
 	name          string   [required]
@@ -30,6 +35,8 @@ pub mut:
 	end_scene HookEntry<O_end_scene>
 	reset HookEntry<O_reset>
 	wnd_proc HookEntry<O_end_scene>
+	set_viewmodel_offets HookEntry<O_set_viewmodel_offets>
+	get_viewmodel_fov HookEntry<O_get_viewmodel_fov>
 }
 
 fn (mut h Hooks) bootstrap() {
@@ -67,6 +74,22 @@ fn (mut h Hooks) bootstrap() {
 		hooked: &hk_end_scene
 	}
 	h.end_scene.hook()
+
+	mut set_viewmodel_offets_add := utils.patter_scan("client.dll", "55 8B EC 8B 45 08 F3 0F 7E 45") or { panic("$err") }
+	h.set_viewmodel_offets = HookEntry<O_set_viewmodel_offets>{
+		name: 'SetViewmodelOffsets()'
+		original_addr: set_viewmodel_offets_add
+		hooked: &hk_set_viewmodel_offets
+	}
+	h.set_viewmodel_offets.hook()
+
+	mut get_viewmodel_fov_add := utils.patter_scan("client.dll", "55 8B EC 8B 4D 04 83 EC 08 57") or { panic("$err") }
+	h.get_viewmodel_fov = HookEntry<O_get_viewmodel_fov>{
+		name: 'GetViewModelFov()'
+		original_addr: get_viewmodel_fov_add
+		hooked: &hk_get_viewmodel_fov
+	}
+	h.get_viewmodel_fov.hook()
 
 	if C.MH_EnableHook(C.MH_ALL_HOOKS) != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_EnableHook()')
@@ -167,4 +190,66 @@ fn hk_reset(dev voidptr, params voidptr) int {
 		}
 		return ret
 	}
+}
+
+[unsafe; callconv: "fastcall"]
+fn hk_set_viewmodel_offets(ecx voidptr, edx voidptr, smt int, x f32, y f32, z f32) int {
+
+	mut static is_called_once := false
+	if !is_called_once {
+		is_called_once = true
+		utils.pront('hk_set_viewmodel_offetsl() OK !')
+	}
+
+	mut og_x := x
+	mut og_y := y
+	mut og_z := z
+
+	mut app_ctx := unsafe { app() }
+	if app_ctx.is_ok {
+		if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
+
+			if app_ctx.config.active_config.viewmodel_override {
+				og_x += app_ctx.config.active_config.viewmodel_override_x
+				og_y += app_ctx.config.active_config.viewmodel_override_y
+				og_z += app_ctx.config.active_config.viewmodel_override_z
+			}
+		}
+	}
+
+	unsafe {
+		ofn := &O_set_viewmodel_offets(app().hooks.set_viewmodel_offets.original_save)
+		C.load_this(ecx)
+		return ofn(smt ,og_x, og_y, og_z)
+	}
+}
+
+[unsafe; windows_stdcall]
+fn hk_get_viewmodel_fov() f32 {
+
+	mut static is_called_once := false
+	if !is_called_once {
+		is_called_once = true
+		utils.pront('hk_get_viewmodel_fov() OK !')
+	}
+
+	mut app_ctx := unsafe { app() }
+
+	mut og_viewmodel_fov := f32(0.0)
+
+	unsafe {
+		ofn := &O_get_viewmodel_fov(app().hooks.get_viewmodel_fov.original_save)
+		og_viewmodel_fov = ofn()
+	}
+
+	if app_ctx.is_ok {
+		if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
+			if app_ctx.config.active_config.viewmodel_override {
+				return app_ctx.config.active_config.viewmodel_override_fov
+			}
+		}
+	}
+	// og_viewmodel_fov = 100
+
+	return og_viewmodel_fov
 }

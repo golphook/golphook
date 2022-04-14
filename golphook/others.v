@@ -21,7 +21,6 @@ pub fn others_on_frame() {
 
 }
 
-
 pub fn bop() {
 	mut app_ctx := unsafe { app() }
 
@@ -30,10 +29,6 @@ pub fn bop() {
 		unsafe { *force_jump = 6 }
 	}
 }
-
-// karambit 507 v_knife_karam.mdl
-// m9 508 v_knife_m9_bay.mdl
-// butterfly 515 v_knife_butterfly.mdl
 
 pub fn kalambite() {
 

@@ -149,3 +149,49 @@ pub fn (e &Entity) velocity() utils.Vec3 {
 pub fn (e &Entity) spotted() &bool {
 	return utils.get_val_offset<bool>(e, offsets.db.netvars.spotted)
 }
+
+// mb ca retourne un pointer de vec3
+type P_abs_angle = fn () &utils.Angle
+pub fn (e &Entity) abs_angle() &utils.Angle{
+	o_fn_add := utils.get_virtual(e, 11)
+	o_fn := &P_abs_angle(o_fn_add)
+	C.load_this(e)
+	rs := o_fn()
+	return rs
+}
+
+[callconv: "stdcall"]
+type P_abs_origin = fn () &utils.Vec3
+pub fn (e &Entity) abs_origin() &utils.Vec3 {
+	o_fn_add := utils.get_virtual(e, 10)
+	o_fn := &P_abs_origin(o_fn_add)
+	C.load_this(e)
+	rs := o_fn()
+	return rs
+}
+
+[callconv: "stdcall"]
+type P_set_abs_origin = fn (&utils.Vec3)
+[unsafe]
+pub fn (e &Entity) set_abs_origin (withOrigin utils.Vec3) {
+	mut static ofn := &P_set_abs_origin(0)
+	if int(ofn) == 0 {
+		raw_addr := utils.patter_scan("client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8") or { panic("$err") }
+		ofn = &P_set_abs_origin(raw_addr)
+	}
+	C.load_this(e)
+	ofn(withOrigin)
+}
+
+[callconv: "stdcall"]
+type P_set_abs_angle = fn (&utils.Angle)
+[unsafe]
+pub fn (e &Entity) set_abs_angle(withAngle utils.Angle) {
+	mut static ofn := &P_set_abs_angle(0)
+	if int(ofn) == 0 {
+		raw_addr := utils.patter_scan("client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8") or { panic("$err") }
+		ofn = &P_set_abs_angle(raw_addr)
+	}
+	C.load_this(e)
+	ofn(withAngle)
+}
