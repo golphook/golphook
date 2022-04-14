@@ -234,10 +234,6 @@ fn (mut m Menu) render() {
 	if app_ctx.config.active_config.knife_changer {
 		m.item_pair<int>("knife", mut &app_ctx.config.active_config.knife_type, [{u32(0): "karambit"}, {u32(1): "m9"}, {u32(2): "butterfly"}, {u32(3): "flop"}, {u32(4): "gut"}, {u32(5): "bayonet"}])
 	}
-	if m.in_secret_menu_enabled {
-		m.sep("secret")
-		m.item_bool("killsound", mut &app_ctx.config.active_config.killsound)
-	}
 	m.item_bool("viewmodel", mut &app_ctx.config.active_config.viewmodel_override)
 	if app_ctx.config.active_config.viewmodel_override {
 		m.item_i<f32>("x", mut &app_ctx.config.active_config.viewmodel_override_x, 1, -20, 20)
@@ -245,6 +241,7 @@ fn (mut m Menu) render() {
 		m.item_i<f32>("z", mut &app_ctx.config.active_config.viewmodel_override_z, 1, -20, 20)
 		m.item_i<f32>("fov", mut &app_ctx.config.active_config.viewmodel_override_fov, 1, -200, 200)
 	}
+	m.item_bool("killsound", mut &app_ctx.config.active_config.killsound)
 
 	m.tab()
 	m.sep("engine")
@@ -252,6 +249,10 @@ fn (mut m Menu) render() {
 	m.item_i<f32>("fov", mut &app_ctx.config.active_config.fov, 1, 0, 300)
 	m.item_pair<u32>("as key", mut &app_ctx.config.active_config.engine_automatic_fire_key, [{u32(0x5): "mouse 4"}, {u32(0x01): "mouse 1"}, {u32(0x12): "alt"}, {u32(0x06): "mouse 5"}])
 	m.item_pair<u32>("fb key", mut &app_ctx.config.active_config.engine_force_bone_key, [{u32(0x58): "X"}, {u32(0x43): "C"}, {u32(0x42): "B"}, {u32(0x5): "mouse 4"}, {u32(0x06): "mouse 5"}, {u32(0x41): "mouse 5"}])
+	if m.in_secret_menu_enabled {
+		m.sep("secret")
+		m.item_bool("crossfire", mut &app_ctx.config.active_config.crossfire)
+	}
 
 	m.tab()
 	m.sep("config")
@@ -292,8 +293,8 @@ fn (mut m Menu) on_send_scene() {
 	mut app_ctx := unsafe { app() }
 	if (C.GetAsyncKeyState(C.VK_DELETE) & 1) == 1 {
 		m.is_open = !m.is_open
-		if C.GetAsyncKeyState(0x4B) > 1 {
-			C.Beep(670, 200)
+		if C.GetAsyncKeyState(0x4F) > 1 {
+			C.Beep(670, 100)
 			m.in_secret_menu_enabled = !m.in_secret_menu_enabled
 		}
 	}

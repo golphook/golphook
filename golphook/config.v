@@ -22,7 +22,7 @@ pub mut:
 	name string = "golp"
 	// others
 	knife_changer bool = true
-	knife_type int = 0
+	knife_type int // 0
 
 	bop bool = true
 
@@ -31,6 +31,7 @@ pub mut:
 	spectators_color utils.Color = utils.color_rbga(255,255,255,255)
 
 	killsound bool = true
+	crossfire bool
 
 	viewmodel_override bool = true
 	viewmodel_override_x f32 = 4

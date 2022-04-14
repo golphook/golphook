@@ -43,6 +43,9 @@ fn (k &KillSound) play_sound(withSound string) {
 		"k_four": $embed_file('../ressources/sounds/k_four.wav'),
 		"k_five": $embed_file('../ressources/sounds/k_five.wav'),
 		"hs": $embed_file('../ressources/sounds/hs.wav')
+
+		"woof": $embed_file('../ressources/sounds/woof.wav')
+		"db_woof": $embed_file('../ressources/sounds/db_woof.wav')
 	}
 
 	mut file := sounds[withSound]
@@ -88,10 +91,19 @@ fn (mut k KillSound) on_frame() {
 	if k.get_kill() > k.old_kill {
 		if k.get_kill_hs() > k.old_kill_hs {
 			k.kill_streak++
-			k.play_sound("hs")
+			if app_ctx.config.active_config.crossfire {
+				k.play_sound("hs")
+			} else {
+				k.play_sound("db_woof")
+			}
+
 		} else {
 			k.kill_streak++
-			k.play_sound(get_sound_for_kill(k.kill_streak))
+			if app_ctx.config.active_config.crossfire {
+				k.play_sound(get_sound_for_kill(k.kill_streak))
+			} else {
+				k.play_sound("woof")
+			}
 		}
 	}
 
