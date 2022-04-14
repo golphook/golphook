@@ -73,7 +73,7 @@ pub mut:
 	engine bool = true
 	fov f32 = 15
 	engine_bones_list []int = [0, 8, 9, 6, 5]
-	engine_force_bone_id u32 = 0
+	engine_force_bone_id u32 // default = 0
 	engine_pref_bone_id u32 = 8
 	engine_automatic_fire_key u32 = 0x5
 	engine_force_bone_key u32 = 0x43

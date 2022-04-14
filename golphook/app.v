@@ -34,7 +34,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	utils.pront('bootstraping..')
 	a.h_mod = withModuleHandle
 	a.h_client = voidptr(C.GetModuleHandleA(c"client.dll"))
-	a.v_mod = vmod.decode(@VMOD_FILE) or { panic(err.msg) }
+	a.v_mod = vmod.decode(@VMOD_FILE) or { panic(err.msg()) }
 
 	$if debug {
 		utils.load_unload_console(true, a.file)
