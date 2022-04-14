@@ -3,6 +3,7 @@ import utils
 
 import json
 import rand
+import os
 
 fn get_knife_data(knife_id int) (int, string) {
 	match knife_id {
@@ -18,7 +19,7 @@ fn get_knife_data(knife_id int) (int, string) {
 
 struct Config {
 pub mut:
-	name string = "default"
+	name string = "golp"
 	// others
 	knife_changer bool = true
 	knife_type int = 2
@@ -30,6 +31,12 @@ pub mut:
 	spectators_color utils.Color = utils.color_rbga(255,255,255,255)
 
 	killsound bool
+
+	viewmodel_override bool = true
+	viewmodel_override_x f32
+	viewmodel_override_y f32
+	viewmodel_override_z f32
+	viewmodel_override_fov f32 = 68.0
 
 	// visuals
 	glow bool = true
@@ -76,48 +83,86 @@ struct ConfigManager {
 pub mut:
 	configs []Config = [Config{}]
 	active_config &Config = 0
+	active_config_idx int
+	selected_config_in_menu u32
 }
 
 pub fn (mut c ConfigManager) bootstrap() {
+
+	home := os.home_dir()
+	golphook_folder := "$home\\golphook"
+	if !os.exists(golphook_folder) {
+		os.mkdir(golphook_folder) or { utils.error_critical("Failed to create ressource configs", "folder") }
+	}
+
+	configs_file := "$home\\golphook\\.configs"
+	if !os.exists(configs_file) {
+		os.write_file(configs_file, "text string") or { utils.error_critical("Failed to create ressource configs", "file") }
+	}
+
+	configs_file_content := os.read_file(configs_file) or {
+		utils.error_critical("Failed to acces ressource configs", "file")
+		return
+	}
+
+	mut configs := json.decode([]Config, configs_file_content) or {
+		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "failed to read configs default one will be set") }
+		c.active_config = &c.configs[0]
+		return
+	}
+
+	c.configs.clear()
+
+	c.configs = configs
+	c.configs[0] = Config{}
 	c.active_config = &c.configs[0]
+
 }
 
-pub fn (mut c ConfigManager) export() string {
-	json := json.encode(c.active_config)
+pub fn (mut c ConfigManager) export(configWithIndex int) string {
+	json := json.encode(c.configs[configWithIndex])
 	return json
-	//return base64.encode_str(json)
 }
 
-pub fn (mut c ConfigManager) load(withConfig string) {
+pub fn (mut c ConfigManager) import_fc(withConfig string) {
 
-	//clear_json := base64.decode_str(withConfig)
 	mut cfg := json.decode(Config, withConfig) or {
 		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "failed to decode config") }
 		return
 	}
 
-	// for cf in c.configs {
-	// 	if cf.name == cfg.name {
-	// 		utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "Config name already exist")
-	// 	}
-	// }
-	cfg.name = f32(c.configs.len).str()
+	cfg.name = f32(c.configs.len + 1).str()
 	c.configs << cfg
-	c.change_to(cfg.name)
-	unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "loaded config: $cfg.name") }
-
-
 }
 
+pub fn (mut c ConfigManager) delete(configWithIndex int) {
+	if configWithIndex == 0 {
+		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "cannot delete default config") }
+		return
+	}
+	if configWithIndex == c.active_config_idx {
+		c.change_to(0)
+	}
+	c.configs.delete(configWithIndex)
+	c.save()
+}
 
-pub fn (mut c ConfigManager) change_to(configWithName string) {
+pub fn (mut c ConfigManager) save() {
+	json := json.encode_pretty(c.configs)
+	home := os.home_dir()
+	configs_file := "$home\\golphook\\.configs"
+	os.write_file(configs_file, json) or { utils.error_critical("Failed to access ressource configs", "file") }
+}
+
+pub fn (mut c ConfigManager) change_to(configWithIndex int) {
 	mut app_ctx := unsafe { app() }
 
-	for mut config in c.configs {
-		if config.name == configWithName {
-			app_ctx.is_ok = false
-			c.active_config = unsafe { config }
-			app_ctx.is_ok = true
-		}
+	if configWithIndex == c.active_config_idx {
+		return
 	}
+
+	app_ctx.is_ok = false
+	c.active_config = &c.configs[configWithIndex]
+	c.active_config_idx = configWithIndex
+	app_ctx.is_ok = true
 }
