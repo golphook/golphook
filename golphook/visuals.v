@@ -10,8 +10,10 @@ pub fn visuals_on_frame() {
 		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant() == false
 	})
 
+	bones_to_be_visible_visuals := [usize(8), 42, 12, 79, 72, 71, 78]
+
 	for ent in ents {
-		is_visible := check_ent_visible_by_mask(ent)
+		is_visible := i_can_see(ent, bones_to_be_visible_visuals)
 		if app_ctx.config.active_config.glow {
 			visuals_glow(ent, is_visible)
 		}
@@ -42,15 +44,6 @@ pub fn visuals_on_end_scene() {
 	if app_ctx.config.active_config.watermark {
 		visuals_watermark()
 	}
-
-	// if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
-	// 	if app_ctx.config.active_config.watermark {
-	// 		visuals_watermark()
-	// 	}
-	// 	if app_ctx.config.active_config.indicator {
-	// 		indicators()
-	// 	}
-	// }
 }
 
 
@@ -94,7 +87,6 @@ pub fn visuals_name(ent &valve.Entity, visible bool) {
 		return
 	}
 	mut text := p_info.player_name()
-
 	if app_ctx.config.active_config.hp {
 		text = "$text (${f32(ent.health())})"
 	}
@@ -138,15 +130,6 @@ pub fn calculate_box(withEnt &valve.Entity, andZOffset f32) ?(utils.Vec3, f32, f
 	box_width := box_height / 1.7
 
 	return screen_pos, box_height, box_width
-}
-
-pub fn check_ent_visible_by_mask(ent &valve.Entity) bool {
-	mut app_ctx := unsafe { app() }
-	r := ent.spotted_by_mask() & (1 << ( app_ctx.ent_cacher.local_player_id - 1))
-	if r > 0 {
-		return true
-	}
-	return false
 }
 
 pub fn fov_circle() {

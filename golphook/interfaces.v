@@ -14,7 +14,7 @@ pub mut:
 	i_entity_list &valve.IEntityList = 0
 	i_debug_overlay &valve.IVDebugOverlay = 0
 	i_model_info &valve.IVModelInfo = 0
-	//i_engine_trace &valve.IEngineTrace = 0
+	i_engine_trace &valve.IEngineTrace = 0
 	c_global_vars &valve.CGlobalVarsBase = 0
 }
 
@@ -49,8 +49,8 @@ fn (mut i Interfaces) bootstrap() {
 	utils.pront('i_debug_overlay -> ${voidptr(i.i_debug_overlay).str()}')
 	i.i_model_info = i.get_interface<valve.IVModelInfo>("VModelInfoClient004", "engine.dll")
 	utils.pront('i_model_info -> ${voidptr(i.i_model_info).str()}')
-	// i.i_engine_trace = i.get_interface<valve.IEngineTrace>("EngineTraceClient004", "engine.dll")
-	// utils.pront('i_engine_trace -> ${voidptr(i.i_engine_trace).str()}')
+	i.i_engine_trace = i.get_interface<valve.IEngineTrace>("EngineTraceClient004", "engine.dll")
+	utils.pront('i_engine_trace -> ${voidptr(i.i_engine_trace).str()}')
 
 	mut device_scan := utils.patter_scan("client.dll", "A1 ? ? ? ? 5E 8B 40 10") or { panic("$err") }
 	i.c_global_vars = **(&&&valve.CGlobalVarsBase(voidptr(usize(device_scan) + 1)))
