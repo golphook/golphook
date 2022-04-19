@@ -139,7 +139,7 @@ fn (mut e Engine) collect_targeted_ents() {
 	mut app_ctx := unsafe { app() }
 
 	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
-		return e.is_alive() && e.team() != ctx.local_player.team()
+		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant() == false
 	})
 
 	for ent in ents {
