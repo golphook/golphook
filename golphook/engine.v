@@ -22,6 +22,7 @@ struct Engine {
 pub mut:
 	do_a_shoot bool
 	do_force_bone bool
+	do_force_awal bool
 	targeted_entities []TargetedEntity
 
 	fov f32
@@ -42,6 +43,10 @@ fn (mut e Engine) on_frame() {
 
 	if (C.GetAsyncKeyState(app_ctx.config.active_config.engine_force_bone_key) & 1) == 1 {
 		e.do_force_bone = !e.do_force_bone
+	}
+
+	if (C.GetAsyncKeyState(app_ctx.config.active_config.engine_force_awall_key) & 1) == 1 {
+		e.do_force_awal = !e.do_force_awal
 	}
 
 	if C.GetAsyncKeyState(app_ctx.config.active_config.engine_automatic_fire_key) > 1 {
@@ -157,17 +162,19 @@ fn (mut e Engine) collect_targeted_ents() {
 				bone_screen.z = z
 
 				if in_fov {
-					target.bones_on_screen << Bone{id: b_id, pos: bone_screen}
 
-					if bone_screen.z < target.closest_bone.pos.z || b_id == app_ctx.config.active_config.engine_force_bone_id || b_id == app_ctx.config.active_config.engine_pref_bone_id {
-						if target.closest_bone.id != app_ctx.config.active_config.engine_pref_bone_id {
-							target.closest_bone = target.bones_on_screen.last(	)
-						}
-						if target.closest_bone.id != app_ctx.config.active_config.engine_force_bone_id && e.do_force_bone {
-							target.closest_bone = target.bones_on_screen.last(	)
+					if e.do_force_awal || i_can_see(ent, [usize(b_id)]) {
+						target.bones_on_screen << Bone{id: b_id, pos: bone_screen}
+
+						if bone_screen.z < target.closest_bone.pos.z || b_id == app_ctx.config.active_config.engine_force_bone_id || b_id == app_ctx.config.active_config.engine_pref_bone_id {
+							if target.closest_bone.id != app_ctx.config.active_config.engine_pref_bone_id {
+								target.closest_bone = target.bones_on_screen.last(	)
+							}
+							if target.closest_bone.id != app_ctx.config.active_config.engine_force_bone_id && e.do_force_bone {
+								target.closest_bone = target.bones_on_screen.last(	)
+							}
 						}
 					}
-
 				}
 
 			}

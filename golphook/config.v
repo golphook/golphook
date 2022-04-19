@@ -78,6 +78,7 @@ pub mut:
 	engine_pref_bone_id u32 = 8
 	engine_automatic_fire_key u32 = 0x5
 	engine_force_bone_key u32 = 0x43
+	engine_force_awall_key u32 = 0x06
 }
 
 struct ConfigManager {
