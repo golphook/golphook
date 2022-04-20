@@ -31,6 +31,10 @@ type P_get_local_player = fn () int
 type P_get_player_info = fn (int, &PlayerInfo) bool
 type P_get_screen_size = fn (&int, &int)
 type P_set_view_angle = fn(&utils.Angle)
+type P_get_view_angle = fn(&utils.Angle)
+type P_is_con_visible = fn () bool
+type P_execute_client_cmd_unrectricted = fn (&char)
+
 
 pub fn (mut i IVEngineClient) execute_client_cmd(text string) {
 	o_fn_add := utils.get_virtual(i, 108)
@@ -91,6 +95,28 @@ pub fn (mut i IVEngineClient) set_view_angle(withAngle &utils.Angle) {
 
 	o_fn := &P_set_view_angle(o_fn_add)
 	o_fn(withAngle)
+}
+
+pub fn (mut i IVEngineClient) get_view_angle(withAngle &utils.Angle) {
+	o_fn_add := utils.get_virtual(i, 18)
+
+	o_fn := &P_get_view_angle(o_fn_add)
+	o_fn(withAngle)
+}
+
+pub fn (mut i IVEngineClient) is_con_visible() bool {
+	o_fn_add := utils.get_virtual(i, 11)
+
+	o_fn := &P_is_con_visible(o_fn_add)
+	r := o_fn()
+	return r
+}
+
+pub fn (mut i IVEngineClient) execute_client_cmd_unrectricted(text string) {
+	o_fn_add := utils.get_virtual(i, 114)
+
+	o_fn := &P_execute_client_cmd_unrectricted(o_fn_add)
+	o_fn(&char(text.str))
 }
 
 struct IBaseClientDLL {}

@@ -24,7 +24,8 @@ pub mut:
 	ent_cacher &EntityCacher = 0
 	config &ConfigManager = 0
 	engine &Engine = 0
-	menu &Menu = 0
+	//menu &Menu = 0
+	menu &NMenu = 0
 	kill_sound &KillSound = 0
 
 	is_ok bool
@@ -55,7 +56,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()
 
-	a.menu = &Menu{}
+	// a.menu = &Menu{}
 
 	a.d3d = &d3d.D3d9{}
 	a.d3d.bootstrap()
@@ -68,9 +69,10 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 	a.engine = &Engine{}
 
+	a.menu = &NMenu{}
+
 	a.hooks = &Hooks{}
 	a.hooks.bootstrap()
-
 
 	C.Beep(670, 200)
 	C.Beep(730, 150)
@@ -84,6 +86,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 
 pub fn (mut a App) release() {
 	a.hooks.release()
+	a.menu.release(false)
 	a.d3d.release()
 	utils.pront('bye :)')
 	unsafe { utils.load_unload_console(false, a.file) }

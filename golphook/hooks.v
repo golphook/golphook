@@ -2,6 +2,7 @@ module golphook
 
 import utils
 import valve
+import nuklear
 
 type O_frame_stage_notify = fn (u32)
 type O_end_scene = fn (voidptr) bool
@@ -11,6 +12,9 @@ type O_reset = fn (voidptr, voidptr) int
 type O_set_viewmodel_offets = fn (int, f32, f32, f32) int
 
 type O_get_viewmodel_fov = fn () f32
+
+// [callconv: "fastcall"]
+// type O_lock_cursor = fn (voidptr, voidptr)
 
 struct HookEntry<T> {
 pub mut:
@@ -37,9 +41,11 @@ pub mut:
 	wnd_proc HookEntry<O_end_scene>
 	set_viewmodel_offets HookEntry<O_set_viewmodel_offets>
 	get_viewmodel_fov HookEntry<O_get_viewmodel_fov>
+	// lock_cursor HookEntry<O_lock_cursor>
 }
 
 fn (mut h Hooks) bootstrap() {
+	mut app_ctx := unsafe { app() }
 
 	if C.MH_Initialize() != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_Initialize()')
@@ -66,6 +72,14 @@ fn (mut h Hooks) bootstrap() {
 	}
 	h.reset.hook()
 
+	// lock_cursor_add := utils.get_virtual(app_ctx.interfaces.i_surface, 67)
+	// h.lock_cursor = HookEntry<O_lock_cursor>{
+	// 	name: 'LockCursor()'
+	// 	original_addr: lock_cursor_add
+	// 	hooked: &hk_lock_cursor
+	// }
+	// h.lock_cursor.hook()
+
 	end_scene_add := utils.get_virtual(device_add, 42)
 
 	h.end_scene = HookEntry<O_end_scene>{
@@ -74,6 +88,15 @@ fn (mut h Hooks) bootstrap() {
 		hooked: &hk_end_scene
 	}
 	h.end_scene.hook()
+
+	h.wnd_proc = HookEntry<O_end_scene>{
+		name: 'WndProc()'
+		original_addr: voidptr(0)
+		hooked: &hk_wnd_proc
+	}
+
+	h.wnd_proc.original_save = voidptr( C.SetWindowLongA( C.FindWindowA(c"Valve001", &char(0)), -4, i32(h.wnd_proc.hooked)) )
+	C.printf(c"wndproc : %p \n", h.wnd_proc.original_save)
 
 	mut set_viewmodel_offets_add := utils.patter_scan("client.dll", "55 8B EC 8B 45 08 F3 0F 7E 45") or { panic("$err") }
 	h.set_viewmodel_offets = HookEntry<O_set_viewmodel_offets>{
@@ -141,21 +164,21 @@ fn hk_frame_stage_notify(a u32) {
 
 [unsafe; windows_stdcall]
 fn hk_end_scene(dev voidptr) bool {
-
+	mut app_ctx := unsafe { app() }
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
 		utils.pront('hk_end_scene() OK !')
+		app_ctx.menu.bootstrap(dev)
+
 	}
 
-	mut app_ctx := unsafe { app() }
-
 	if app_ctx.is_ok {
-
-		app_ctx.menu.on_send_scene()
 		visuals_on_end_scene()
 		app_ctx.rnd_queue.draw_queue()
 	}
+
+	app_ctx.menu.on_send_scene()
 
 	unsafe {
 		ofn := &O_end_scene(app().hooks.end_scene.original_save)
@@ -178,6 +201,7 @@ fn hk_reset(dev voidptr, params voidptr) int {
 		app_ctx.is_ok = false
 		app_ctx.rnd_queue.clear(-1)
 		app_ctx.d3d.release()
+		app_ctx.menu.release(true)
 	}
 
 	unsafe {
@@ -186,6 +210,7 @@ fn hk_reset(dev voidptr, params voidptr) int {
 
 		if !app_ctx.is_ok {
 			app_ctx.d3d.bootstrap()
+			app_ctx.menu.bootstrap(dev)
 			app_ctx.is_ok = true
 		}
 		return ret
@@ -253,3 +278,53 @@ fn hk_get_viewmodel_fov() f32 {
 
 	return og_viewmodel_fov
 }
+
+[callconv: "stdcall"]
+fn hk_wnd_proc(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool {
+
+	mut app_ctx := unsafe { app() }
+
+	if withMsg == C.WM_KEYUP {
+		if withWParam == C.VK_INSERT {
+			// not proud of this but it ok for now
+			if !app_ctx.interfaces.cdll_int.is_con_visible() || app_ctx.menu.is_opened {
+				app_ctx.interfaces.cdll_int.execute_client_cmd_unrectricted("toggleconsole")
+				//app_ctx.interfaces.c_input.enable_input(!app_ctx.menu.is_opened)
+			}
+			app_ctx.menu.is_opened = !app_ctx.menu.is_opened
+
+		}
+	}
+
+	if app_ctx.menu.is_opened {
+		if nuklear.handle_event(withHwnd, withMsg, withWParam, andLParam) == 1 {
+			return false
+		}
+	}
+
+    return C.CallWindowProcW(app_ctx.hooks.wnd_proc.original_save, withHwnd, withMsg, withWParam, andLParam)
+}
+// [unsafe; callconv: "fastcall"]
+// fn hk_lock_cursor(ecx voidptr, edx voidptr) {
+//
+// 	mut static is_called_once := false
+// 	if !is_called_once {
+// 		is_called_once = true
+// 		utils.pront('hk_lock_cursor() OK !')
+// 	}
+//
+// 	mut app_ctx := unsafe { app() }
+//
+// 	if app_ctx.is_ok {
+// 		// if app_ctx.menu.is_opened {
+// 		// 	app_ctx.interfaces.i_surface.unlock_cursor()
+// 		// 	return
+// 		// }
+// 	}
+//
+// 	unsafe {
+// 		ofn := &O_lock_cursor(app().hooks.lock_cursor.original_save)
+// 		//C.load_this(ecx)
+// 		ofn(ecx, edx)
+// 	}
+// }

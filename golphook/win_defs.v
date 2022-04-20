@@ -38,6 +38,10 @@ fn C.CreateToolhelp32Snapshot(int, int) C.HANDLE
 fn C.Module32FirstW(C.HANDLE, voidptr) bool
 fn C.Module32NextW(C.HANDLE, voidptr) bool
 
+fn C.CallWindowProcW(voidptr, C.HWND, u32, u32, int) bool
+fn C.SetWindowLongA(C.HWND, i32, i32) i32
+
+
 fn C.GetCurrentProcessId() u32
 // minhook defs
 

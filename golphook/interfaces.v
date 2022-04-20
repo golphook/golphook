@@ -16,6 +16,8 @@ pub mut:
 	i_model_info &valve.IVModelInfo = 0
 	i_engine_trace &valve.IEngineTrace = 0
 	c_global_vars &valve.CGlobalVarsBase = 0
+	c_input &valve.IInputSystem = 0
+	// i_surface &valve.ISurface = 0
 }
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
@@ -51,6 +53,12 @@ fn (mut i Interfaces) bootstrap() {
 	utils.pront('i_model_info -> ${voidptr(i.i_model_info).str()}')
 	i.i_engine_trace = i.get_interface<valve.IEngineTrace>("EngineTraceClient004", "engine.dll")
 	utils.pront('i_engine_trace -> ${voidptr(i.i_engine_trace).str()}')
+	// i.i_surface = i.get_interface<valve.ISurface>("VGUI_Surface031", "vguimatsurface.dll")
+	// utils.pront('i_surface -> ${voidptr(i.i_surface).str()}')
+
+	i.c_input = i.get_interface<valve.IInputSystem>("InputSystemVersion001", "inputsystem.dll")
+	utils.pront('c_input -> ${voidptr(i.c_input).str()}')
+
 
 	mut device_scan := utils.patter_scan("client.dll", "A1 ? ? ? ? 5E 8B 40 10") or { panic("$err") }
 	i.c_global_vars = **(&&&valve.CGlobalVarsBase(voidptr(usize(device_scan) + 1)))
