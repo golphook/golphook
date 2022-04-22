@@ -497,7 +497,7 @@ fn (mut m NMenu) tab_config() {
 
 fn (mut m NMenu) render() {
 	m.apply_style()
-	m.nk_ctx.begin("golphook", C.nk_rect{x: 27.0, y:27.0, w:menu_width, h:menu_height}, u32(C.NK_WINDOW_MOVABLE | C.NK_WINDOW_NO_SCROLLBAR))
+	m.nk_ctx.begin("golphook", C.nk_rect{x: 27 y:27, w:menu_width, h:menu_height}, u32(C.NK_WINDOW_MOVABLE | C.NK_WINDOW_NO_SCROLLBAR))
 
 	m.menu_bar()
 
