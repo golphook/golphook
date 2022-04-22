@@ -91,7 +91,7 @@ fn (mut k KillSound) on_frame() {
 	if k.get_kill() > k.old_kill {
 		if k.get_kill_hs() > k.old_kill_hs {
 			k.kill_streak++
-			if app_ctx.config.active_config.crossfire {
+			if app_ctx.config.active_config.killsound_type == 1  {
 				k.play_sound("hs")
 			} else {
 				k.play_sound("db_woof")
@@ -99,7 +99,7 @@ fn (mut k KillSound) on_frame() {
 
 		} else {
 			k.kill_streak++
-			if app_ctx.config.active_config.crossfire {
+			if app_ctx.config.active_config.killsound_type == 1 {
 				k.play_sound(get_sound_for_kill(k.kill_streak))
 			} else {
 				k.play_sound("woof")
