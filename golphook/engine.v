@@ -74,7 +74,7 @@ fn (mut e Engine) handle_keys() {
 		e.do_a_shoot = false
 	}
 
-	if !app_ctx.config.active_config.engine_automatic_fire_key_toggle {
+	if !app_ctx.config.active_config.engine_force_bone_key_toggle {
 		e.do_force_bone = false
 	}
 
@@ -83,12 +83,12 @@ fn (mut e Engine) handle_keys() {
 	}
 
 
-	if utils.get_key(app_ctx.config.active_config.engine_force_bone_key, app_ctx.config.active_config.engine_force_bone_key_toggle) {
-		e.do_force_bone = !e.do_force_bone
-	}
-
 	if utils.get_key(app_ctx.config.active_config.engine_force_awall_key, app_ctx.config.active_config.engine_force_awall_key_toggle) {
 		e.do_force_awal = !e.do_force_awal
+	}
+
+	if utils.get_key(app_ctx.config.active_config.engine_force_bone_key, app_ctx.config.active_config.engine_force_bone_key_toggle) {
+		e.do_force_bone = !e.do_force_bone
 	}
 
 	if utils.get_key(app_ctx.config.active_config.engine_automatic_fire_key, app_ctx.config.active_config.engine_automatic_fire_key_toggle) {
