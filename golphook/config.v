@@ -22,7 +22,7 @@ pub mut:
 	name string = "golp"
 	// others
 	knife_changer bool = true
-	knife_type int // 0
+	knife_type int = 2
 
 	bop bool = true
 
@@ -31,12 +31,12 @@ pub mut:
 	spectators_color utils.Color = utils.color_rbga(255,255,255,255)
 
 	killsound bool = true
-	crossfire bool
+	killsound_type int // default = woof (0)
 
 	viewmodel_override bool = true
-	viewmodel_override_x f32 = 4
-	viewmodel_override_y f32 = 2
-	viewmodel_override_z f32 = -2
+	viewmodel_override_x f32 = 7
+	viewmodel_override_y f32 = 7
+	viewmodel_override_z f32 = -7
 	viewmodel_override_fov f32 = 80
 
 	// visuals
@@ -73,12 +73,22 @@ pub mut:
 
 	engine bool = true
 	fov f32 = 20
+	engine_adjust_fov_scope bool = true
+
 	engine_bones_list []int = [0, 8, 9, 6, 5]
-	engine_force_bone_id u32 // default = 0
-	engine_pref_bone_id u32 = 8
-	engine_automatic_fire_key u32 = 0x5
-	engine_force_bone_key u32 = 0x43
-	engine_force_awall_key u32 = 0x06
+	engine_force_bone_id int // default = 0
+	engine_pref_bone_id int = 8
+
+	engine_automatic_fire_key int = 0x5
+	engine_force_bone_key int = 0x43
+	engine_force_awall_key int = 0x06
+
+	engine_automatic_fire_key_toggle bool
+	engine_force_awall_key_toggle bool = true
+	engine_force_bone_key_toggle bool = true
+
+
+
 }
 
 struct ConfigManager {
@@ -86,7 +96,7 @@ pub mut:
 	configs []Config = [Config{}]
 	active_config &Config = 0
 	active_config_idx int
-	selected_config_in_menu u32
+	selected_config_in_menu int
 }
 
 pub fn (mut c ConfigManager) bootstrap() {
@@ -154,6 +164,25 @@ pub fn (mut c ConfigManager) save() {
 	home := os.home_dir()
 	configs_file := "$home\\golphook\\.configs"
 	os.write_file(configs_file, json) or { utils.error_critical("Failed to access ressource configs", "file") }
+}
+
+pub fn (mut c ConfigManager) rename(configWithIndex int, andNewName string) {
+	if configWithIndex == 0 {
+		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "cannot rename default config") }
+		return
+	}
+
+	c.configs[configWithIndex].name = andNewName
+	c.save()
+}
+
+pub fn (mut c ConfigManager) new_blank(withName string) {
+	mut new_cfg := Config{}
+	new_cfg.name = f32(c.configs.len + 1).str()
+	if withName.len != 0 {
+		new_cfg.name = withName
+	}
+	c.configs << new_cfg
 }
 
 pub fn (mut c ConfigManager) change_to(configWithIndex int) {
