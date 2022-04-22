@@ -19,6 +19,9 @@ pub fn others_on_frame() {
 		specs()
 	}
 
+	if app_ctx.config.active_config.no_flash {
+		no_flash()
+	}
 }
 
 [unsafe]
@@ -130,5 +133,18 @@ pub fn specs() {
 	}
 	if specs_cout != 0 {
 		app_ctx.rnd_queue.push(new_text(utils.new_vec2(20, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_count_color))
+	}
+}
+
+pub fn no_flash() {
+	mut app_ctx := unsafe { app() }
+
+	if !app_ctx.ent_cacher.local_player.is_alive() {
+		return
+	}
+
+	mut flash_dur := &f32(voidptr(usize(app_ctx.ent_cacher.local_player) + offsets.db.netvars.flash_duration))
+	if *flash_dur > 0.0 {
+		unsafe { *flash_dur = 0.0 }
 	}
 }

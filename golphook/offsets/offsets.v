@@ -66,7 +66,7 @@ pub:
 	match_stats_headshot_kills_total u32 [json: m_iMatchStats_HeadShotKills_Total]
 	match_stats_damage_total u32 [json: m_iMatchStats_Damage_Total]
 	competitive_wins u32 [json: m_iCompetitiveWins]
-
+	flash_duration u32 [json: m_flFlashDuration]
 	freeze_period u32 [json: m_bFreezePeriod]
 }
 

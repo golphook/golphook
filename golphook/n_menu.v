@@ -292,6 +292,11 @@ fn (mut m NMenu) tab_misc() {
 		}
 		m.nk_ctx.layout_row_end()
 
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
+		m.nk_ctx.layout_row_push(1)
+		m.nk_ctx.checkbox_label("no flash", mut &app_ctx.config.active_config.no_flash)
+		m.nk_ctx.layout_row_end()
+
 
 
 		m.nk_ctx.group_end()

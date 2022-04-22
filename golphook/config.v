@@ -40,6 +40,8 @@ pub mut:
 	viewmodel_override_z f32 = -7
 	viewmodel_override_fov f32 = 80
 
+	no_flash bool
+
 	// visuals
 	glow bool = true
 	glow_color_if_visible utils.Color = utils.color_rbga(236, 240, 241, 130)
