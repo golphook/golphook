@@ -136,25 +136,76 @@ fn (mut m NMenu) table_combo(mut val &int, mut table []map[string]int, callback 
 	}
 }
 
+fn (mut m NMenu) color_picker(mut col &utils.Color) {
+	mut tmp_colf := col.nk_colorf()
+
+	color_vec := C.nk_vec2{300, 400}
+	if m.nk_ctx.combo_begin_color(C.nk_rgb_cf(tmp_colf), color_vec) {
+		m.nk_ctx.layout_row_dynamic(80, 1)
+
+		tmp_colf = m.nk_ctx.color_picker(tmp_colf, C.NK_RGBA)
+		mut tmp_nk_color := C.nk_rgba_f(tmp_colf.r, tmp_colf.g, tmp_colf.b, tmp_colf.a)
+		col = utils.color_rbga(tmp_nk_color.r, tmp_nk_color.g, tmp_nk_color.b, tmp_nk_color.a)
+
+		m.nk_ctx.layout_row_dynamic(item_height, 1)
+
+		tmp_nk_color.r = m.nk_ctx.propertyi("#R:", 0, tmp_nk_color.r, 255, 1, 1)
+		tmp_nk_color.g = m.nk_ctx.propertyi("#G:", 0, tmp_nk_color.g, 255, 1, 1)
+		tmp_nk_color.b = m.nk_ctx.propertyi("#B:", 0, tmp_nk_color.b, 255, 1, 1)
+		tmp_nk_color.a = m.nk_ctx.propertyi("#A:", 0, tmp_nk_color.a, 255, 1, 1)
+
+		col = utils.color_rbga(tmp_nk_color.r, tmp_nk_color.g, tmp_nk_color.b, tmp_nk_color.a)
+
+		m.nk_ctx.combo_end()
+	}
+}
+
 fn (mut m NMenu) tab_visuals() {
 	mut app_ctx := unsafe { app() }
 
 	m.nk_ctx.layout_row_dynamic(menu_height-41, 2)
 
 	if m.nk_ctx.group_begin("visuals_1", C.NK_WINDOW_NO_SCROLLBAR) {
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
-		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
+		m.nk_ctx.layout_row_push(0.4)
 		m.nk_ctx.checkbox_label("box", mut &app_ctx.config.active_config.box)
+
+		if app_ctx.config.active_config.box {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.box_color_if_visible)
+
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.box_color_if_not_visible)
+		}
+
 		m.nk_ctx.layout_row_end()
 
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
-		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
+		m.nk_ctx.layout_row_push(0.4)
 		m.nk_ctx.checkbox_label("snapline", mut &app_ctx.config.active_config.snapline)
+
+		if app_ctx.config.active_config.snapline {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.snapline_color_if_visible)
+
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.snapline_color_if_not_visible)
+		}
+
 		m.nk_ctx.layout_row_end()
 
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
-		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
+		m.nk_ctx.layout_row_push(0.4)
 		m.nk_ctx.checkbox_label("names", mut &app_ctx.config.active_config.names)
+
+		if app_ctx.config.active_config.names {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.names_color_if_visible)
+
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.names_color_if_not_visible)
+		}
+
 		m.nk_ctx.layout_row_end()
 
 		if app_ctx.config.active_config.names {
@@ -168,9 +219,18 @@ fn (mut m NMenu) tab_visuals() {
 	}
 
 	if m.nk_ctx.group_begin("visuals_2", C.NK_WINDOW_NO_SCROLLBAR) {
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
-		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
+		m.nk_ctx.layout_row_push(0.4)
 		m.nk_ctx.checkbox_label("glow", mut &app_ctx.config.active_config.glow)
+
+		if app_ctx.config.active_config.glow {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.glow_color_if_visible)
+
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.glow_color_if_not_visible)
+		}
+
 		m.nk_ctx.layout_row_end()
 
 		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)

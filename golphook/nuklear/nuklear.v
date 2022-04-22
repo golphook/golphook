@@ -123,9 +123,9 @@ pub fn (c &Nuklear) combo_begin_color(col C.nk_color, vec C.nk_vec2) bool {
 	return C.nk_combo_begin_color(c.nk_ctx, col, vec) == 1
 }
 
-// pub fn (c &Nuklear) color_picker(col C.nk_colorf, flags i32) C.nk_colorf {
-// 	return C.nk_color_picker(c.nk_ctx, col, flags)
-// }
+pub fn (c &Nuklear) color_picker(col C.nk_colorf, flags i32) C.nk_colorf {
+	return C.nk_color_picker(c.nk_ctx, col, flags)
+}
 
 pub fn (c &Nuklear) style_from_table(table voidptr) {
 	C.nk_style_from_table(c.nk_ctx, table)
