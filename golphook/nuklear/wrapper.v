@@ -35,7 +35,6 @@ menu release
 // hi
 
 struct C.nk_context {}
-struct C.nk_font_atlas {}
 struct C.nk_rect {
 	x f32
 	y f32
@@ -67,7 +66,7 @@ struct C.nk_colorf {
 
 
 fn C.nk_d3d9_init(voidptr, int, int) &C.nk_context
-fn C.nk_d3d9_font_stash_begin(&&C.nk_font_atlas)
+fn C.nk_d3d9_font_stash_begin(&voidptr)
 fn C.nk_d3d9_font_stash_end()
 fn C.nk_d3d9_handle_event(C.HWND, u32, u32, int) int
 fn C.nk_d3d9_render(int)

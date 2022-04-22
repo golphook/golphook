@@ -8,7 +8,7 @@ pub mut:
 pub fn (mut c Nuklear) bootstrap(withDevice voidptr, withWidth int, andHeight i32) {
 	c.nk_ctx = C.nk_d3d9_init(withDevice, withWidth, andHeight)
 
-	mut font_stash := &C.nk_font_atlas{}
+	mut font_stash := voidptr(0)
 
 	C.nk_d3d9_font_stash_begin(&font_stash)
 	C.nk_d3d9_font_stash_end()
