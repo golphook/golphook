@@ -49,13 +49,14 @@ struct C.nk_vec2 {
 }
 
 struct C.nk_color {
+mut:
 	r u8
 	g u8
 	b u8
 	a u8
 }
 
-struct C.nk_color {
+struct C.nk_colorf {
 	r f32
 	g f32
 	b f32

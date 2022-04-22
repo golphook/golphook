@@ -1,5 +1,13 @@
 module utils
 
+import nuklear
+
+#flag -I @VMODROOT/golphook/c
+#include "d3dh.h"
+// hi
+fn C.d3d_rgba(r int, g int, b int, a int) u32
+
+
 pub struct ColorRgbaF {
 mut:
 	r f32
@@ -51,6 +59,11 @@ pub fn (c &Color) rgba() u32 {
 }
 
 [inline]
+pub fn (c &Color) d3d() u32 {
+	return C.d3d_rgba(c.r(), c.g(), c.b(), c.a())
+}
+
+[inline]
 pub fn (c &Color) rgbaf() ColorRgbaF {
 
 	mut r_ := f32(c.r()) / 255.0
@@ -59,6 +72,17 @@ pub fn (c &Color) rgbaf() ColorRgbaF {
 	mut a_ := f32(c.a()) / 255.0
 
 	return ColorRgbaF{r: r_, g: g_, b: b_, a: a_}
+}
+
+[inline]
+pub fn (c &Color) nk_colorf() C.nk_colorf {
+
+	mut r_ := f32(c.r()) / 255.0
+	mut g_ := f32(c.g()) / 255.0
+	mut b_ := f32(c.b()) / 255.0
+	mut a_ := f32(c.a()) / 255.0
+
+	return C.nk_colorf{r: r_, g: g_, b: b_, a: a_}
 }
 
 
