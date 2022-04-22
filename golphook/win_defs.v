@@ -41,6 +41,7 @@ fn C.Module32NextW(C.HANDLE, voidptr) bool
 fn C.CallWindowProcW(voidptr, C.HWND, u32, u32, int) bool
 fn C.SetWindowLongA(C.HWND, i32, i32) i32
 
+fn C.GetWindowRect(C.HWND, &C.RECT) bool
 
 fn C.GetCurrentProcessId() u32
 // minhook defs

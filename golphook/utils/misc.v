@@ -15,3 +15,11 @@ pub fn (h HResult) bool() bool {
 pub fn h_res(withHresult int) HResult {
 	return HResult { val: withHresult }
 }
+
+[inline]
+pub fn get_key(withVkCode int, toggle bool) bool {
+	if toggle {
+		return (C.GetAsyncKeyState(withVkCode) & 1) == 1
+	}
+	return C.GetAsyncKeyState(withVkCode) > 1
+}
