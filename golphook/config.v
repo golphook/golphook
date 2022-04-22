@@ -32,7 +32,7 @@ pub mut:
 	spectators_color utils.Color = utils.color_rbga(255,255,255,255)
 
 	killsound bool = true
-	killsound_type int // default = woof (0)
+	killsound_type int = 1// default = woof (0)
 
 	viewmodel_override bool = true
 	viewmodel_override_x f32 = 7
@@ -67,7 +67,7 @@ pub mut:
 
 	indicator bool = true
 	indicator_color_if_on utils.Color = utils.color_rbga(108, 92, 231, 255)
-	indicator_color_if_off utils.Color  = utils.color_rbga(1,1,1,255)
+	indicator_color_if_off utils.Color  = utils.color_rbga(236, 240, 241,255)
 
 	fov_circle bool = true
 	fov_circle_color utils.Color = utils.color_rbga(155, 89, 182 ,255)

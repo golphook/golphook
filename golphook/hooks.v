@@ -283,17 +283,21 @@ fn hk_wnd_proc(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool
 
 	mut app_ctx := unsafe { app() }
 
-	if withMsg == C.WM_KEYUP {
-		if withWParam == C.VK_INSERT {
-			// not proud of this but it ok for now
-			if !app_ctx.interfaces.cdll_int.is_con_visible() || app_ctx.menu.is_opened {
-				app_ctx.interfaces.cdll_int.execute_client_cmd_unrectricted("toggleconsole")
-				//app_ctx.interfaces.c_input.enable_input(!app_ctx.menu.is_opened)
+	if withMsg == C.WM_KEYDOWN {
+		match withWParam {
+			u32(C.VK_DELETE) {
+				// not proud of this but it ok for now
+				if !app_ctx.interfaces.cdll_int.is_con_visible() || app_ctx.menu.is_opened {
+					app_ctx.interfaces.cdll_int.execute_client_cmd_unrectricted("toggleconsole")
+					//app_ctx.interfaces.c_input.enable_input(!app_ctx.menu.is_opened)
+				}
+				app_ctx.menu.is_opened = !app_ctx.menu.is_opened
 			}
-			app_ctx.menu.is_opened = !app_ctx.menu.is_opened
-
+			else {  }
 		}
 	}
+
+
 
 	if app_ctx.menu.is_opened {
 		if nuklear.handle_event(withHwnd, withMsg, withWParam, andLParam) == 1 {
