@@ -26,7 +26,7 @@ pub mut:
 
 	tmp_check bool
 
-	knifes []map[string]int = [{"karambit": 0}, {"m9": 1}, {"butterfly": 2}]
+	knifes []map[string]int = [{"karambit": 0}, {"m9": 1}, {"butterfly": 2}, {"flop": 3}, {"gaut": 4}, {"mayonet": 5}, {"hunt": 6}]
 	killsounds []map[string]int = [{"woof": 0}, {"crossfire": 1}]
 	configs []map[string]int = []
 	engine_keys []map[string]int = [{"mouse 1": 0x1}, {"mouse 4": 0x5}, {"mouse 5": 0x06}, {"alt": 0x12}, {"b": 0x42}, {"c": 0x43}, {"x": 0x58}]

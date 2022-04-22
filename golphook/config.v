@@ -13,6 +13,7 @@ fn get_knife_data(knife_id int) (int, string) {
 		3 { return 505, "v_knife_flip.mdl" }
 		4 { return 506, "v_knife_gut.mdl" }
 		5 { return 500, "v_knife_bayonet.mdl" }
+		6 { return 509, "v_knife_tactical.mdl" }
 		else { return 507, "v_knife_karam.mdl" }
 	}
 }
