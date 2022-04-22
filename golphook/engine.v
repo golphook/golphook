@@ -31,30 +31,20 @@ pub mut:
 fn (mut e Engine) on_frame() {
 	mut app_ctx := unsafe { app() }
 
-	if !app_ctx.config.active_config.engine  {
-		return
-	}
-	e.do_a_shoot = false
 	e.fov = app_ctx.config.active_config.fov
+	e.handle_keys()
 
-	if app_ctx.ent_cacher.local_player.is_scoped() {
-		e.adjust_fov_by_zoom()
+	if app_ctx.config.active_config.engine_adjust_fov_scope {
+		if app_ctx.ent_cacher.local_player.is_scoped() {
+			e.adjust_fov_by_zoom()
+		}
 	}
 
-	if (C.GetAsyncKeyState(app_ctx.config.active_config.engine_force_bone_key) & 1) == 1 {
-		e.do_force_bone = !e.do_force_bone
-	}
-
-	if (C.GetAsyncKeyState(app_ctx.config.active_config.engine_force_awall_key) & 1) == 1 {
-		e.do_force_awal = !e.do_force_awal
-	}
-
-	if C.GetAsyncKeyState(app_ctx.config.active_config.engine_automatic_fire_key) > 1 {
-
-		e.do_a_shoot = true
+	if e.do_a_shoot {
 		if !can_shoot() {
 			return
 		}
+
 		e.targeted_entities.clear()
 		e.collect_targeted_ents()
 
@@ -67,10 +57,42 @@ fn (mut e Engine) on_frame() {
 				}
 			}
 
-			mut force_attack := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack)
 			e.aim_at(closest_target)
+			mut force_attack := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack)
 			unsafe { *force_attack = 6 }
 		}
+	}
+}
+
+fn (mut e Engine) handle_keys() {
+	mut app_ctx := unsafe { app() }
+
+	if !app_ctx.config.active_config.engine  {
+		return
+	}
+	if !app_ctx.config.active_config.engine_automatic_fire_key_toggle {
+		e.do_a_shoot = false
+	}
+
+	if !app_ctx.config.active_config.engine_automatic_fire_key_toggle {
+		e.do_force_bone = false
+	}
+
+	if !app_ctx.config.active_config.engine_force_awall_key_toggle {
+		e.do_force_awal = false
+	}
+
+
+	if utils.get_key(app_ctx.config.active_config.engine_force_bone_key, app_ctx.config.active_config.engine_force_bone_key_toggle) {
+		e.do_force_bone = true
+	}
+
+	if utils.get_key(app_ctx.config.active_config.engine_force_awall_key, app_ctx.config.active_config.engine_force_awall_key_toggle) {
+		e.do_force_awal = true
+	}
+
+	if utils.get_key(app_ctx.config.active_config.engine_automatic_fire_key, app_ctx.config.active_config.engine_automatic_fire_key_toggle) {
+		e.do_a_shoot = true
 	}
 }
 
