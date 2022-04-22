@@ -45,7 +45,6 @@ pub mut:
 }
 
 fn (mut h Hooks) bootstrap() {
-	mut app_ctx := unsafe { app() }
 
 	if C.MH_Initialize() != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_Initialize()')
@@ -134,7 +133,7 @@ fn (mut h Hooks) release() {
 	}
 }
 
-[unsafe; windows_stdcall]
+[unsafe; callconv: "stdcall"]
 fn hk_frame_stage_notify(a u32) {
 
 	mut static is_called_once := false
@@ -162,7 +161,7 @@ fn hk_frame_stage_notify(a u32) {
 	}
 }
 
-[unsafe; windows_stdcall]
+[unsafe; callconv: "stdcall"]
 fn hk_end_scene(dev voidptr) bool {
 	mut app_ctx := unsafe { app() }
 	mut static is_called_once := false
@@ -187,7 +186,7 @@ fn hk_end_scene(dev voidptr) bool {
 
 }
 
-[unsafe; windows_stdcall]
+[unsafe; callconv: "stdcall"]
 fn hk_reset(dev voidptr, params voidptr) int {
 
 	mut static is_called_once := false
@@ -249,7 +248,7 @@ fn hk_set_viewmodel_offets(ecx voidptr, edx voidptr, smt int, x f32, y f32, z f3
 	}
 }
 
-[unsafe; windows_stdcall]
+[unsafe; callconv: "stdcall"]
 fn hk_get_viewmodel_fov() f32 {
 
 	mut static is_called_once := false

@@ -18,8 +18,7 @@ fn hello(h_mod voidptr) {
 	}
 }
 
-[export: DllMain]
-[windows_stdcall]
+[export: DllMain; callconv: "stdcall"]
 fn dll_main(h_mod voidptr, reason u32, res voidptr) bool {
 	if reason == u32(C.DLL_PROCESS_ATTACH) {
 		// mut ctx := unsafe { golphook.app() }
