@@ -56,6 +56,8 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()
 
+	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
+
 	// a.menu = &Menu{}
 
 	a.d3d = &d3d.D3d9{}
@@ -95,6 +97,7 @@ pub fn (mut a App) release() {
 
 pub fn (mut a App) on_frame() {
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
+	//C.printf(c"%d - %d",a.wnd_width, a.wnd_height)
 }
 
 [unsafe]
