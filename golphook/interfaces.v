@@ -17,6 +17,7 @@ pub mut:
 	i_engine_trace &valve.IEngineTrace = 0
 	c_global_vars &valve.CGlobalVarsBase = 0
 	c_input &valve.IInputSystem = 0
+	// i_panorama_engine &valve.IPanoramaUIEngine = 0
 	// i_surface &valve.ISurface = 0
 }
 
@@ -58,6 +59,9 @@ fn (mut i Interfaces) bootstrap() {
 
 	i.c_input = i.get_interface<valve.IInputSystem>("InputSystemVersion001", "inputsystem.dll")
 	utils.pront('c_input -> ${voidptr(i.c_input).str()}')
+
+	// i.i_panorama_engine = i.get_interface<valve.IPanoramaUIEngine>("PanoramaUIEngine001", "panorama.dll")
+	// utils.pront('i_panorama_engine -> ${voidptr(i.i_panorama_engine).str()}')
 
 
 	mut device_scan := utils.patter_scan("client.dll", "A1 ? ? ? ? 5E 8B 40 10") or { panic("$err") }
