@@ -303,19 +303,44 @@ fn (mut m NMenu) tab_misc() {
 	}
 
 	if m.nk_ctx.group_begin("misc_2", C.NK_WINDOW_NO_SCROLLBAR) {
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
-		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
+		m.nk_ctx.layout_row_push(0.4)
 		m.nk_ctx.checkbox_label("spectators", mut &app_ctx.config.active_config.spectator)
+
+		if app_ctx.config.active_config.spectator {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.spectator_count_color)
+
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.spectators_color)
+		}
+
 		m.nk_ctx.layout_row_end()
 
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
-		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
+		m.nk_ctx.layout_row_push(0.4)
 		m.nk_ctx.checkbox_label("indicators", mut &app_ctx.config.active_config.indicator)
+
+		if app_ctx.config.active_config.indicator {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.indicator_color_if_on)
+
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.indicator_color_if_off)
+		}
+
 		m.nk_ctx.layout_row_end()
 
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
-		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+		m.nk_ctx.layout_row_push(0.7)
 		m.nk_ctx.checkbox_label("fov circle", mut &app_ctx.config.active_config.fov_circle)
+
+		if app_ctx.config.active_config.fov_circle {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.fov_circle_color)
+		}
+
+
 		m.nk_ctx.layout_row_end()
 
 		m.nk_ctx.group_end()
@@ -463,9 +488,6 @@ fn (mut m NMenu) tab_config() {
 	if m.nk_ctx.group_begin("cfg_2", C.NK_WINDOW_NO_SCROLLBAR) {
 		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, 19, 1)
 		m.nk_ctx.layout_row_push(1)
-		if m.nk_ctx.button_label("unload") {
-
-		}
 
 		m.nk_ctx.layout_row_end()
 
