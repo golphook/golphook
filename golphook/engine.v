@@ -133,28 +133,22 @@ fn (e &Engine) is_in_fov(bone_pos_on_screen &utils.Vec3) (bool, f32) {
 pub fn can_shoot() bool {
 	mut app_ctx := unsafe { app() }
 
-	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.active_weapon())
-	if int(prob_weapon) != 0 {
-		weapon := &valve.Weapon(prob_weapon)
-		if weapon.in_reload() || weapon.clip1() <= 0 {
-			return false
-		}
-		if app_ctx.ent_cacher.local_player.next_attack() > app_ctx.interfaces.c_global_vars.curtime {
-			return false
-		}
-		return weapon.next_primary_attack() <= app_ctx.interfaces.c_global_vars.curtime
+	weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return false }
+
+	if weapon.in_reload() || weapon.clip1() <= 0 {
+		return false
 	}
-	return false
+	if app_ctx.ent_cacher.local_player.next_attack() > app_ctx.interfaces.c_global_vars.curtime {
+		return false
+	}
+	return weapon.next_primary_attack() <= app_ctx.interfaces.c_global_vars.curtime
+
 }
 
 pub fn (mut e Engine) adjust_fov_by_zoom() {
 	mut app_ctx := unsafe { app() }
-
-	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.active_weapon())
-	if int(prob_weapon) != 0 {
-		weapon := &valve.Weapon(prob_weapon)
-		e.fov *= (weapon.zoom_level() + 1)
-	}
+	weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return }
+	e.fov *= (weapon.zoom_level() + 1)
 }
 
 fn (mut e Engine) collect_targeted_ents() {

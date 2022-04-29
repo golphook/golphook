@@ -3,10 +3,6 @@ module valve
 import utils
 import offsets
 
-pub fn (w &WeaponData) name() string {
-	return unsafe { cstring_to_vstring(w.name) }
-}
-
 struct Weapon {}
 
 pub fn (w &Weapon) in_reload() bool {

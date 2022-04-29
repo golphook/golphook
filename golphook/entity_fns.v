@@ -90,6 +90,16 @@ pub fn stopp()  {
 	}
 }
 
+pub fn ent_weapon(forEnt &valve.Entity) ?&valve.Weapon {
+	mut app_ctx := unsafe { app() }
+	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(forEnt.active_weapon())
+	if int(prob_weapon) != 0 {
+		weapon := &valve.Weapon(prob_weapon)
+		return weapon
+	}
+	return error("")
+}
+
 pub fn clean_weapon_name(forEnt &valve.Entity) string {
 	mut app_ctx := unsafe { app() }
 

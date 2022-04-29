@@ -26,6 +26,22 @@ pub:
 	has_silencer bool
 }
 
+pub fn (w &WeaponData) name() string {
+	mut raw_name := unsafe { cstring_to_vstring(w.clean_name) }
+
+	mut cleaned_name := raw_name.replace("weapon_", "")
+	if raw_name.contains("_silencer") {
+		cleaned_name = cleaned_name.replace("_silencer", "")
+	}
+	if w.w_type == .knife {
+		cleaned_name = cleaned_name.replace("knife_", "")
+	}
+	cleaned_name = cleaned_name.replace("_", " ")
+	cleaned_name = cleaned_name.to_lower()
+	return cleaned_name
+}
+
+
 struct IWeaponSystem {}
 
 [callconv: "fastcall"]

@@ -120,7 +120,14 @@ pub fn visuals_weapon(ent &valve.Entity, visible bool) {
 	mut app_ctx := unsafe { app() }
 	mut screen_pos ,box_height, box_width := calculate_box(ent, adjust_text_spacing_by_zoom(ent)) or { return }
 
-	text := clean_weapon_name(ent)
+	weapon := ent_weapon(ent) or { return }
+	weapon_data := app_ctx.interfaces.i_weapon_system.weapon_data(weapon.definition_index())
+
+	mut text := weapon_data.name()
+
+	if app_ctx.config.active_config.weapon_clip {
+		text = "$text (${f32(weapon.clip1())})"
+	}
 
 	mut color := app_ctx.config.active_config.weapon_name_color_if_not_visible
 	if visible {
@@ -260,12 +267,9 @@ pub fn visuals_bones_id(ent &valve.Entity) {
 	if !app_ctx.ent_cacher.local_player.is_scoped() {
 		return dist / 67
 	}
-	mut r := 0
- 	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.active_weapon())
- 	if int(prob_weapon) != 0 {
- 		weapon := &valve.Weapon(prob_weapon)
- 		r += 67 * (weapon.zoom_level() + 1)
- 	}
+	mut r := 1
+	weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return dist / r}
+ 	r += 67 * (weapon.zoom_level() + 1)
 
 	return dist / r
  }
