@@ -18,10 +18,10 @@ mut:
 
 struct ColorRgba {
 mut:
-	r byte
-	g byte
-	b byte
-	a byte
+	r u8
+	g u8
+	b u8
+	a u8
 
 }
 
@@ -34,22 +34,22 @@ mut:
 // Get methods to avoid using unsafe to access union in the code
 
 [inline]
-pub fn (c &Color) r() byte {
+pub fn (c &Color) r() u8 {
 	return unsafe { c.r }
 }
 
 [inline]
-pub fn (c &Color) g() byte {
+pub fn (c &Color) g() u8 {
 	return unsafe { c.g }
 }
 
 [inline]
-pub fn (c &Color) b() byte {
+pub fn (c &Color) b() u8 {
 	return unsafe { c.b }
 }
 
 [inline]
-pub fn (c &Color) a() byte {
+pub fn (c &Color) a() u8 {
 	return unsafe { c.a }
 }
 
@@ -88,11 +88,11 @@ pub fn (c &Color) nk_colorf() C.nk_colorf {
 
 
 pub fn color_rbga<T>(r_ T, g_ T, b_ T, a_ T) Color {
-	return Color{ColorRgba: ColorRgba{r:byte(r_), g:byte(g_), b:byte(b_), a:byte(a_)}}
+	return Color{ColorRgba: ColorRgba{r:u8(r_), g:u8(g_), b:u8(b_), a:u8(a_)}}
 }
 
 pub fn color_f_rbga<T>(r_ T, g_ T, b_ T, a_ T) Color {
-	return Color{ColorRgba: ColorRgba{r:byte(r_ * 255.0), g:byte(g_ * 255.0), b:byte(b_ * 255.0), a:byte(a_ * 255.0)}}
+	return Color{ColorRgba: ColorRgba{r:u8(r_ * 255.0), g:u8(g_ * 255.0), b:u8(b_ * 255.0), a:u8(a_ * 255.0)}}
 }
 
 pub fn color_hex(withHex u32) Color {

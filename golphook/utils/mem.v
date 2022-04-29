@@ -40,7 +40,7 @@ pub fn patter_scan(inModule string, andSing string) ?voidptr {
 		if i == "?" {
 			return -1
 		} else {
-			return i16("0x$i".byte())
+			return i16("0x$i".u8())
 		}
 	})
 
@@ -53,7 +53,7 @@ pub fn patter_scan(inModule string, andSing string) ?voidptr {
 		mut is_match_pattern := true
 		for j in 0..pattern_size {
 			unsafe {
-				if base_addr[i + j] != byte(bytes_patten[j]) && bytes_patten[j] != -1 {
+				if base_addr[i + j] != u8(bytes_patten[j]) && bytes_patten[j] != -1 {
 					is_match_pattern = false
 					break
 				}
