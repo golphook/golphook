@@ -3,27 +3,6 @@ module valve
 import utils
 import offsets
 
-struct WeaponData {
-	pad [20]u8
-	max_clip int
-	pad1 [112]u8
-	name voidptr
-	pad1_ [60]u8
-	w_type int
-	pad2 [32]u8
-	full_auto bool
-	pad3 [3]u8
-	damage int
-	armor_ratio f32
-	bullets int
-	penetration f32
-	pad4 [8]u8
-	range f32
-	range_modifier f32
-	pad5 [16]u8
-	has_silencer bool
-}
-
 pub fn (w &WeaponData) name() string {
 	return unsafe { cstring_to_vstring(w.name) }
 }
@@ -59,15 +38,20 @@ pub fn (w &Weapon) clip1() int {
 	return *(utils.get_val_offset<int>(w, offsets.db.netvars.clip1))
 }
 
-// not working
-type P_wp_get_data = fn () &WeaponData
-pub fn (w &Weapon) weapon_data() WeaponData {
-	o_fn_add := utils.get_virtual(w, 460)
-	o_fn := &P_wp_get_data(o_fn_add)
-	C.load_this(w)
-	rs := o_fn()
-	return *rs
+pub fn (w &Weapon) definition_index() i16 {
+	return *(utils.get_val_offset<i16>(w, offsets.db.netvars.m_item_definition_index))
 }
+
+// not working
+// [callconv: "fastcall"]
+// type P_wp_get_data = fn (voidptr, voidptr) &WeaponData
+//
+// pub fn (w &Weapon) weapon_data() {
+// 	o_fn_add := utils.get_virtual(w, 460)
+// 	o_fn := &P_wp_get_data(o_fn_add)
+// 	rs := o_fn(w, voidptr(0))
+// 	C.printf(c"%p \n", rs)
+// }
 
 struct Entity {}
 

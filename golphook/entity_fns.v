@@ -89,3 +89,28 @@ pub fn stopp()  {
 
 	}
 }
+
+pub fn clean_weapon_name(forEnt &valve.Entity) string {
+	mut app_ctx := unsafe { app() }
+
+	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(forEnt.active_weapon())
+	if int(prob_weapon) != 0 {
+
+		weapon := &valve.Weapon(prob_weapon)
+		weapon_data := app_ctx.interfaces.i_weapon_system.weapon_data(weapon.definition_index())
+
+		mut raw_name := unsafe { cstring_to_vstring(weapon_data.clean_name) }
+
+		mut cleaned_name := raw_name.replace("weapon_", "")
+		if raw_name.contains("_silencer") {
+			cleaned_name = cleaned_name.replace("_silencer", "")
+		}
+		if weapon_data.w_type == .knife {
+			cleaned_name = cleaned_name.replace("knife_", "")
+		}
+		cleaned_name = cleaned_name.replace("_", " ")
+		cleaned_name = cleaned_name.to_lower()
+		return cleaned_name
+	}
+	return "unknown"
+}

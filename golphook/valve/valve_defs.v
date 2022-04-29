@@ -114,5 +114,20 @@ enum MoveType {
 	movetype_push
 	movetype_noclip
 	movetype_ladder
-	movetype_observer	
+	movetype_observer
+}
+
+pub enum WeaponType {
+	unknown = -1
+	knife
+	pistol
+	submachinegun
+	rifle
+	shotgun
+	sniper_rifle
+	machinegun
+	c4
+	taser
+	grenade
+	healthshot = 11
 }

@@ -19,6 +19,7 @@ pub mut:
 	c_input &valve.IInputSystem = 0
 	// i_panorama_engine &valve.IPanoramaUIEngine = 0
 	// i_surface &valve.ISurface = 0
+	i_weapon_system &valve.IWeaponSystem = 0
 }
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
@@ -67,5 +68,9 @@ fn (mut i Interfaces) bootstrap() {
 	mut device_scan := utils.patter_scan("client.dll", "A1 ? ? ? ? 5E 8B 40 10") or { panic("$err") }
 	i.c_global_vars = **(&&&valve.CGlobalVarsBase(voidptr(usize(device_scan) + 1)))
 	utils.pront('c_global_vars -> ${voidptr(i.c_global_vars).str()}')
+
+	mut weapon_system_scan := utils.patter_scan("client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0") or { panic("$err") }
+	i.i_weapon_system = *(&&valve.IWeaponSystem(voidptr(usize(weapon_system_scan) + 2)))
+	utils.pront('i_weapon_system -> ${voidptr(i.i_weapon_system).str()}')
 
 }
