@@ -229,6 +229,13 @@ fn (mut m NMenu) tab_visuals() {
 
 		m.nk_ctx.layout_row_end()
 
+		if app_ctx.config.active_config.weapon_name {
+			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
+			m.nk_ctx.layout_row_push(1.0)
+			m.nk_ctx.checkbox_label("clip", mut &app_ctx.config.active_config.weapon_clip)
+			m.nk_ctx.layout_row_end()
+		}
+
 		m.nk_ctx.group_end()
 	}
 
