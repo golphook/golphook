@@ -215,6 +215,20 @@ fn (mut m NMenu) tab_visuals() {
 			m.nk_ctx.layout_row_end()
 		}
 
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
+		m.nk_ctx.layout_row_push(0.4)
+		m.nk_ctx.checkbox_label("weapon name", mut &app_ctx.config.active_config.weapon_name)
+
+		if app_ctx.config.active_config.weapon_name {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.weapon_name_color_if_visible)
+
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.weapon_name_color_if_not_visible)
+		}
+
+		m.nk_ctx.layout_row_end()
+
 		m.nk_ctx.group_end()
 	}
 

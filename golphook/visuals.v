@@ -20,6 +20,9 @@ pub fn visuals_on_frame() {
 		if app_ctx.config.active_config.names {
 			visuals_name(ent, is_visible)
 		}
+		if app_ctx.config.active_config.weapon_name {
+			visuals_weapon(ent, is_visible)
+		}
 		if app_ctx.config.active_config.box {
 			visuals_box(ent, is_visible)
 		}
@@ -96,6 +99,7 @@ pub fn visuals_name(ent &valve.Entity, visible bool) {
 		color = app_ctx.config.active_config.names_color_if_visible
 	}
 
+	// TODO: create fn to handle text calcul
 	mut font := 12
 	mut text_size := f32( (font * text.len)) * 0.57
 	mut off := text_size / 2
@@ -110,6 +114,34 @@ pub fn visuals_name(ent &valve.Entity, visible bool) {
 	}
 
 	app_ctx.rnd_queue.push(new_text(utils.new_vec2((screen_pos.y - box_height), screen_pos.x - off).vec_3(), text, u16(font), false, false, C.DT_LEFT | C.DT_NOCLIP, color))
+}
+
+pub fn visuals_weapon(ent &valve.Entity, visible bool) {
+	mut app_ctx := unsafe { app() }
+	mut screen_pos ,box_height, box_width := calculate_box(ent, adjust_text_spacing_by_zoom(ent)) or { return }
+
+	text := clean_weapon_name(ent)
+
+	mut color := app_ctx.config.active_config.weapon_name_color_if_not_visible
+	if visible {
+		color = app_ctx.config.active_config.weapon_name_color_if_visible
+	}
+
+	// TODO: create fn to handle text calcul
+	mut font := 12
+	mut text_size := f32( (font * text.len)) * 0.57
+	mut off := text_size / 2
+
+	if text_size > box_width {
+		font = int(((box_width/0.57) / text.len) + 1)
+		if font <= 9 {
+			font = 9
+		}
+		text_size = f32( (font * text.len)) * 0.57
+		off = text_size / 2
+	}
+
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2((screen_pos.y + 2), screen_pos.x - off).vec_3(), text, u16(font), false, false, C.DT_LEFT | C.DT_NOCLIP, color))
 }
 
 pub fn calculate_box(withEnt &valve.Entity, andZOffset f32) ?(utils.Vec3, f32, f32) {

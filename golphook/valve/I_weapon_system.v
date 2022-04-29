@@ -26,7 +26,6 @@ pub:
 	has_silencer bool
 }
 
-
 struct IWeaponSystem {}
 
 [callconv: "fastcall"]
