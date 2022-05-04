@@ -26,11 +26,19 @@ pub mut:
 	targeted_entities []TargetedEntity
 
 	fov f32
+
+	is_spraying bool
 }
 
 fn (mut e Engine) on_frame() {
 	mut app_ctx := unsafe { app() }
 
+	mut force_attack := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack)
+
+	if unsafe { *force_attack } == 4 {
+		e.is_spraying = false
+	}
+	
 	e.fov = app_ctx.config.active_config.fov
 	e.handle_keys()
 
@@ -41,6 +49,11 @@ fn (mut e Engine) on_frame() {
 	}
 
 	if e.do_a_shoot {
+
+		if e.is_spraying {
+			return
+		}
+
 		if !can_shoot() {
 			return
 		}
@@ -58,8 +71,8 @@ fn (mut e Engine) on_frame() {
 			}
 
 			e.aim_at(closest_target)
-			mut force_attack := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack)
 			unsafe { *force_attack = 6 }
+			e.is_spraying = true
 		}
 	}
 }
