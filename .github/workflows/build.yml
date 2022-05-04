@@ -22,8 +22,7 @@ jobs:
         uses: actions/checkout@v2
       - name: build prod
         run: |
-          mkdir build
-          nmake ci-build-prod
+          v run scripts\build_prod.vsh
       - name: build debug
         run: nmake ci-build-debug
       - name: Install powershell Zip
