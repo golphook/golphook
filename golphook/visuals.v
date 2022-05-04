@@ -13,7 +13,7 @@ pub fn visuals_on_frame() {
 	bones_to_be_visible_visuals := [usize(8), 42, 12, 79, 72, 71, 78]
 
 	for ent in ents {
-		is_visible := i_can_see(ent, bones_to_be_visible_visuals)
+		is_visible, _ := i_can_see(ent, bones_to_be_visible_visuals)
 		if app_ctx.config.active_config.glow {
 			visuals_glow(ent, is_visible)
 		}
@@ -198,7 +198,7 @@ pub fn indicators() {
 
 	if app_ctx.engine.do_force_awal {
 		indicators_cnt++
-		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "Automatic penetration	", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_on))
+		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "No wall check", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_on))
 	}
 
 	if app_ctx.engine.do_force_bone {

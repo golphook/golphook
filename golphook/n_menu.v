@@ -402,7 +402,7 @@ fn (mut m NMenu) tab_engine() {
 		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
 		m.nk_ctx.layout_row_push(0.5)
 		toggled = if app_ctx.config.active_config.engine_force_awall_key_toggle { "toggle" } else { "press" }
-		m.nk_ctx.label("aw key ($toggled)", C.NK_TEXT_LEFT)
+		m.nk_ctx.label("nwc key ($toggled)", C.NK_TEXT_LEFT)
 		m.nk_ctx.layout_row_push(0.45)
 		m.table_combo(mut &app_ctx.config.active_config.engine_force_awall_key, mut m.engine_keys, fn (mut app_ctx &App) {})
 		m.nk_ctx.layout_row_push(0.05)
