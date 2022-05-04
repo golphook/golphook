@@ -118,7 +118,7 @@ pub fn visuals_name(ent &valve.Entity, visible bool) {
 
 pub fn visuals_weapon(ent &valve.Entity, visible bool) {
 	mut app_ctx := unsafe { app() }
-	mut screen_pos ,box_height, box_width := calculate_box(ent, adjust_text_spacing_by_zoom(ent)) or { return }
+	mut screen_pos ,_, box_width := calculate_box(ent, adjust_text_spacing_by_zoom(ent)) or { return }
 
 	weapon := ent_weapon(ent) or { return }
 	weapon_data := app_ctx.interfaces.i_weapon_system.weapon_data(weapon.definition_index())
@@ -232,7 +232,7 @@ pub fn visuals_radar(ent &valve.Entity) {
 }
 
 pub fn visuals_bones_id(ent &valve.Entity) {
- 	bones := [usize(0), 8, 9, 6, 5]
+ 	bones := [usize(0), 8, 9, 6, 5, 87, 82, 78, 73, 41, 12]
  	mut app_ctx := unsafe { app() }
  	for b in bones {
  		mut pos := ent.bone(b) or { return }

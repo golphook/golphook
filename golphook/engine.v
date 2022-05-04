@@ -38,7 +38,7 @@ fn (mut e Engine) on_frame() {
 	if unsafe { *force_attack } == 4 {
 		e.is_spraying = false
 	}
-	
+
 	e.fov = app_ctx.config.active_config.fov
 	e.handle_keys()
 
@@ -192,7 +192,7 @@ fn (mut e Engine) collect_targeted_ents() {
 
 				if in_fov {
 
-					can_i_see, tr := i_can_see(ent, [usize(b_id)])
+					can_i_see, _ := i_can_see(ent, [usize(b_id)])
 
 					if e.do_force_awal || can_i_see {
 						target.bones_on_screen << Bone{id: b_id, pos: bone_screen}

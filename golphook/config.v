@@ -56,8 +56,8 @@ pub mut:
 	names_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
 	names_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241,255)
 
-	weapon_name bool = false
-	weapon_clip bool = false
+	weapon_name bool
+	weapon_clip bool
 	weapon_name_color_if_visible utils.Color = utils.color_rbga(1,1,1,255)
 	weapon_name_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241,255)
 
