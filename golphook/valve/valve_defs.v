@@ -131,3 +131,16 @@ pub enum WeaponType {
 	grenade
 	healthshot = 11
 }
+
+pub enum HitGroup {
+	invalid = -1
+    generic
+    head
+    chest
+    stomach
+    left_arm
+    right_arm
+    left_leg
+    right_leg
+    gear = 10
+}

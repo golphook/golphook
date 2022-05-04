@@ -5,16 +5,17 @@ import utils
 import math
 import offsets
 
-pub fn i_can_see(player &valve.Entity, bones []usize) bool {
+pub fn i_can_see(player &valve.Entity, bones []usize) (bool, valve.CGameTrace) {
 
 	mut app_ctx := unsafe { app() }
 
 	mut from := app_ctx.ent_cacher.local_player.eye_pos()
 
 	mut can_see := false
+	mut tr_ := valve.CGameTrace{}
 	for bone in bones {
 		mut end := player.bone(bone) or {
-			return false
+			return false, valve.CGameTrace{}
 		}
 		mut tr := valve.CGameTrace{}
 		mut ray := valve.Ray{}
@@ -24,12 +25,13 @@ pub fn i_can_see(player &valve.Entity, bones []usize) bool {
 
 		ray.init(from, end)
 		app_ctx.interfaces.i_engine_trace.trace_ray(&ray, 0x46004009, &filter, &tr)
+		tr_ = tr
 		if tr.is_invisible() {
 			can_see = true
 			break
 		}
 	}
-	return can_see
+	return can_see, tr_
 }
 
 pub fn check_ent_visible_by_mask(ent &valve.Entity) bool {
@@ -98,29 +100,4 @@ pub fn ent_weapon(forEnt &valve.Entity) ?&valve.Weapon {
 		return weapon
 	}
 	return error("")
-}
-
-pub fn clean_weapon_name(forEnt &valve.Entity) string {
-	mut app_ctx := unsafe { app() }
-
-	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(forEnt.active_weapon())
-	if int(prob_weapon) != 0 {
-
-		weapon := &valve.Weapon(prob_weapon)
-		weapon_data := app_ctx.interfaces.i_weapon_system.weapon_data(weapon.definition_index())
-
-		mut raw_name := unsafe { cstring_to_vstring(weapon_data.clean_name) }
-
-		mut cleaned_name := raw_name.replace("weapon_", "")
-		if raw_name.contains("_silencer") {
-			cleaned_name = cleaned_name.replace("_silencer", "")
-		}
-		if weapon_data.w_type == .knife {
-			cleaned_name = cleaned_name.replace("knife_", "")
-		}
-		cleaned_name = cleaned_name.replace("_", " ")
-		cleaned_name = cleaned_name.to_lower()
-		return cleaned_name
-	}
-	return "unknown"
 }

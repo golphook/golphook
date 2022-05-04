@@ -156,6 +156,14 @@ pub fn (e &Entity) velocity() utils.Vec3 {
 	return *(utils.get_val_offset<utils.Vec3>(e, offsets.db.netvars.velocity))
 }
 
+pub fn (e &Entity) has_helmet() bool {
+	return *(utils.get_val_offset<bool>(e, offsets.db.netvars.m_has_helmet))
+}
+
+pub fn (e &Entity) armor() i32 {
+	return *(utils.get_val_offset<i32>(e, offsets.db.netvars.m_armor_value))
+}
+
 pub fn (e &Entity) is_moving() bool{
 	v_vel := e.velocity()
 	if (v_vel.x + v_vel.y + v_vel.z) == 0.0 {

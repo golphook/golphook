@@ -179,7 +179,9 @@ fn (mut e Engine) collect_targeted_ents() {
 
 				if in_fov {
 
-					if e.do_force_awal || i_can_see(ent, [usize(b_id)]) {
+					can_i_see, tr := i_can_see(ent, [usize(b_id)])
+
+					if e.do_force_awal || can_i_see {
 						target.bones_on_screen << Bone{id: b_id, pos: bone_screen}
 
 						if bone_screen.z < target.closest_bone.pos.z || b_id == app_ctx.config.active_config.engine_force_bone_id || b_id == app_ctx.config.active_config.engine_pref_bone_id {

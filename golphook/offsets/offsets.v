@@ -68,6 +68,8 @@ pub:
 	competitive_wins u32 [json: m_iCompetitiveWins]
 	flash_duration u32 [json: m_flFlashDuration]
 	freeze_period u32 [json: m_bFreezePeriod]
+	m_has_helmet u32 [json: m_bHasHelmet]
+	m_armor_value u32 [json: m_ArmorValue]
 }
 
 struct Offsets {

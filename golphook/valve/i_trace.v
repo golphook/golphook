@@ -47,7 +47,7 @@ pub mut:
     start_solid bool
 	pod [4]u8
 	surface CSurface
-	hit_group int
+	hit_group HitGroup
 	pud [4]u8
 	hit_entity voidptr
 	hitbox int
@@ -61,6 +61,31 @@ pub fn (c &CGameTrace) did_hit() bool {
 [inline]
 pub fn (c &CGameTrace) is_invisible() bool {
     return c.fraction > 0.97
+}
+
+pub fn (c &CGameTrace) damage_multiplier() f32 {
+    match c.hit_group {
+		.head { return 4.0 }
+		.stomach { return 1.25 }
+		.left_leg { return 0.75 }
+		.right_leg { return 0.75 }
+		else {
+			return 1.0
+		}
+	}
+}
+
+pub fn (c &CGameTrace) is_armored(hasHelmet bool) bool {
+    match c.hit_group {
+		.head { return hasHelmet }
+		.chest { return true }
+		.stomach { return true }
+		.left_arm { return true }
+		.right_arm { return true }
+		else {
+			return false
+		}
+	}
 }
 
 pub struct Ray {
