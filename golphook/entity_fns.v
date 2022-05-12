@@ -101,3 +101,14 @@ pub fn ent_weapon(forEnt &valve.Entity) ?&valve.Weapon {
 	}
 	return error("")
 }
+
+pub fn ent_weapon_(for_ent &valve.Player) ?&valve.Weapon_t {
+	mut app_ctx := unsafe { app() }
+
+	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(for_ent.active_weapon())
+	if int(prob_weapon) != 0 {
+		weapon := &valve.Weapon_t(prob_weapon)
+		return weapon
+	}
+	return error("")
+}

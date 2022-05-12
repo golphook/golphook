@@ -79,7 +79,23 @@ pub fn patter_scan(inModule string, andSing string) ?voidptr {
 }
 
 // ne pas passer de voidptr dans T sinon ca fait un &voidptr ce qui est egal a void**
-// alors que si a al palce on passe un usize ca fait usize*
+// alors que si a la palce on passe un usize ca fait usize*
 pub fn get_val_offset<T>(inThis voidptr, withOffset usize) &T {
 	return unsafe { &T(usize(inThis) + withOffset) }
+}
+
+struct Value<T> {
+	ptr voidptr
+}
+
+pub fn (r &Value<T>) get<U>() U {
+	return U(*r.ptr)
+}
+
+pub fn (r &Value<T>) set(with_new_val T) {
+	// bypass v cannot mut return value
+	mut to_mod := &T(r.ptr)
+	unsafe {
+		*to_mod = with_new_val
+	}
 }

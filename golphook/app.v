@@ -24,6 +24,7 @@ pub mut:
 	ent_cacher &EntityCacher = 0
 	config &ConfigManager = 0
 	engine &Engine = 0
+	visuals &Visuals = 0
 	menu &NMenu = 0
 	kill_sound &KillSound = 0
 
@@ -66,6 +67,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	a.ent_cacher = &EntityCacher{}
 
 	a.engine = &Engine{}
+	a.visuals = &Visuals{}
 
 	a.menu = &NMenu{}
 

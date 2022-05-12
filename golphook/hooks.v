@@ -115,7 +115,7 @@ fn hk_frame_stage_notify(stage u32) {
 			app_ctx.ent_cacher.on_frame()
 			app_ctx.on_frame()
 			app_ctx.engine.on_frame()
-			visuals_on_frame()
+			app_ctx.visuals.on_frame()
 			others_on_frame()
 			app_ctx.kill_sound.on_frame()
 		}
@@ -137,7 +137,7 @@ fn hk_end_scene(dev voidptr) bool {
 	}
 
 	if app_ctx.is_ok {
-		visuals_on_end_scene()
+		//visuals_on_end_scene()
 		app_ctx.rnd_queue.draw_queue()
 	}
 
