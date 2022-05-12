@@ -18,7 +18,7 @@ pub mut:
 	c_global_vars &valve.CGlobalVarsBase = 0
 	c_input &valve.IInputSystem = 0
 	// i_panorama_engine &valve.IPanoramaUIEngine = 0
-	// i_surface &valve.ISurface = 0
+	i_surface &valve.ISurface = 0
 	i_weapon_system &valve.IWeaponSystem = 0
 }
 
@@ -43,7 +43,6 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 }
 
 fn (mut i Interfaces) get_interface_pattern<T>(with_name string, in_module string, with_pattern string, ptr_manipulation 	fn(voidptr) voidptr) &T {
-
 	ptn_res := utils.patter_scan(in_module, with_pattern) or {
 		utils.error_critical('Failed to get inferface', with_name)
 	}
@@ -55,6 +54,7 @@ fn (mut i Interfaces) get_interface_pattern<T>(with_name string, in_module strin
 
 fn (mut i Interfaces) bootstrap() {
 	utils.pront("[-] bootstraping interfaces...")
+
 	i.cdll_int = i.get_interface<valve.IVEngineClient>('VEngineClient014', 'engine.dll')
 	i.i_cvar = i.get_interface<valve.ICvar>('VEngineCvar007', 'vstdlib.dll')
 	i.i_base_client = i.get_interface<valve.IBaseClientDLL>('VClient018', 'client.dll')
@@ -62,9 +62,10 @@ fn (mut i Interfaces) bootstrap() {
 	i.i_debug_overlay = i.get_interface<valve.IVDebugOverlay>("VDebugOverlay004", "engine.dll")
 	i.i_model_info = i.get_interface<valve.IVModelInfo>("VModelInfoClient004", "engine.dll")
 	i.i_engine_trace = i.get_interface<valve.IEngineTrace>("EngineTraceClient004", "engine.dll")
-	// i.i_surface = i.get_interface<valve.ISurface>("VGUI_Surface031", "vguimatsurface.dll")
+	i.i_surface = i.get_interface<valve.ISurface>("VGUI_Surface031", "vguimatsurface.dll")
 	i.c_input = i.get_interface<valve.IInputSystem>("InputSystemVersion001", "inputsystem.dll")
 	// i.i_panorama_engine = i.get_interface<valve.IPanoramaUIEngine>("PanoramaUIEngine001", "panorama.dll")
+
 	i.c_global_vars = i.get_interface_pattern<valve.CGlobalVarsBase>("CGlobalVarsBase", "client.dll", "A1 ? ? ? ? 5E 8B 40 10", fn(ptn_res voidptr) voidptr {
 		return **(&&&usize(voidptr(usize(ptn_res) + 1)))
 	})

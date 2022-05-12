@@ -7,24 +7,21 @@ import nuklear
 type O_frame_stage_notify = fn (u32)
 type O_end_scene = fn (voidptr) bool
 type O_reset = fn (voidptr, voidptr) int
-
-[callconv: "stdcall"]
-type O_set_viewmodel_offets = fn (int, f32, f32, f32) int
-
 type O_get_viewmodel_fov = fn () f32
 
-// [callconv: "fastcall"]
-// type O_lock_cursor = fn (voidptr, voidptr)
+[callconv: "fastcall"]
+type O_set_viewmodel_offets = fn (voidptr, voidptr, int, f32, f32, f32) int
+
+[callconv: "fastcall"]
+type O_lock_cursor = fn (voidptr, voidptr)
 
 struct HookEntry<T> {
 pub mut:
 	name          string   [required]
 	original_addr voidptr  [required]
-	original_save voidptr
+	original_save T
 	hooked        voidptr  [required]
 }
-
-
 
 fn (mut h HookEntry<T>) hook() {
 	if C.MH_CreateHook(h.original_addr, h.hooked, &h.original_save) != C.MH_OK {
@@ -33,93 +30,63 @@ fn (mut h HookEntry<T>) hook() {
 	}
 }
 
+fn add_hook<T>(with_name string, with_og_add voidptr, and_hkd_fn voidptr) HookEntry<T> {
+	mut hk_entry := HookEntry<T>{
+		name: with_name
+		original_addr: with_og_add
+		hooked: and_hkd_fn
+	}
+	hk_entry.hook()
+	utils.pront(utils.str_align("[+] $with_name", 40, "| Ok!"))
+	return hk_entry
+
+}
+
 struct Hooks {
 pub mut:
 	frame_stage_notify HookEntry<O_frame_stage_notify>
 	end_scene HookEntry<O_end_scene>
 	reset HookEntry<O_reset>
-	wnd_proc HookEntry<O_end_scene>
+	wnd_proc HookEntry<voidptr>
 	set_viewmodel_offets HookEntry<O_set_viewmodel_offets>
 	get_viewmodel_fov HookEntry<O_get_viewmodel_fov>
-	// lock_cursor HookEntry<O_lock_cursor>
+	lock_cursor HookEntry<O_lock_cursor>
 }
 
 fn (mut h Hooks) bootstrap() {
+	mut app_ctx := unsafe { app() }
+
+	utils.pront("[-] bootstraping hooks...")
 
 	if C.MH_Initialize() != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_Initialize()')
 		return
 	}
 
-	frm_stg_ntfy_addr := utils.get_virtual(unsafe { voidptr(app().interfaces.i_base_client) },
-		37)
+	h.frame_stage_notify = add_hook<O_frame_stage_notify>("FrameStageNotify()", utils.get_virtual(app_ctx.interfaces.i_base_client, 37), &hk_frame_stage_notify)
+	h.reset = add_hook<O_reset>("Reset()", utils.get_virtual(app_ctx.d3d.device, 16), &hk_reset)
+	h.end_scene = add_hook<O_end_scene>("EndScene()", utils.get_virtual(app_ctx.d3d.device, 42), &hk_end_scene)
+	h.lock_cursor = add_hook<O_lock_cursor>("LockCursor()", utils.get_virtual(app_ctx.interfaces.i_surface, 67), &hk_lock_cursor)
 
-	h.frame_stage_notify = HookEntry<O_frame_stage_notify>{
-		name: 'FrameStageNotify()'
-		original_addr: frm_stg_ntfy_addr
-		hooked: &hk_frame_stage_notify
-	}
-	h.frame_stage_notify.hook()
-
-	device_add := unsafe { app().d3d.device }
-	reset_add := utils.get_virtual(device_add, 16)
-
-	h.reset = HookEntry<O_reset>{
-		name: 'Reset()'
-		original_addr: reset_add
-		hooked: &hk_reset
-	}
-	h.reset.hook()
-
-	// lock_cursor_add := utils.get_virtual(app_ctx.interfaces.i_surface, 67)
-	// h.lock_cursor = HookEntry<O_lock_cursor>{
-	// 	name: 'LockCursor()'
-	// 	original_addr: lock_cursor_add
-	// 	hooked: &hk_lock_cursor
-	// }
-	// h.lock_cursor.hook()
-
-	end_scene_add := utils.get_virtual(device_add, 42)
-
-	h.end_scene = HookEntry<O_end_scene>{
-		name: 'EndScene()'
-		original_addr: end_scene_add
-		hooked: &hk_end_scene
-	}
-	h.end_scene.hook()
-
-	h.wnd_proc = HookEntry<O_end_scene>{
+	h.wnd_proc = HookEntry<voidptr>{
 		name: 'WndProc()'
 		original_addr: voidptr(0)
 		hooked: &hk_wnd_proc
 	}
-
 	h.wnd_proc.original_save = voidptr( C.SetWindowLongA( C.FindWindowA(c"Valve001", &char(0)), -4, i32(h.wnd_proc.hooked)) )
-	C.printf(c"wndproc : %p \n", h.wnd_proc.original_save)
+	utils.pront(utils.str_align("[+] WndProc()", 40, "| Ok!"))
 
-	mut set_viewmodel_offets_add := utils.patter_scan("client.dll", "55 8B EC 8B 45 08 F3 0F 7E 45") or { panic("$err") }
-	h.set_viewmodel_offets = HookEntry<O_set_viewmodel_offets>{
-		name: 'SetViewmodelOffsets()'
-		original_addr: set_viewmodel_offets_add
-		hooked: &hk_set_viewmodel_offets
-	}
-	h.set_viewmodel_offets.hook()
+	set_viewmodel_offets_add := utils.patter_scan("client.dll", "55 8B EC 8B 45 08 F3 0F 7E 45") or { panic("$err") }
+	h.set_viewmodel_offets = add_hook<O_set_viewmodel_offets>("SetViewmodelOffsets()", set_viewmodel_offets_add, &hk_set_viewmodel_offets)
 
-	mut get_viewmodel_fov_add := utils.patter_scan("client.dll", "55 8B EC 8B 4D 04 83 EC 08 57") or { panic("$err") }
-	h.get_viewmodel_fov = HookEntry<O_get_viewmodel_fov>{
-		name: 'GetViewModelFov()'
-		original_addr: get_viewmodel_fov_add
-		hooked: &hk_get_viewmodel_fov
-	}
-	h.get_viewmodel_fov.hook()
+	get_viewmodel_fov_add := utils.patter_scan("client.dll", "55 8B EC 8B 4D 04 83 EC 08 57") or { panic("$err") }
+	h.get_viewmodel_fov = add_hook<O_get_viewmodel_fov>("GetViewModelFov()", get_viewmodel_fov_add, &hk_get_viewmodel_fov)
 
 	if C.MH_EnableHook(C.MH_ALL_HOOKS) != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_EnableHook()')
 		return
 	}
 }
-
-
 
 fn (mut h Hooks) release() {
 	if C.MH_DisableHook(C.MH_ALL_HOOKS) != C.MH_OK {
@@ -134,15 +101,15 @@ fn (mut h Hooks) release() {
 }
 
 [unsafe; callconv: "stdcall"]
-fn hk_frame_stage_notify(a u32) {
+fn hk_frame_stage_notify(stage u32) {
+	mut app_ctx := unsafe { app() }
 
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
-		utils.pront('hk_frame_stage_notify() OK !')
+		utils.pront(utils.str_align("[*] hk_frame_stage_notify()", 40, "| Called"))
 	}
 
-	mut app_ctx := unsafe { app() }
 	if app_ctx.is_ok {
 		if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
 			app_ctx.ent_cacher.on_frame()
@@ -152,24 +119,21 @@ fn hk_frame_stage_notify(a u32) {
 			others_on_frame()
 			app_ctx.kill_sound.on_frame()
 		}
-
 	}
 
-	unsafe {
-		ofn := &O_frame_stage_notify(app().hooks.frame_stage_notify.original_save)
-		ofn(a)
-	}
+	app_ctx.hooks.frame_stage_notify.original_save(stage)
 }
 
 [unsafe; callconv: "stdcall"]
 fn hk_end_scene(dev voidptr) bool {
 	mut app_ctx := unsafe { app() }
+
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
-		utils.pront('hk_end_scene() OK !')
-		app_ctx.menu.bootstrap(dev)
+		utils.pront(utils.str_align("[*] hk_end_scene()", 40, "| Called"))
 
+		app_ctx.menu.bootstrap(dev)
 	}
 
 	if app_ctx.is_ok {
@@ -179,23 +143,19 @@ fn hk_end_scene(dev voidptr) bool {
 
 	app_ctx.menu.on_send_scene()
 
-	unsafe {
-		ofn := &O_end_scene(app().hooks.end_scene.original_save)
-		return ofn(dev)
-	}
-
+	return app_ctx.hooks.end_scene.original_save(dev)
 }
 
 [unsafe; callconv: "stdcall"]
 fn hk_reset(dev voidptr, params voidptr) int {
+	mut app_ctx := unsafe { app() }
 
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
-		utils.pront('hk_reset() OK !')
+		utils.pront(utils.str_align("[*] hk_reset()", 40, "| Called"))
 	}
 
-	mut app_ctx := unsafe { app() }
 	if app_ctx.is_ok {
 		app_ctx.is_ok = false
 		app_ctx.rnd_queue.clear(-1)
@@ -203,33 +163,31 @@ fn hk_reset(dev voidptr, params voidptr) int {
 		app_ctx.menu.release(true)
 	}
 
-	unsafe {
-		ofn := &O_reset(app().hooks.reset.original_save)
-		ret := ofn(dev, params)
+	ret := app_ctx.hooks.reset.original_save(dev, params)
 
-		if !app_ctx.is_ok {
-			app_ctx.d3d.bootstrap()
-			app_ctx.menu.bootstrap(dev)
-			app_ctx.is_ok = true
-		}
-		return ret
+	if !app_ctx.is_ok {
+		app_ctx.d3d.bootstrap()
+		app_ctx.menu.bootstrap(dev)
+		app_ctx.is_ok = true
 	}
+
+	return ret
 }
 
 [unsafe; callconv: "fastcall"]
 fn hk_set_viewmodel_offets(ecx voidptr, edx voidptr, smt int, x f32, y f32, z f32) int {
+	mut app_ctx := unsafe { app() }
 
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
-		utils.pront('hk_set_viewmodel_offetsl() OK !')
+		utils.pront(utils.str_align("[*] hk_set_viewmodel_offets()", 40, "| Called"))
 	}
 
 	mut og_x := x
 	mut og_y := y
 	mut og_z := z
 
-	mut app_ctx := unsafe { app() }
 	if app_ctx.is_ok {
 		if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
 
@@ -241,30 +199,22 @@ fn hk_set_viewmodel_offets(ecx voidptr, edx voidptr, smt int, x f32, y f32, z f3
 		}
 	}
 
-	unsafe {
-		ofn := &O_set_viewmodel_offets(app().hooks.set_viewmodel_offets.original_save)
-		C.load_this(ecx)
-		return ofn(smt ,og_x, og_y, og_z)
-	}
+	return app_ctx.hooks.set_viewmodel_offets.original_save(ecx, edx, smt ,og_x, og_y, og_z)
 }
 
 [unsafe; callconv: "stdcall"]
 fn hk_get_viewmodel_fov() f32 {
+	mut app_ctx := unsafe { app() }
 
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
-		utils.pront('hk_get_viewmodel_fov() OK !')
+		utils.pront(utils.str_align("[*] hk_get_viewmodel_fov()", 40, "| Called"))
 	}
-
-	mut app_ctx := unsafe { app() }
 
 	mut og_viewmodel_fov := f32(0.0)
 
-	unsafe {
-		ofn := &O_get_viewmodel_fov(app().hooks.get_viewmodel_fov.original_save)
-		og_viewmodel_fov = ofn()
-	}
+	og_viewmodel_fov = app_ctx.hooks.get_viewmodel_fov.original_save()
 
 	if app_ctx.is_ok {
 		if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
@@ -273,15 +223,19 @@ fn hk_get_viewmodel_fov() f32 {
 			}
 		}
 	}
-	// og_viewmodel_fov = 100
 
 	return og_viewmodel_fov
 }
 
-[callconv: "stdcall"]
+[unsafe; callconv: "stdcall"]
 fn hk_wnd_proc(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool {
-
 	mut app_ctx := unsafe { app() }
+
+	mut static is_called_once := false
+	if !is_called_once {
+		is_called_once = true
+		utils.pront(utils.str_align("[*] hk_wnd_proc()", 40, "| Called"))
+	}
 
 	if withMsg == C.WM_KEYDOWN {
 		match withWParam {
@@ -297,8 +251,6 @@ fn hk_wnd_proc(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool
 		}
 	}
 
-
-
 	if app_ctx.menu.is_opened {
 		if nuklear.handle_event(withHwnd, withMsg, withWParam, andLParam) == 1 {
 			return false
@@ -307,27 +259,16 @@ fn hk_wnd_proc(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool
 
     return C.CallWindowProcW(app_ctx.hooks.wnd_proc.original_save, withHwnd, withMsg, withWParam, andLParam)
 }
-// [unsafe; callconv: "fastcall"]
-// fn hk_lock_cursor(ecx voidptr, edx voidptr) {
-//
-// 	mut static is_called_once := false
-// 	if !is_called_once {
-// 		is_called_once = true
-// 		utils.pront('hk_lock_cursor() OK !')
-// 	}
-//
-// 	mut app_ctx := unsafe { app() }
-//
-// 	if app_ctx.is_ok {
-// 		// if app_ctx.menu.is_opened {
-// 		// 	app_ctx.interfaces.i_surface.unlock_cursor()
-// 		// 	return
-// 		// }
-// 	}
-//
-// 	unsafe {
-// 		ofn := &O_lock_cursor(app().hooks.lock_cursor.original_save)
-// 		//C.load_this(ecx)
-// 		ofn(ecx, edx)
-// 	}
-// }
+
+[unsafe; callconv: "fastcall"]
+fn hk_lock_cursor(ecx voidptr, edx voidptr) {
+	mut app_ctx := unsafe { app() }
+
+	mut static is_called_once := false
+	if !is_called_once {
+		is_called_once = true
+		utils.pront(utils.str_align("[*] hk_lock_cursor()", 40, "| Called"))
+	}
+
+	app_ctx.hooks.lock_cursor.original_save(ecx,edx)
+}
