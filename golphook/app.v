@@ -24,7 +24,6 @@ pub mut:
 	ent_cacher &EntityCacher = 0
 	config &ConfigManager = 0
 	engine &Engine = 0
-	//menu &Menu = 0
 	menu &NMenu = 0
 	kill_sound &KillSound = 0
 
@@ -57,8 +56,6 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	a.interfaces.bootstrap()
 
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
-
-	// a.menu = &Menu{}
 
 	a.d3d = &d3d.D3d9{}
 	a.d3d.bootstrap()
