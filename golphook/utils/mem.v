@@ -94,8 +94,7 @@ pub fn (r &Value<T>) get<U>() U {
 
 pub fn (r &Value<T>) set(with_new_val T) {
 	// bypass v cannot mut return value
-	mut to_mod := &T(r.ptr)
 	unsafe {
-		*to_mod = with_new_val
+		*&T(r.ptr) = with_new_val
 	}
 }
