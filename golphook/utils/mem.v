@@ -88,8 +88,8 @@ struct Value<T> {
 	ptr voidptr
 }
 
-pub fn (r &Value<T>) get<U>() U {
-	return U(*r.ptr)
+pub fn (r &Value<T>) get<T>() T {
+	return *&T(r.ptr)
 }
 
 pub fn (r &Value<T>) set(with_new_val T) {

@@ -13,7 +13,7 @@ pub mut:
 
 struct TargetedEntity {
 pub mut:
-	ent &valve.Entity = 0
+	ent &valve.Player = 0
 	bones_on_screen []Bone
 	closest_bone Bone = Bone{id: 999, pos: utils.new_vec3(0,0,999)}
 }
@@ -167,7 +167,7 @@ pub fn (mut e Engine) adjust_fov_by_zoom() {
 fn (mut e Engine) collect_targeted_ents() {
 	mut app_ctx := unsafe { app() }
 
-	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
+	ents := app_ctx.ent_cacher.filter_player(fn (e &valve.Player, ctx &EntityCacher) bool {
 		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant() == false
 	})
 

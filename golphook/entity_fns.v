@@ -5,7 +5,7 @@ import utils
 import math
 import offsets
 
-pub fn i_can_see(player &valve.Entity, bones []usize) (bool, valve.CGameTrace) {
+pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 
 	mut app_ctx := unsafe { app() }
 
@@ -34,9 +34,9 @@ pub fn i_can_see(player &valve.Entity, bones []usize) (bool, valve.CGameTrace) {
 	return can_see, tr_
 }
 
-pub fn check_ent_visible_by_mask(ent &valve.Entity) bool {
+pub fn check_ent_visible_by_mask(ent &valve.Player) bool {
 	mut app_ctx := unsafe { app() }
-	r := ent.spotted_by_mask() & (1 << ( app_ctx.ent_cacher.local_player_id - 1))
+	r := ent.spotted_by_mask() & (1 << ( app_ctx.ent_cacher.local_player.index() - 1))
 	if r > 0 {
 		return true
 	}
@@ -92,17 +92,7 @@ pub fn stopp()  {
 	}
 }
 
-pub fn ent_weapon(forEnt &valve.Entity) ?&valve.Weapon {
-	mut app_ctx := unsafe { app() }
-	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(forEnt.active_weapon())
-	if int(prob_weapon) != 0 {
-		weapon := &valve.Weapon(prob_weapon)
-		return weapon
-	}
-	return error("")
-}
-
-pub fn ent_weapon_(for_ent &valve.Player) ?&valve.Weapon_t {
+pub fn ent_weapon(for_ent &valve.Player) ?&valve.Weapon_t {
 	mut app_ctx := unsafe { app() }
 
 	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(for_ent.active_weapon())

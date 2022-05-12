@@ -16,6 +16,9 @@ type P_ent_collideable = fn (voidptr, usize) voidptr
 type P_ent_client_class = fn (voidptr, usize) &CCLientClass
 
 [callconv: "fastcall"]
+type P_is_player_or_weapon = fn (voidptr, usize) bool
+
+[callconv: "fastcall"]
 type P_abs_angle = fn (voidptr, usize) &utils.Angle
 
 [callconv: "fastcall"]
@@ -52,6 +55,14 @@ pub fn (e &Entity_t) collideable() voidptr {
 
 pub fn (e &Entity_t) client_class() &CCLientClass {
 	return utils.call_vfunc<P_ent_client_class>(e.networkable(), 2)(e.networkable(), 0)
+}
+
+pub fn (e &Entity_t) is_player() bool {
+	return utils.call_vfunc<P_is_player_or_weapon>(e, 157)(e, 0)
+}
+
+pub fn (e &Entity_t) is_weapon() bool {
+	return utils.call_vfunc<P_is_player_or_weapon>(e, 165)(e, 0)
 }
 
 pub fn (e &Entity_t) index() int {
@@ -217,8 +228,8 @@ pub fn (p &Player) spotted() utils.Value<bool> {
 	return utils.Value<bool>{ptr: utils.get_val_offset<bool>(p, offsets.db.netvars.spotted)}
 }
 
-pub fn (p &Player) flash_duration() &f32 {
-	return utils.get_val_offset<f32>(p, offsets.db.netvars.flash_duration)
+pub fn (p &Player) flash_duration() utils.Value<f32> {
+	return utils.Value<f32>{ptr: utils.get_val_offset<f32>(p, offsets.db.netvars.flash_duration)}
 }
 
 pub fn (p &Player) is_moving() bool{

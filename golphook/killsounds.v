@@ -56,7 +56,7 @@ fn (k &KillSound) play_sound(withSound string) {
 fn (mut k KillSound) get_kill() int {
 	mut app_ctx := unsafe { app() }
 	a := *(&usize(usize(app_ctx.h_client) + offsets.db.signatures.player_resource))
-	lcp_id := app_ctx.ent_cacher.local_player_id
+	lcp_id := app_ctx.ent_cacher.local_player.index()
 	kills_total := &int(a + usize(offsets.db.netvars.match_stats_kills_total) + usize(lcp_id * 0x4))
 	return *kills_total
 }
@@ -64,7 +64,7 @@ fn (mut k KillSound) get_kill() int {
 fn (mut k KillSound) get_kill_hs() int {
 	mut app_ctx := unsafe { app() }
 	a := *(&usize(usize(app_ctx.h_client) + offsets.db.signatures.player_resource))
-	lcp_id := app_ctx.ent_cacher.local_player_id
+	lcp_id := app_ctx.ent_cacher.local_player.index()
 	hs_kills := &int(a + usize(offsets.db.netvars.match_stats_headshot_kills_total) + usize(lcp_id * 0x4))
 	return *hs_kills
 }

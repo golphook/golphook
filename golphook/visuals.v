@@ -22,18 +22,20 @@ pub mut:
 pub fn (mut v Visuals) on_frame() {
 	mut app_ctx := unsafe { app() }
 
-	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
+	ents := app_ctx.ent_cacher.filter_player(fn (e &valve.Player, ctx &EntityCacher) bool {
 		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant() == false
 	})
 
 	for ent in ents {
 
-		v.current_ent = unsafe { &valve.Player(ent) }
+		v.current_ent = unsafe { ent }
 
 		is_visible, _ := i_can_see(ent, v.bones_to_be_visible_visuals)
 
 		v.current_ent_is_visible = is_visible
 		v.current_ent_box = v.calculate_box(0) or { continue }
+
+		//v.bones_id()
 
 		if app_ctx.config.active_config.glow {
 			v.glow()
@@ -144,7 +146,7 @@ pub fn (mut v Visuals) weapon() {
 
 	mut box_data := v.calculate_box(v.adjust_text_spacing_by_zoom()) or { return }
 
-	weapon := ent_weapon_(v.current_ent) or { return }
+	weapon := ent_weapon(v.current_ent) or { return }
 	weapon_data := app_ctx.interfaces.i_weapon_system.weapon_data(weapon.definition_index())
 
 	mut text := weapon_data.name()
@@ -217,32 +219,33 @@ pub fn (mut v Visuals) watermark() {
 
 }
 
-// pub fn (mut v Visuals) visuals_bones_id(ent &valve.Entity) {
-//  	bones := [usize(0), 8, 9, 6, 5, 87, 82, 78, 73, 41, 12]
-//  	mut app_ctx := unsafe { app() }
-//  	for b in bones {
-//  		mut pos := ent.bone(b) or { return }
-// 		mut _ ,_, box_width := calculate_box(ent, (utils.distance_from(app_ctx.ent_cacher.local_player.origin(), ent.origin()) / 57)) or { return }
-//  		mut screen_pos := utils.new_vec3(0,0,0)
-//  		if app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos) {
-// 			app_ctx.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "${f32(b)}", u16(10), false, false, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
-//
-// 			mut diviser := f32(10)
-//
-// 			match b {
-// 				0 { diviser = 7 }
-// 				8 { diviser = 11 }
-// 				9 { diviser = 10 }
-// 				6 { diviser = 7 }
-// 				5 { diviser = 7 }
-// 				else { diviser = 10 }
-// 			}
-//
-// 			app_ctx.rnd_queue.push(new_circle(utils.new_vec2(screen_pos.x, screen_pos.y).vec_3(), 1, f32(box_width / diviser), app_ctx.config.active_config.fov_circle_color))
-//
-// 		}
-//  	}
-// }
+pub fn (mut v Visuals) bones_id() {
+ 	// bones := [usize(0), 8, 9, 6, 5, 87, 82, 78, 73, 41, 12]
+	bones := [usize(8), 42, 12, 79, 72, 71, 78, 42, 43, 11, 12, 77, 70]
+ 	mut app_ctx := unsafe { app() }
+ 	for b in bones {
+ 		mut pos := v.current_ent.bone(b) or { return }
+		mut box_data := v.calculate_box((utils.distance_from(app_ctx.ent_cacher.local_player.origin(), v.current_ent.origin()) / 57)) or { return }
+ 		mut screen_pos := utils.new_vec3(0,0,0)
+ 		if app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos) {
+			app_ctx.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "${f32(b)}", u16(10), false, false, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+
+			// mut diviser := f32(10)
+			//
+			// match b {
+			// 	0 { diviser = 7 }
+			// 	8 { diviser = 11 }
+			// 	9 { diviser = 10 }
+			// 	6 { diviser = 7 }
+			// 	5 { diviser = 7 }
+			// 	else { diviser = 10 }
+			// }
+			//
+			// app_ctx.rnd_queue.push(new_circle(utils.new_vec2(screen_pos.x, screen_pos.y).vec_3(), 1, f32(box_width / diviser), app_ctx.config.active_config.fov_circle_color))
+
+		}
+ 	}
+}
 
 pub fn (mut v Visuals) calculate_box(with_z_offset f32) ?BoxData {
 	mut app_ctx := unsafe { app() }

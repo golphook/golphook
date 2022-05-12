@@ -106,7 +106,7 @@ pub fn kalambite() {
 pub fn specs() {
 	mut app_ctx := unsafe { app() }
 
-	ents := app_ctx.ent_cacher.filter(fn (e &valve.Entity, ctx &EntityCacher) bool {
+	ents := app_ctx.ent_cacher.filter_player(fn (e &valve.Player, ctx &EntityCacher) bool {
 		return (!e.is_alive() && e.team() == ctx.local_player.team()) || e.team() == .specs
 	})
 
@@ -116,13 +116,12 @@ pub fn specs() {
 		mut p_info := valve.PlayerInfo{}
 
 
-		h_observer_target := ent.observer_target()
-		observer_target := &valve.Entity(app_ctx.interfaces.i_entity_list.get_client_entity_handle(h_observer_target))
+		observer_target := ent.observer_target()
+		//observer_target := &valve.Entity_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(h_observer_target))
 		if u32(observer_target) != 0 {
 
 			if voidptr(observer_target) == voidptr(app_ctx.ent_cacher.local_player) {
-				mut rs := app_ctx.interfaces.cdll_int.get_player_info(app_ctx.ent_cacher.get_id(ent), &p_info)
-				if !rs {
+				if !app_ctx.interfaces.cdll_int.get_player_info(ent.index(), &p_info) {
 					return
 				}
 				specs_cout++
@@ -143,8 +142,8 @@ pub fn no_flash() {
 		return
 	}
 
-	mut flash_dur := &f32(voidptr(usize(app_ctx.ent_cacher.local_player) + offsets.db.netvars.flash_duration))
-	if *flash_dur > 0.0 {
-		unsafe { *flash_dur = 0.0 }
+	mut flash_dur := app_ctx.ent_cacher.local_player.flash_duration()
+	if flash_dur.get() > 0.0 {
+		flash_dur.set(0.0)
 	}
 }
