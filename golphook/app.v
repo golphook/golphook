@@ -31,7 +31,7 @@ pub mut:
 }
 
 pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
-	utils.pront('bootstraping..')
+	utils.pront('[+] initializing the golp !')
 	a.h_mod = withModuleHandle
 	a.h_client = voidptr(C.GetModuleHandleA(c"client.dll"))
 	a.v_mod = vmod.decode(@VMOD_FILE) or { panic(err.msg()) }
@@ -47,7 +47,6 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	}
 
 	offsets.load()
-	//utils.pront("-- ${offsets.db.netvars.m_vec_view_offset == 264}")
 
 	a.config = &ConfigManager{}
 	a.config.bootstrap()
@@ -76,18 +75,15 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	C.Beep(670, 200)
 	C.Beep(730, 150)
 
-	utils.pront('all done ! | Hi golphook v$a.v_mod.version :)')
+	utils.pront('\n[*] golp is ready | Hi golphook v$a.v_mod.version :)\n')
 	a.is_ok = true
-
-	// valve.msg("hello")
-	// valve.msg_c(utils.Color{142, 68, 173, 255}, "no way !")
 }
 
 pub fn (mut a App) release() {
 	a.hooks.release()
 	a.menu.release(false)
 	a.d3d.release()
-	utils.pront('bye :)')
+	utils.pront('\n[*] bye golpy\n')
 	unsafe { utils.load_unload_console(false, a.file) }
 	C.FreeLibraryAndExitThread(a.h_mod, 0)
 }

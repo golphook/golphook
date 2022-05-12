@@ -210,7 +210,7 @@ pub fn (e &Entity) set_abs_origin (with_origin utils.Vec3) {
 		raw_addr := utils.patter_scan("client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8") or { panic("$err") }
 		ofn = &P_set_abs_origin(raw_addr)
 	}
-	ofn(e, 0, withOrigin)
+	ofn(e, 0, with_origin)
 }
 
 [unsafe]
@@ -220,5 +220,5 @@ pub fn (e &Entity) set_abs_angle(with_angle utils.Angle) {
 		raw_addr := utils.patter_scan("client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8") or { panic("$err") }
 		ofn = &P_set_abs_angle(raw_addr)
 	}
-	ofn(e, 0, withAngle)
+	ofn(e, 0, with_angle)
 }
