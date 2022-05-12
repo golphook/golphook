@@ -4,23 +4,16 @@ import utils
 
 struct IVDebugOverlay {}
 
-type P_screen_pos_1 = fn (&utils.Vec3, &utils.Vec3) int
-type P_screen_pos_2 = fn (f32, f32, &utils.Vec3) int
+[callconv: "fastcall"]
+type P_screen_pos = fn (voidptr, usize, &utils.Vec3, &utils.Vec3) int
 
-pub fn (mut i IVDebugOverlay) screen_pos(vecIn &utils.Vec3 ,vecOut &utils.Vec3) int {
-	o_fn_add := utils.get_virtual(i, 13)
+[callconv: "fastcall"]
+type P_screen_pos_raw = fn (voidptr, usize, f32, f32, &utils.Vec3) int
 
-	o_fn := &P_screen_pos_1(o_fn_add)
-	C.load_this(i)
-	rs := o_fn(vecIn, vecOut)
-	return rs
+pub fn (i &IVDebugOverlay) screen_pos(from_vec &utils.Vec3, to_vec &utils.Vec3) bool {
+	return utils.call_vfunc<P_screen_pos>(i, 13)(i, 0, from_vec, to_vec) == 0
 }
 
-pub fn (mut i IVDebugOverlay) screen_pos_raw(withX f32, withY f32, vecOut &utils.Vec3) int {
-	o_fn_add := utils.get_virtual(i, 14)
-
-	o_fn := &P_screen_pos_2(o_fn_add)
-	C.load_this(i)
-	rs := o_fn(withX, withY, vecOut)
-	return rs
+pub fn (i &IVDebugOverlay) screen_pos_raw(from_x f32, and_y f32, to_vec &utils.Vec3) bool {
+	return utils.call_vfunc<P_screen_pos_raw>(i, 14)(i, 0, from_x, and_y, to_vec) == 0
 }

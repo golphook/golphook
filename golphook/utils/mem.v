@@ -2,9 +2,16 @@ module utils
 
 #include "windows.h"
 
+[inline]
 pub fn get_virtual(inThis voidptr, at_index int) voidptr {
 	return unsafe { ((*(&&voidptr(inThis)))[at_index]) }
 }
+
+[inline]
+pub fn call_vfunc<T>(from_class voidptr, at_idx int) T {
+	return T(get_virtual(from_class, at_idx))
+}
+
 
 [typedef]
 struct C.IMAGE_DOS_HEADER {

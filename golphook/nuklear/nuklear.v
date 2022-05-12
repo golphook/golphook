@@ -8,8 +8,6 @@ pub mut:
 pub fn (mut c Nuklear) bootstrap(withDevice voidptr, withWidth int, andHeight i32) {
 	c.nk_ctx = C.nk_d3d9_init(withDevice, 1280, 900)
 
-	C.printf(c"%p \n", c.nk_ctx)
-
 	mut font_stash := voidptr(0)
 
 	C.nk_d3d9_font_stash_begin(&font_stash)
@@ -20,8 +18,8 @@ pub fn (mut c Nuklear) release() {
 	C.nk_d3d9_shutdown()
 }
 
-pub fn handle_event(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) int {
-	return C.nk_d3d9_handle_event(withHwnd, withMsg, withWParam, andLParam)
+pub fn handle_event(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool {
+	return C.nk_d3d9_handle_event(withHwnd, withMsg, withWParam, andLParam) == 1
 }
 
 pub fn (mut c Nuklear) render() {

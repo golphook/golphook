@@ -4,12 +4,9 @@ import utils
 
 struct IInputSystem {}
 
-type P_enable_input = fn (bool)
+[callconv: "fastcall"]
+type P_enable_input = fn (voidptr, usize, bool)
 
-pub fn (mut i IInputSystem) enable_input(withVal bool) {
-	o_fn_add := utils.get_virtual(i, 7)
-
-	o_fn := &P_enable_input(o_fn_add)
-	C.load_this(i)
-	o_fn(withVal)
+pub fn (i &IInputSystem) enable_input(is_enabled bool) {
+	utils.call_vfunc<P_enable_input>(i, 7)(i, 0, is_enabled)
 }

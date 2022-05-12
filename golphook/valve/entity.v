@@ -3,6 +3,27 @@ module valve
 import utils
 import offsets
 
+[callconv: "fastcall"]
+type P_ent_get_handle = fn (voidptr, usize) voidptr
+
+[callconv: "fastcall"]
+type P_ent_index = fn (voidptr, usize) int
+
+[callconv: "fastcall"]
+type P_ent_collideable = fn (voidptr, usize) voidptr
+
+[callconv: "fastcall"]
+type P_abs_angle = fn (voidptr, usize) &utils.Angle
+
+[callconv: "fastcall"]
+type P_abs_origin = fn (voidptr, usize) &utils.Vec3
+
+[callconv: "fastcall"]
+type P_set_abs_origin = fn (voidptr, usize, &utils.Vec3)
+
+[callconv: "fastcall"]
+type P_set_abs_angle = fn (voidptr, usize, &utils.Angle)
+
 struct Weapon {}
 
 pub fn (w &Weapon) in_reload() bool {
@@ -12,7 +33,6 @@ pub fn (w &Weapon) in_reload() bool {
 pub fn (w &Weapon) owner_entity() u32 {
 	return *(utils.get_val_offset<u32>(w, offsets.db.netvars.owner_entity))
 }
-
 
 pub fn (w &Weapon) zoom_level() int {
 	return *(utils.get_val_offset<int>(w, offsets.db.netvars.m_zoom_level))
@@ -38,18 +58,23 @@ pub fn (w &Weapon) definition_index() i16 {
 	return *(utils.get_val_offset<i16>(w, offsets.db.netvars.m_item_definition_index))
 }
 
-// not working
-// [callconv: "fastcall"]
-// type P_wp_get_data = fn (voidptr, voidptr) &WeaponData
-//
-// pub fn (w &Weapon) weapon_data() {
-// 	o_fn_add := utils.get_virtual(w, 460)
-// 	o_fn := &P_wp_get_data(o_fn_add)
-// 	rs := o_fn(w, voidptr(0))
-// 	C.printf(c"%p \n", rs)
-// }
-
 struct Entity {}
+
+pub fn (e &Entity) animating() voidptr {
+	return *(utils.get_val_offset<voidptr>(e, 0x4))
+}
+
+pub fn (e &Entity) networkable() voidptr {
+	return *(utils.get_val_offset<voidptr>(e, 0x8))
+}
+
+pub fn (e &Entity) collideable() voidptr {
+	return utils.call_vfunc<P_ent_collideable>(e, 3)(e, 0)
+}
+
+pub fn (e &Entity) index() int {
+	return utils.call_vfunc<P_ent_index>(e, 10)(e, 0)
+}
 
 pub fn (e &Entity) dormant() bool {
 	return *(utils.get_val_offset<bool>(e, offsets.db.signatures.m_dormant))
@@ -67,13 +92,8 @@ pub fn (e &Entity) is_alive() bool {
 	return int(e.life_state()) == 0 && e.health() > 0
 }
 
-type P_ent_get_handle = fn () voidptr
 pub fn (e &Entity) handle() voidptr {
-	o_fn_add := utils.get_virtual(e, 2)
-	o_fn := &P_ent_get_handle(o_fn_add)
-	C.load_this(e)
-	rs := o_fn()
-	return rs
+	return utils.call_vfunc<P_ent_get_handle>(e, 2)(e, 0)
 }
 
 pub fn (e &Entity) origin() utils.Vec3 {
@@ -128,8 +148,7 @@ pub fn (e &Entity) active_weapon() u32 {
 }
 
 pub fn (e &Entity) viewmodel() u32 {
-	es := *(utils.get_val_offset<u32>(e, offsets.db.netvars.m_view_model))
-	return es
+	return *(utils.get_val_offset<u32>(e, offsets.db.netvars.m_view_model))
 }
 
 pub fn (e &Entity) observer_target() u32 {
@@ -172,53 +191,34 @@ pub fn (e &Entity) is_moving() bool{
 	return true
 }
 
-
 pub fn (e &Entity) spotted() &bool {
 	return utils.get_val_offset<bool>(e, offsets.db.netvars.spotted)
 }
 
-// mb ca retourne un pointer de vec3
-type P_abs_angle = fn () &utils.Angle
 pub fn (e &Entity) abs_angle() &utils.Angle{
-	o_fn_add := utils.get_virtual(e, 11)
-	o_fn := &P_abs_angle(o_fn_add)
-	C.load_this(e)
-	rs := o_fn()
-	return rs
+	return utils.call_vfunc<P_abs_angle>(e, 11)(e, 0)
 }
 
-[callconv: "stdcall"]
-type P_abs_origin = fn () &utils.Vec3
 pub fn (e &Entity) abs_origin() &utils.Vec3 {
-	o_fn_add := utils.get_virtual(e, 10)
-	o_fn := &P_abs_origin(o_fn_add)
-	C.load_this(e)
-	rs := o_fn()
-	return rs
+	return utils.call_vfunc<P_abs_origin>(e, 10)(e, 0)
 }
 
-[callconv: "stdcall"]
-type P_set_abs_origin = fn (&utils.Vec3)
 [unsafe]
-pub fn (e &Entity) set_abs_origin (withOrigin utils.Vec3) {
+pub fn (e &Entity) set_abs_origin (with_origin utils.Vec3) {
 	mut static ofn := &P_set_abs_origin(0)
 	if int(ofn) == 0 {
 		raw_addr := utils.patter_scan("client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8") or { panic("$err") }
 		ofn = &P_set_abs_origin(raw_addr)
 	}
-	C.load_this(e)
-	ofn(withOrigin)
+	ofn(e, 0, withOrigin)
 }
 
-[callconv: "stdcall"]
-type P_set_abs_angle = fn (&utils.Angle)
 [unsafe]
-pub fn (e &Entity) set_abs_angle(withAngle utils.Angle) {
+pub fn (e &Entity) set_abs_angle(with_angle utils.Angle) {
 	mut static ofn := &P_set_abs_angle(0)
 	if int(ofn) == 0 {
 		raw_addr := utils.patter_scan("client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8") or { panic("$err") }
 		ofn = &P_set_abs_angle(raw_addr)
 	}
-	C.load_this(e)
-	ofn(withAngle)
+	ofn(e, 0, withAngle)
 }

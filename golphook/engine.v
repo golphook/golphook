@@ -185,7 +185,7 @@ fn (mut e Engine) collect_targeted_ents() {
 		for b_id in bones_list {
 			bone_pos = ent.bone(usize(b_id)) or { return }
 
-			if app_ctx.interfaces.i_debug_overlay.screen_pos(bone_pos, bone_screen) == 0 {
+			if app_ctx.interfaces.i_debug_overlay.screen_pos(bone_pos, bone_screen) {
 
 				mut in_fov, z := e.is_in_fov(bone_screen)
 				bone_screen.z = z

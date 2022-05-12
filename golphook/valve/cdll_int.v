@@ -23,100 +23,81 @@ pub fn (p &PlayerInfo) player_name() string {
 
 struct IVEngineClient {}
 
-type P_execute_client_cmd = fn (&char)
-type P_is_in_game = fn () bool
-type P_is_connected = fn () bool
-type P_get_app_id = fn () int
-type P_get_local_player = fn () int
-type P_get_player_info = fn (int, &PlayerInfo) bool
-type P_get_screen_size = fn (&int, &int)
-type P_set_view_angle = fn(&utils.Angle)
-type P_get_view_angle = fn(&utils.Angle)
-type P_is_con_visible = fn () bool
-type P_execute_client_cmd_unrectricted = fn (&char)
+[callconv: "fastcall"]
+type P_get_screen_size = fn (voidptr, usize, &int, &int)
 
+[callconv: "fastcall"]
+type P_get_player_info = fn (voidptr, usize, int, &PlayerInfo) bool
 
-pub fn (mut i IVEngineClient) execute_client_cmd(text string) {
-	o_fn_add := utils.get_virtual(i, 108)
+[callconv: "fastcall"]
+type P_is_con_visible = fn (voidptr, usize) bool
 
-	o_fn := &P_execute_client_cmd(o_fn_add)
-	o_fn(&char(text.str))
+[callconv: "fastcall"]
+type P_get_local_player = fn (voidptr, usize) int
+
+[callconv: "fastcall"]
+type P_get_view_angle = fn(voidptr, usize, &utils.Angle)
+
+[callconv: "fastcall"]
+type P_set_view_angle = fn(voidptr, usize, &utils.Angle)
+
+[callconv: "fastcall"]
+type P_is_in_game = fn (voidptr, usize) bool
+
+[callconv: "fastcall"]
+type P_is_connected = fn (voidptr, usize) bool
+
+[callconv: "fastcall"]
+type P_execute_client_cmd = fn (voidptr, usize, &char)
+
+[callconv: "fastcall"]
+type P_get_app_id = fn (voidptr, usize) int
+
+[callconv: "fastcall"]
+type P_execute_client_cmd_unrectricted = fn (voidptr, usize, &char)
+
+pub fn (i &IVEngineClient) get_screen_size(to_width &int, and_height &int) {
+	utils.call_vfunc<P_get_screen_size>(i, 5)(i, 0, to_width, and_height)
 }
 
-pub fn (mut i IVEngineClient) is_in_game() bool {
-	o_fn_add := utils.get_virtual(i, 26)
-
-	o_fn := &P_is_in_game(o_fn_add)
-	res := o_fn()
-	return res
+pub fn (i &IVEngineClient) get_player_info(for_ent_id int, to_p_info_struct &PlayerInfo) bool {
+	return utils.call_vfunc<P_get_player_info>(i, 8)(i, 0, for_ent_id, to_p_info_struct)
 }
 
-pub fn (mut i IVEngineClient) is_connected() bool {
-	o_fn_add := utils.get_virtual(i, 27)
-
-	o_fn := &P_is_connected(o_fn_add)
-	res := o_fn()
-	return res
+pub fn (i &IVEngineClient) is_con_visible() bool {
+	return utils.call_vfunc<P_is_con_visible>(i, 11)(i, 0)
 }
 
-pub fn (mut i IVEngineClient) get_local_player() int {
-	o_fn_add := utils.get_virtual(i, 12)
-
-	o_fn := &P_get_local_player(o_fn_add)
-	res := o_fn()
-	return res
+pub fn (i &IVEngineClient) get_local_player() int {
+	return utils.call_vfunc<P_get_local_player>(i, 12)(i, 0)
 }
 
-pub fn (mut i IVEngineClient) get_app_id() int {
-	o_fn_add := utils.get_virtual(i, 11)
-
-	o_fn := &P_get_app_id(o_fn_add)
-	res := o_fn()
-	return res
+pub fn (i &IVEngineClient) get_view_angle(with_angle &utils.Angle) {
+	utils.call_vfunc<P_set_view_angle>(i, 18)(i, 0, with_angle)
 }
 
-pub fn (mut i IVEngineClient) get_player_info(withEntNum int, andPlayerInfo &PlayerInfo) bool {
-	o_fn_add := utils.get_virtual(i, 8)
-
-	o_fn := &P_get_player_info(o_fn_add)
-	res := o_fn(withEntNum, andPlayerInfo)
-	return res
+pub fn (i &IVEngineClient) set_view_angle(with_angle &utils.Angle) {
+	utils.call_vfunc<P_set_view_angle>(i, 19)(i, 0, with_angle)
 }
 
-pub fn (mut i IVEngineClient) get_screen_size(withOutWidth &int, withOutHeight &int) {
-	o_fn_add := utils.get_virtual(i, 5)
-
-	o_fn := &P_get_screen_size(o_fn_add)
-	o_fn(withOutWidth, withOutHeight)
+pub fn (i &IVEngineClient) is_in_game() bool {
+	return utils.call_vfunc<P_is_in_game>(i, 26)(i, 0)
 }
 
-pub fn (mut i IVEngineClient) set_view_angle(withAngle &utils.Angle) {
-	o_fn_add := utils.get_virtual(i, 19)
-
-	o_fn := &P_set_view_angle(o_fn_add)
-	o_fn(withAngle)
+pub fn (i &IVEngineClient) is_connected() bool {
+	return utils.call_vfunc<P_is_connected>(i, 27)(i, 0)
 }
 
-pub fn (mut i IVEngineClient) get_view_angle(withAngle &utils.Angle) {
-	o_fn_add := utils.get_virtual(i, 18)
-
-	o_fn := &P_get_view_angle(o_fn_add)
-	o_fn(withAngle)
+pub fn (i &IVEngineClient) execute_client_cmd(with_text string) {
+	utils.call_vfunc<P_execute_client_cmd>(i, 108)(i, 0, &char(with_text.str))
 }
 
-pub fn (mut i IVEngineClient) is_con_visible() bool {
-	o_fn_add := utils.get_virtual(i, 11)
-
-	o_fn := &P_is_con_visible(o_fn_add)
-	r := o_fn()
-	return r
+pub fn (i &IVEngineClient) get_app_id() int {
+	return utils.call_vfunc<P_get_app_id>(i, 111)(i, 0)
 }
 
-pub fn (mut i IVEngineClient) execute_client_cmd_unrectricted(text string) {
-	o_fn_add := utils.get_virtual(i, 114)
-
-	o_fn := &P_execute_client_cmd_unrectricted(o_fn_add)
-	o_fn(&char(text.str))
+pub fn (i &IVEngineClient) execute_client_cmd_unrectricted(with_text string) {
+	utils.call_vfunc<P_execute_client_cmd_unrectricted>(i, 114)(i, 0, &char(with_text.str))
 }
 
 struct IBaseClientDLL {}

@@ -56,7 +56,7 @@ pub mut:
 fn (mut h Hooks) bootstrap() {
 	mut app_ctx := unsafe { app() }
 
-	utils.pront("[-] bootstraping hooks...")
+	utils.pront("\n[-] bootstraping hooks...")
 
 	if C.MH_Initialize() != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_Initialize()')
@@ -228,7 +228,7 @@ fn hk_get_viewmodel_fov() f32 {
 }
 
 [unsafe; callconv: "stdcall"]
-fn hk_wnd_proc(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool {
+fn hk_wnd_proc(with_hwnd C.HWND, with_msg u32, with_wparam u32, and_lparam int) bool {
 	mut app_ctx := unsafe { app() }
 
 	mut static is_called_once := false
@@ -237,14 +237,9 @@ fn hk_wnd_proc(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool
 		utils.pront(utils.str_align("[*] hk_wnd_proc()", 40, "| Called"))
 	}
 
-	if withMsg == C.WM_KEYDOWN {
-		match withWParam {
+	if with_msg == C.WM_KEYDOWN {
+		match with_wparam {
 			u32(C.VK_DELETE) {
-				// not proud of this but it ok for now
-				if !app_ctx.interfaces.cdll_int.is_con_visible() || app_ctx.menu.is_opened {
-					app_ctx.interfaces.cdll_int.execute_client_cmd_unrectricted("toggleconsole")
-					//app_ctx.interfaces.c_input.enable_input(!app_ctx.menu.is_opened)
-				}
 				app_ctx.menu.is_opened = !app_ctx.menu.is_opened
 			}
 			else {  }
@@ -252,12 +247,12 @@ fn hk_wnd_proc(withHwnd C.HWND, withMsg u32, withWParam u32, andLParam int) bool
 	}
 
 	if app_ctx.menu.is_opened {
-		if nuklear.handle_event(withHwnd, withMsg, withWParam, andLParam) == 1 {
+		if nuklear.handle_event(with_hwnd, with_msg, with_wparam, and_lparam) {
 			return false
 		}
 	}
 
-    return C.CallWindowProcW(app_ctx.hooks.wnd_proc.original_save, withHwnd, withMsg, withWParam, andLParam)
+    return C.CallWindowProcW(app_ctx.hooks.wnd_proc.original_save, with_hwnd, with_msg, with_wparam, and_lparam)
 }
 
 [unsafe; callconv: "fastcall"]
@@ -268,6 +263,13 @@ fn hk_lock_cursor(ecx voidptr, edx voidptr) {
 	if !is_called_once {
 		is_called_once = true
 		utils.pront(utils.str_align("[*] hk_lock_cursor()", 40, "| Called"))
+	}
+
+	if app_ctx.is_ok {
+		if app_ctx.menu.is_opened {
+			app_ctx.interfaces.i_surface.unlock_cursor()
+			return
+		}
 	}
 
 	app_ctx.hooks.lock_cursor.original_save(ecx,edx)

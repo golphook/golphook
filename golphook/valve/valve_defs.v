@@ -1,5 +1,13 @@
 module valve
 
+
+#flag -I @VMODROOT/golphook/c
+
+#include "reg.h"
+
+fn C.load_this(voidptr)
+
+
 pub enum ItemDefinitionIndex {
     weapon_invalid = -1
     weapon_deagle = 1

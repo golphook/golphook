@@ -45,11 +45,8 @@ pub fn (w &WeaponData) name() string {
 struct IWeaponSystem {}
 
 [callconv: "fastcall"]
-type P_wp_get_data = fn (voidptr, voidptr, i32) &WeaponData
+type P_wp_get_data = fn (voidptr, usize, i32) &WeaponData
 
-pub fn (i &IWeaponSystem) weapon_data(withItemDefIdx i32) &WeaponData {
-	o_fn_add := utils.get_virtual(i, 2)
-	o_fn := &P_wp_get_data(o_fn_add)
-	rs := o_fn(i, voidptr(0), withItemDefIdx)
-	return rs
+pub fn (i &IWeaponSystem) weapon_data(with_itm_def_idx i32) &WeaponData {
+	return utils.call_vfunc<P_wp_get_data>(i, 2)(i, 0, with_itm_def_idx)
 }

@@ -2,46 +2,26 @@ module valve
 
 import utils
 
-#flag -I @VMODROOT/golphook/c
+struct IEntityList {}
 
-#include "reg.h"
+[callconv: "fastcall"]
+type P_get_client_entity = fn (voidptr, usize, i32) voidptr
 
-fn C.load_this(voidptr)
+[callconv: "fastcall"]
+type P_get_client_entity_handle = fn (voidptr, usize, u32) voidptr
 
-struct IEntityList {
+[callconv: "fastcall"]
+type P_get_highest_index = fn(voidptr, usize) u32
+
+
+pub fn (i &IEntityList) get_client_entity(at_idx int) voidptr {
+	return utils.call_vfunc<P_get_client_entity>(i, 3)(i, 0, at_idx)
 }
 
-type P_get_client_entity = fn (int) voidptr
-type P_get_client_entity_handle = fn (u32) voidptr
-type P_get_highest_index = fn() u32
-
-pub fn (mut i IEntityList) get_client_entity(atIndex int) voidptr {
-	o_fn_add := utils.get_virtual(i, 3)
-
-	o_fn := &P_get_client_entity(o_fn_add)
-
-	// kill me for this but i dont the choice to do like this, v inline asm dont support msvc one, and a absolutly need to pass the this ptr to ecx
-	// this is definitly no safe beause its "emulate" a thiscall
-	C.load_this(i)
-
-	rs := o_fn(atIndex)
-	return rs
+pub fn (i &IEntityList) get_client_entity_handle(with_hnd u32) voidptr {
+	return utils.call_vfunc<P_get_client_entity_handle>(i, 4)(i, 0, with_hnd)
 }
 
-pub fn (mut i IEntityList) get_client_entity_handle(withHandle u32) voidptr {
-	o_fn_add := utils.get_virtual(i, 4)
-
-	C.load_this(i)
-
-	o_fn := &P_get_client_entity_handle(o_fn_add)
-	return o_fn(withHandle)
-}
-
-pub fn (mut i IEntityList) get_highest_index() u32 {
-	o_fn_add := utils.get_virtual(i, 6)
-
-	// to test if load_this(i) is needed here also
-
-	o_fn := &P_get_highest_index(o_fn_add)
-	return o_fn()
+pub fn (i &IEntityList) get_highest_index() u32 {
+	return utils.call_vfunc<P_get_highest_index>(i, 6)(i, 0)
 }

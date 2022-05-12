@@ -4,15 +4,9 @@ import utils
 
 struct IVModelInfo {}
 
-type P_get_model_index = fn (&char) int
+[callconv: "fastcall"]
+type P_get_model_index = fn (voidptr, usize, &char) int
 
-pub fn (mut i IVModelInfo) get_model_index(withModelName string) int {
-	o_fn_add := utils.get_virtual(i, 2)
-
-	o_fn := &P_get_model_index(o_fn_add)
-
-	C.load_this(i)
-
-	rs := o_fn(&char(withModelName.str))
-	return rs
+pub fn (i &IVModelInfo) get_model_index(with_model_name string) int {
+	return utils.call_vfunc<P_get_model_index>(i, 2)(i, 0, &char(with_model_name.str))
 }

@@ -69,7 +69,7 @@ fn (mut i Interfaces) bootstrap() {
 	i.c_global_vars = i.get_interface_pattern<valve.CGlobalVarsBase>("CGlobalVarsBase", "client.dll", "A1 ? ? ? ? 5E 8B 40 10", fn(ptn_res voidptr) voidptr {
 		return **(&&&usize(voidptr(usize(ptn_res) + 1)))
 	})
-	i.c_global_vars = i.get_interface_pattern<valve.CGlobalVarsBase>("IWeaponSystem", "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0", fn(ptn_res voidptr) voidptr {
+	i.i_weapon_system = i.get_interface_pattern<valve.IWeaponSystem>("IWeaponSystem", "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0", fn(ptn_res voidptr) voidptr {
 		return *(&&usize(voidptr(usize(ptn_res) + 2)))
 	})
 }
