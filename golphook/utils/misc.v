@@ -23,3 +23,14 @@ pub fn get_key(withVkCode int, toggle bool) bool {
 	}
 	return C.GetAsyncKeyState(withVkCode) > 1
 }
+
+pub fn str_align(with_og_text string, with_spaces_count i32, and_final_sep string) string {
+
+	mut final := with_og_text
+
+	for _ in 0..(with_spaces_count - with_og_text.len) {
+		final += " "
+	}
+	final += and_final_sep
+	return final
+}
