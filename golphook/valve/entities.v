@@ -33,6 +33,26 @@ type P_set_abs_angle = fn (voidptr, usize, &utils.Angle)
 [callconv: "fastcall"]
 type P_observer_target = fn (voidptr, usize) &Entity_t
 
+[callconv: "fastcall"]
+type P_get_base_entity = fn (voidptr, usize) &Entity_t
+
+[callconv: "fastcall"]
+type P_get_i_client_unknown = fn (voidptr, usize) &IClientUnknown
+
+// hi
+
+struct IClientUnknown {}
+
+pub fn (i &IClientUnknown) get_base_entity() &Entity_t {
+	return utils.call_vfunc<P_get_base_entity>(i, 7)(i, 0)
+}
+
+struct IClientRenderable {}
+
+pub fn (i &IClientRenderable) get_i_client_unknown() &IClientUnknown {
+	return utils.call_vfunc<P_get_i_client_unknown>(i, 0)(i, 0)
+}
+
 // Entity_t
 
 struct Entity_t {}
@@ -58,11 +78,11 @@ pub fn (e &Entity_t) client_class() &CCLientClass {
 }
 
 pub fn (e &Entity_t) is_player() bool {
-	return utils.call_vfunc<P_is_player_or_weapon>(e, 157)(e, 0)
+	return utils.call_vfunc<P_is_player_or_weapon>(e, 158)(e, 0)
 }
 
 pub fn (e &Entity_t) is_weapon() bool {
-	return utils.call_vfunc<P_is_player_or_weapon>(e, 165)(e, 0)
+	return utils.call_vfunc<P_is_player_or_weapon>(e, 166)(e, 0)
 }
 
 pub fn (e &Entity_t) index() int {

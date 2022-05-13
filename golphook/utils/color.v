@@ -8,8 +8,15 @@ import nuklear
 fn C.d3d_rgba(r int, g int, b int, a int) u32
 
 
+pub struct ColorRgbF {
+pub mut:
+	r f32
+	g f32
+	b f32
+}
+
 pub struct ColorRgbaF {
-mut:
+pub mut:
 	r f32
 	g f32
 	b f32
@@ -17,7 +24,7 @@ mut:
 }
 
 struct ColorRgba {
-mut:
+pub mut:
 	r u8
 	g u8
 	b u8
@@ -72,6 +79,16 @@ pub fn (c &Color) rgbaf() ColorRgbaF {
 	mut a_ := f32(c.a()) / 255.0
 
 	return ColorRgbaF{r: r_, g: g_, b: b_, a: a_}
+}
+
+[inline]
+pub fn (c &Color) rgbf() ColorRgbF {
+
+	mut r_ := f32(c.r()) / 255.0
+	mut g_ := f32(c.g()) / 255.0
+	mut b_ := f32(c.b()) / 255.0
+
+	return ColorRgbF{r: r_, g: g_, b: b_}
 }
 
 [inline]

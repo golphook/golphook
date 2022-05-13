@@ -18,6 +18,32 @@ fn get_knife_data(knife_id int) (int, string) {
 	}
 }
 
+fn get_material_str(for_material_id int) string {
+	match int(for_material_id) {
+		0 { return "debug/debugambientcube" }
+		1 { return "models/inventory_items/trophy_majors/gold" }
+		2 { return "models/player/ct_fbi/ct_fbi_glass" }
+		3 { return "models/gibs/glass/glass" }
+		4 { return "models/inventory_items/trophy_majors/crystal_clear" }
+		5 { return "models/inventory_items/trophy_majors/crystal_blue" }
+		6 { return "models/inventory_items/trophy_majors/velvet" }
+		else { return "debug/debugambientcube" }
+	}
+}
+
+fn get_material_id(for_material_name string) int {
+	match for_material_name {
+		"debug/debugambientcube" { return 0 }
+		"models/inventory_items/trophy_majors/gold" { return 1 }
+		"models/player/ct_fbi/ct_fbi_glass" { return 2 }
+		"models/gibs/glass/glass" { return 3 }
+		"models/inventory_items/trophy_majors/crystal_clear" { return 4 }
+		"models/inventory_items/trophy_majors/crystal_blue" { return 5 }
+		"models/inventory_items/trophy_majors/velvet" { return 6 }
+		else { return 0 }
+	}
+}
+
 struct Config {
 pub mut:
 	name string = "golp"
@@ -76,6 +102,14 @@ pub mut:
 
 	fov_circle bool = true
 	fov_circle_color utils.Color = utils.color_rbga(155, 89, 182 ,255)
+
+	// chams
+	chams bool
+	chams_is_visible_only bool
+	chams_material int = 0
+	chams_color_if_visible utils.Color = utils.color_rbga(20,75,97,255)
+	chams_color_if_not_visible utils.Color = utils.color_rbga(0, 0, 0, 50)
+
 
 	// engine
 

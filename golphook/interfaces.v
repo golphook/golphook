@@ -20,6 +20,8 @@ pub mut:
 	// i_panorama_engine &valve.IPanoramaUIEngine = 0
 	i_surface &valve.ISurface = 0
 	i_weapon_system &valve.IWeaponSystem = 0
+	i_studio_renderer &valve.IStudioRender = 0
+	i_material_system &valve.IMaterialSystem = 0
 }
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
@@ -65,6 +67,8 @@ fn (mut i Interfaces) bootstrap() {
 	i.i_surface = i.get_interface<valve.ISurface>("VGUI_Surface031", "vguimatsurface.dll")
 	i.c_input = i.get_interface<valve.IInputSystem>("InputSystemVersion001", "inputsystem.dll")
 	// i.i_panorama_engine = i.get_interface<valve.IPanoramaUIEngine>("PanoramaUIEngine001", "panorama.dll")
+	i.i_studio_renderer = i.get_interface<valve.IStudioRender>("VStudioRender026", "studiorender.dll")
+	i.i_material_system = i.get_interface<valve.IMaterialSystem>("VMaterialSystem080", "materialsystem.dll")
 
 	i.c_global_vars = i.get_interface_pattern<valve.CGlobalVarsBase>("CGlobalVarsBase", "client.dll", "A1 ? ? ? ? 5E 8B 40 10", fn(ptn_res voidptr) voidptr {
 		return **(&&&usize(voidptr(usize(ptn_res) + 1)))

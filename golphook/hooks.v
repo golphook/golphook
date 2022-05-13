@@ -15,6 +15,9 @@ type O_set_viewmodel_offets = fn (voidptr, voidptr, int, f32, f32, f32) int
 [callconv: "fastcall"]
 type O_lock_cursor = fn (voidptr, voidptr)
 
+[callconv: "fastcall"]
+type O_draw_model = fn (voidptr, voidptr, voidptr, &valve.CDrawModelInfo, voidptr, &f32, &f32, &utils.Vec3, int)
+
 struct HookEntry<T> {
 pub mut:
 	name          string   [required]
@@ -51,6 +54,7 @@ pub mut:
 	set_viewmodel_offets HookEntry<O_set_viewmodel_offets>
 	get_viewmodel_fov HookEntry<O_get_viewmodel_fov>
 	lock_cursor HookEntry<O_lock_cursor>
+	draw_model HookEntry<O_draw_model>
 }
 
 fn (mut h Hooks) bootstrap() {
@@ -67,6 +71,7 @@ fn (mut h Hooks) bootstrap() {
 	h.reset = add_hook<O_reset>("Reset()", utils.get_virtual(app_ctx.d3d.device, 16), &hk_reset)
 	h.end_scene = add_hook<O_end_scene>("EndScene()", utils.get_virtual(app_ctx.d3d.device, 42), &hk_end_scene)
 	h.lock_cursor = add_hook<O_lock_cursor>("LockCursor()", utils.get_virtual(app_ctx.interfaces.i_surface, 67), &hk_lock_cursor)
+	h.draw_model = add_hook<O_draw_model>("DrawModel()", utils.get_virtual(app_ctx.interfaces.i_studio_renderer, 29), &hk_draw_model)
 
 	h.wnd_proc = HookEntry<voidptr>{
 		name: 'WndProc()'
@@ -273,4 +278,26 @@ fn hk_lock_cursor(ecx voidptr, edx voidptr) {
 	}
 
 	app_ctx.hooks.lock_cursor.original_save(ecx,edx)
+}
+
+[unsafe; callconv: "fastcall"]
+fn hk_draw_model(ecx voidptr, edx voidptr, result voidptr, info &valve.CDrawModelInfo, bones voidptr, flex_weights &f32, flex_deleyed_weight &f32, model_origin &utils.Vec3, flags int) {
+	mut app_ctx := unsafe { app() }
+
+	mut static is_called_once := false
+	if !is_called_once {
+		is_called_once = true
+		utils.pront(utils.str_align("[*] hk_draw_model()", 40, "| Called"))
+	}
+
+	if app_ctx.is_ok {
+
+		if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
+			if app_ctx.chams.on_draw_model(ecx, edx, result ,info, bones, flex_weights, flex_deleyed_weight, model_origin, flags) {
+				return
+			}
+		}
+	}
+
+	app_ctx.hooks.draw_model.original_save(ecx, edx, result ,info, bones, flex_weights, flex_deleyed_weight, model_origin, flags)
 }

@@ -32,6 +32,8 @@ pub mut:
 	engine_keys []map[string]int = [{"mouse 1": 0x1}, {"mouse 4": 0x5}, {"mouse 5": 0x06}, {"alt": 0x12}, {"b": 0x42}, {"c": 0x43}, {"x": 0x58}]
 	engine_bones []map[string]int = [{"head": 8}, {"body": 5}, {"pelvis": 0}]
 
+	chams_materials []map[string]int = [{"ambientcube": 0}, {"gold": 1}, {"ct_fbi_glass": 2}, {"glass": 3}, {"crystal_clear": 4}, {"crystal_blue": 5}, {"velvet": 6}]
+
 	tmp_rename_buff [64]char
 	tmp_rename_len int
 
@@ -252,7 +254,35 @@ fn (mut m NMenu) tab_visuals() {
 			m.color_picker(mut &app_ctx.config.active_config.glow_color_if_not_visible)
 		}
 
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 3)
+		m.nk_ctx.layout_row_push(0.4)
+		m.nk_ctx.checkbox_label("chams", mut &app_ctx.config.active_config.chams)
+
+		if app_ctx.config.active_config.chams {
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.chams_color_if_visible)
+
+			m.nk_ctx.layout_row_push(0.3)
+			m.color_picker(mut &app_ctx.config.active_config.chams_color_if_not_visible)
+		}
+
 		m.nk_ctx.layout_row_end()
+
+		if app_ctx.config.active_config.chams {
+			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+			m.nk_ctx.layout_row_push(0.6)
+			m.nk_ctx.label("material", C.NK_TEXT_LEFT)
+			if app_ctx.config.active_config.killsound {
+				m.nk_ctx.layout_row_push(0.4)
+				m.table_combo(mut &app_ctx.config.active_config.chams_material, mut m.chams_materials, fn (mut app_ctx &App) {})
+			}
+			m.nk_ctx.layout_row_end()
+
+			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
+			m.nk_ctx.layout_row_push(1)
+			m.nk_ctx.checkbox_label("visible only", mut &app_ctx.config.active_config.chams_is_visible_only)
+			m.nk_ctx.layout_row_end()
+		}
 
 		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
 		m.nk_ctx.layout_row_push(1.0)
