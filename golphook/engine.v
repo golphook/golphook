@@ -112,7 +112,7 @@ fn (mut e Engine) handle_keys() {
 fn (e &Engine) aim_at(ent TargetedEntity) {
 	mut app_ctx := unsafe { app() }
 	local_player_eye_pos := app_ctx.ent_cacher.local_player.eye_pos()
-	target_bone_pos := ent.ent.bone(usize(ent.closest_bone.id)) or { return }
+	mut target_bone_pos := ent.ent.bone(usize(ent.closest_bone.id)) or { return }
 
 	mut angle_out := utils.new_angle(0,0,0)
 
@@ -192,9 +192,13 @@ fn (mut e Engine) collect_targeted_ents() {
 
 				if in_fov {
 
-					can_i_see, _ := i_can_see(ent, [usize(b_id)])
+					awall_mult := if app_ctx.config.active_config.engine_vhv_mode {
+						app_ctx.config.active_config.engine_vhv_aw_factor
+					} else {
+						0.0
+					}
 
-					if e.do_force_awal || can_i_see {
+					if i_can_see_with_offset(ent,usize(b_id), awall_mult) {
 						target.bones_on_screen << Bone{id: b_id, pos: bone_screen}
 
 						if bone_screen.z < target.closest_bone.pos.z || b_id == app_ctx.config.active_config.engine_force_bone_id || b_id == app_ctx.config.active_config.engine_pref_bone_id {

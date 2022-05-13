@@ -34,6 +34,45 @@ pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 	return can_see, tr_
 }
 
+pub fn i_can_see_with_offset(player &valve.Player, bone	 usize, offset f32) bool {
+	mut app_ctx := unsafe { app() }
+
+	for o in 0..3 {
+		mut from := app_ctx.ent_cacher.local_player.eye_pos()
+		match o {
+			0 {
+				from.x += offset
+			}
+			1 {
+				from.x -= offset
+			}
+			2 {
+				from.y += offset
+			}
+			3 {
+				from.y -= offset
+			}
+			else {}
+		}
+
+		mut end := player.bone(bone) or {
+			return false
+		}
+		mut tr := valve.CGameTrace{}
+		mut ray := valve.Ray{}
+		mut filter := valve.CTraceFilter{}
+
+		filter.p_skip = voidptr(app_ctx.ent_cacher.local_player)
+
+		ray.init(from, end)
+		app_ctx.interfaces.i_engine_trace.trace_ray(&ray, 0x46004009, &filter, &tr)
+		if tr.is_invisible() {
+			return true
+		}
+	}
+	return false
+}
+
 pub fn check_ent_visible_by_mask(ent &valve.Player) bool {
 	mut app_ctx := unsafe { app() }
 	r := ent.spotted_by_mask() & (1 << ( app_ctx.ent_cacher.local_player.index() - 1))

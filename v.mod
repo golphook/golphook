@@ -1,7 +1,7 @@
 Module {
 	name: 'golphook'
 	description: 'Cool golp in your game :)'
-	version: '0.46.11-alpha'
+	version: '0.47.0-alpha'
 	license: 'MIT'
 	dependencies: []
 }

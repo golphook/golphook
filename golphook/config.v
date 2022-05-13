@@ -95,7 +95,8 @@ pub mut:
 	engine_force_awall_key_toggle bool = true
 	engine_force_bone_key_toggle bool = true
 
-
+	engine_vhv_mode bool
+	engine_vhv_aw_factor f32
 
 }
 

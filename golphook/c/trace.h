@@ -4,6 +4,7 @@
 // im sorry but i spent to much time trying to make is work in v
 // https://github.com/danielkrupinski/Anubis/blob/master/Anubis/SDK/EngineTrace.c
 
+// not this was before my pr to vlang its now possible to implement it
 
 #define CALL_VIRTUAL_METHOD(type, this, index, ...) (((type)(((PUINT*)(this))[0][index]))(this, 0, __VA_ARGS__));
 

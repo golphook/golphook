@@ -36,6 +36,7 @@ pub fn (mut v Visuals) on_frame() {
 		v.current_ent_box = v.calculate_box(0) or { continue }
 
 		//v.bones_id()
+		//v.show_hitbox()
 
 		if app_ctx.config.active_config.glow {
 			v.glow()
@@ -219,33 +220,76 @@ pub fn (mut v Visuals) watermark() {
 
 }
 
-pub fn (mut v Visuals) bones_id() {
- 	// bones := [usize(0), 8, 9, 6, 5, 87, 82, 78, 73, 41, 12]
-	bones := [usize(8), 42, 12, 79, 72, 71, 78, 42, 43, 11, 12, 77, 70]
- 	mut app_ctx := unsafe { app() }
- 	for b in bones {
- 		mut pos := v.current_ent.bone(b) or { return }
-		mut box_data := v.calculate_box((utils.distance_from(app_ctx.ent_cacher.local_player.origin(), v.current_ent.origin()) / 57)) or { return }
- 		mut screen_pos := utils.new_vec3(0,0,0)
- 		if app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos) {
-			app_ctx.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "${f32(b)}", u16(10), false, false, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
-
-			// mut diviser := f32(10)
-			//
-			// match b {
-			// 	0 { diviser = 7 }
-			// 	8 { diviser = 11 }
-			// 	9 { diviser = 10 }
-			// 	6 { diviser = 7 }
-			// 	5 { diviser = 7 }
-			// 	else { diviser = 10 }
-			// }
-			//
-			// app_ctx.rnd_queue.push(new_circle(utils.new_vec2(screen_pos.x, screen_pos.y).vec_3(), 1, f32(box_width / diviser), app_ctx.config.active_config.fov_circle_color))
-
-		}
- 	}
-}
+// fn touch(a utils.Vec2, r1 f32, b utils.Vec2, r2 f32) (f32, f32) {
+//
+// 	d_sq := (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)
+// 	rad_sum_sq := (r1 + r2) * (r1 + r2)
+//
+// 	return d_sq, rad_sum_sq
+//
+// }
+//
+// pub fn (mut v Visuals) show_hitbox() {
+// 	bones := [usize(0), 8, 9, 6, 5]
+//  	mut app_ctx := unsafe { app() }
+//  	for b in bones {
+//  		mut pos := v.current_ent.bone(b) or { return }
+// 		mut box_data := v.calculate_box((utils.distance_from(app_ctx.ent_cacher.local_player.origin(), v.current_ent.origin()) / 57)) or { return }
+//  		mut screen_pos := utils.new_vec3(0,0,0)
+//  		if app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos) {
+//
+// 			mut diviser := f32(10)
+//
+// 			match b {
+// 				0 { diviser = 8 }
+// 				8 { diviser = 12 }
+// 				9 { diviser = 11 }
+// 				6 { diviser = 8 }
+// 				5 { diviser = 8 }
+// 				else { diviser = 10 }
+// 			}
+//
+// 			//app_ctx.rnd_queue.push(new_circle(utils.new_vec2(screen_pos.x, screen_pos.y).vec_3(), 1, f32(box_data.width / diviser), app_ctx.config.active_config.fov_circle_color))
+// 			a, c := touch(utils.new_vec2(app_ctx.wnd_width / 2, app_ctx.wnd_height / 2), f32(app_ctx.engine.fov), utils.new_vec2(screen_pos.x, screen_pos.y), f32(box_data.width / diviser))
+// 			//C.printf(c"%d - %f %f\n", b, a, c)
+// 			ff := if a < c {
+// 				true
+// 			} else {
+// 				false
+// 			}
+// 			//s, _, k := i_can_see_(v.current_ent, [usize(0), 8, 9, 6, 5], 5)
+// 			//app_ctx.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "${s}", u16(10), false, false, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+// 		}
+//  	}
+// }
+//
+// pub fn (mut v Visuals) bones_id() {
+//  	// bones := [usize(0), 8, 9, 6, 5, 87, 82, 78, 73, 41, 12]
+// 	bones := [usize(8), 42, 12, 79, 72, 71, 78, 42, 43, 11, 12, 77, 70]
+//  	mut app_ctx := unsafe { app() }
+//  	for b in bones {
+//  		mut pos := v.current_ent.bone(b) or { return }
+// 		mut box_data := v.calculate_box((utils.distance_from(app_ctx.ent_cacher.local_player.origin(), v.current_ent.origin()) / 57)) or { return }
+//  		mut screen_pos := utils.new_vec3(0,0,0)
+//  		if app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos) {
+// 			app_ctx.rnd_queue.push(new_text(utils.new_vec2(screen_pos.y, screen_pos.x).vec_3(), "${f32(b)}", u16(10), false, false, C.DT_LEFT | C.DT_NOCLIP, utils.color_rbga(255,255,255,255)))
+//
+// 			// mut diviser := f32(10)
+// 			//
+// 			// match b {
+// 			// 	0 { diviser = 7 }
+// 			// 	8 { diviser = 11 }
+// 			// 	9 { diviser = 10 }
+// 			// 	6 { diviser = 7 }
+// 			// 	5 { diviser = 7 }
+// 			// 	else { diviser = 10 }
+// 			// }
+// 			//
+// 			// app_ctx.rnd_queue.push(new_circle(utils.new_vec2(screen_pos.x, screen_pos.y).vec_3(), 1, f32(box_width / diviser), app_ctx.config.active_config.fov_circle_color))
+//
+// 		}
+//  	}
+// }
 
 pub fn (mut v Visuals) calculate_box(with_z_offset f32) ?BoxData {
 	mut app_ctx := unsafe { app() }

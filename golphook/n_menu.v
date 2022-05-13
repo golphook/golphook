@@ -439,6 +439,18 @@ fn (mut m NMenu) tab_engine() {
 
 	if m.nk_ctx.group_begin("engine_2", C.NK_WINDOW_NO_SCROLLBAR) {
 
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
+		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.checkbox_label("vhv mode", mut &app_ctx.config.active_config.engine_vhv_mode)
+		m.nk_ctx.layout_row_end()
+
+		if app_ctx.config.active_config.engine_vhv_mode {
+			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
+			m.nk_ctx.layout_row_push(1.0)
+			m.nk_ctx.property_float("legit aw factor", 0, &app_ctx.config.active_config.engine_vhv_aw_factor, 17, 0.1, 0.1)
+			m.nk_ctx.layout_row_end()
+		}
+
 		m.nk_ctx.group_end()
 	}
 }
