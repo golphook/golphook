@@ -142,7 +142,7 @@ fn hk_end_scene(dev voidptr) bool {
 	}
 
 	if app_ctx.is_ok {
-		//visuals_on_end_scene()
+		app_ctx.visuals.on_end_scene()
 		app_ctx.rnd_queue.draw_queue()
 	}
 

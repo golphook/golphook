@@ -106,7 +106,7 @@ pub mut:
 	// chams
 	chams bool
 	chams_is_visible_only bool
-	chams_material int = 0
+	chams_material int // default = 0
 	chams_color_if_visible utils.Color = utils.color_rbga(20,75,97,255)
 	chams_color_if_not_visible utils.Color = utils.color_rbga(0, 0, 0, 50)
 
