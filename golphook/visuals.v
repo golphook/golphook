@@ -153,7 +153,9 @@ pub fn (mut v Visuals) weapon() {
 	mut text := weapon_data.name()
 
 	if app_ctx.config.active_config.weapon_clip {
-		text = "$text (${f32(weapon.clip1())})"
+		if weapon.clip1() != -1 {
+			text = "$text (${f32(weapon.clip1())})"
+		}
 	}
 
 	mut color := app_ctx.config.active_config.weapon_name_color_if_not_visible
