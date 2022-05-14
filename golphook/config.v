@@ -5,18 +5,20 @@ import json
 import rand
 import os
 
-fn get_knife_data(knife_id int) (int, string) {
-	match knife_id {
-		0 { return 507, "v_knife_karam.mdl" }
-		1 { return 508, "v_knife_m9_bay.mdl" }
-		2 { return 515, "v_knife_butterfly.mdl" }
-		3 { return 505, "v_knife_flip.mdl" }
-		4 { return 506, "v_knife_gut.mdl" }
-		5 { return 500, "v_knife_bayonet.mdl" }
-		6 { return 509, "v_knife_tactical.mdl" }
-		else { return 507, "v_knife_karam.mdl" }
+fn get_knife_data(knife_id int) string {
+	return match knife_id {
+		507 { "v_knife_karam.mdl" }
+		508 { "v_knife_m9_bay.mdl" }
+		515 { "v_knife_butterfly.mdl" }
+		505 { "v_knife_flip.mdl" }
+		506 { "v_knife_gut.mdl" }
+		500 { "v_knife_bayonet.mdl" }
+		509 { "v_knife_tactical.mdl" }
+		520 { "v_knife_gypsy_jackknife.mdl" }
+		else { "v_knife_karam.mdl" }
 	}
 }
+
 
 fn get_material_str(for_material_id int) string {
 	match int(for_material_id) {
@@ -49,7 +51,6 @@ pub mut:
 	name string = "golp"
 	// others
 	knife_changer bool = true
-	knife_type int = 2
 
 	bop bool = true
 
@@ -67,6 +68,34 @@ pub mut:
 	viewmodel_override_fov f32 = 80
 
 	no_flash bool
+
+	// skins
+	skins_changer bool = true
+	skins []SkinEntry = [
+		SkinEntry{definition_index: .weapon_knife_karambit, quality: 0, paint_kit: 0, wear: 0.0, seed: 0, is_knife: true}
+
+		SkinEntry{definition_index: .weapon_ak47, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_m4a1_silencer, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_m4a1, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_famas, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_sg556, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_awp, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_ssg08, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_cz75a, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_deagle, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_usp_silencer, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_glock, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_elite, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_revolver, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_p250, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_mac10, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_mp9, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_nova, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_mag7, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_sawedoff, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+		SkinEntry{definition_index: .weapon_xm1014, quality: 0, paint_kit: 0, wear: 0.0, seed: 0}
+
+	]
 
 	// visuals
 	glow bool = true
@@ -233,6 +262,13 @@ pub fn (mut c ConfigManager) change_to(configWithIndex int) {
 
 	if configWithIndex == c.active_config_idx {
 		return
+	}
+
+	// tmp fix to keep backward compatibility with old configs
+
+	if c.configs[configWithIndex].skins.len == 0 {
+		c.configs[configWithIndex].skins = c.configs[0].skins
+		c.save()
 	}
 
 	app_ctx.is_ok = false

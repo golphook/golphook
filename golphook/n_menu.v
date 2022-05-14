@@ -26,13 +26,60 @@ pub mut:
 
 	tmp_check bool
 
-	knifes []map[string]int = [{"karambit": 0}, {"m9": 1}, {"butterfly": 2}, {"flop": 3}, {"gaut": 4}, {"mayonet": 5}, {"hunt": 6}]
 	killsounds []map[string]int = [{"woof": 0}, {"crossfire": 1}]
 	configs []map[string]int = []
 	engine_keys []map[string]int = [{"mouse 1": 0x1}, {"mouse 4": 0x5}, {"mouse 5": 0x06}, {"alt": 0x12}, {"b": 0x42}, {"c": 0x43}, {"x": 0x58}]
 	engine_bones []map[string]int = [{"head": 8}, {"body": 5}, {"pelvis": 0}]
 
 	chams_materials []map[string]int = [{"ambientcube": 0}, {"gold": 1}, {"ct_fbi_glass": 2}, {"glass": 3}, {"crystal_clear": 4}, {"crystal_blue": 5}, {"velvet": 6}]
+
+	weapons_names []map[string]int = [
+		{"knife": 0},
+
+		{"ak": 1},
+		{"m4a1": 2},
+		{"m4a4": 3},
+		{"famas": 4},
+		{"kreig": 5},
+		{"awp": 6},
+		{"scout": 7},
+		{"cz": 8},
+		{"deagle": 9},
+		{"usp": 10},
+		{"glock": 11},
+		{"dualies": 12},
+		{"revolver": 13},
+		{"p250": 14},
+		{"mac10": 15},
+		{"mp9": 16},
+		{"nova": 17},
+		{"mag7": 18},
+		{"sawed-off": 19},
+		{"xm": 20},
+	]
+	knifes []map[string]int = [
+		{"karambit": 507},
+		{"m9": 508},
+		{"butterfly": 515},
+		{"flop": 505},
+		{"gaut": 506},
+		{"mayonet": 500},
+		{"hunt": 509},
+		{"navaja": 520}
+	]
+	item_quality []map[string]int = [
+		{"normal": 0},
+		{"genuine": 1},
+		{"vintage": 2},
+		{"unusual": 3},
+		{"community": 5},
+		{"developer": 6},
+		{"self-made": 7},
+		{"customized": 8},
+		{"strange": 9},
+		{"completed": 10},
+		{"tournament": 12}
+	]
 
 	tmp_rename_buff [64]char
 	tmp_rename_len int
@@ -327,15 +374,6 @@ fn (mut m NMenu) tab_misc() {
 
 		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
 		m.nk_ctx.layout_row_push(0.6)
-		m.nk_ctx.checkbox_label("knife changer", mut &app_ctx.config.active_config.knife_changer)
-		if app_ctx.config.active_config.knife_changer {
-			m.nk_ctx.layout_row_push(0.4)
-			m.table_combo(mut &app_ctx.config.active_config.knife_type, mut m.knifes, fn (mut app_ctx &App) {})
-		}
-		m.nk_ctx.layout_row_end()
-
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
-		m.nk_ctx.layout_row_push(0.6)
 		m.nk_ctx.checkbox_label("killsound", mut &app_ctx.config.active_config.killsound)
 		if app_ctx.config.active_config.killsound {
 			m.nk_ctx.layout_row_push(0.4)
@@ -549,10 +587,62 @@ fn (mut m NMenu) tab_config() {
 	}
 
 	if m.nk_ctx.group_begin("cfg_2", C.NK_WINDOW_NO_SCROLLBAR) {
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, 19, 1)
-		m.nk_ctx.layout_row_push(1)
-
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+		m.nk_ctx.layout_row_push(0.6)
+		m.nk_ctx.checkbox_label("skins changer", mut &app_ctx.config.active_config.skins_changer)
+		if app_ctx.config.active_config.knife_changer {
+			m.nk_ctx.layout_row_push(0.4)
+			m.table_combo(mut &app_ctx.skins.current_selected_in_menu, mut m.weapons_names, fn (mut app_ctx &App) {})
+		}
 		m.nk_ctx.layout_row_end()
+
+		if app_ctx.config.active_config.skins_changer {
+			if app_ctx.skins.current_selected_in_menu == 0 {
+				m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+				m.nk_ctx.layout_row_push(0.6)
+				m.nk_ctx.label("knife", C.NK_TEXT_LEFT)
+				if app_ctx.config.active_config.knife_changer {
+					m.nk_ctx.layout_row_push(0.4)
+					unsafe { m.table_combo(mut &int(&app_ctx.config.active_config.skins[0].definition_index), mut m.knifes, fn (mut app_ctx &App) {}) }
+				}
+				m.nk_ctx.layout_row_end()
+			}
+
+			if app_ctx.skins.current_selected_in_menu == 1 {
+				m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+				m.nk_ctx.layout_row_push(0.6)
+				m.nk_ctx.label("knife", C.NK_TEXT_LEFT)
+				if app_ctx.config.active_config.knife_changer {
+					m.nk_ctx.layout_row_push(0.4)
+					unsafe { m.table_combo(mut &int(&app_ctx.config.active_config.skins[1].definition_index), mut m.knifes, fn (mut app_ctx &App) {}) }
+				}
+				m.nk_ctx.layout_row_end()
+			}
+
+			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
+			m.nk_ctx.layout_row_push(1)
+			m.nk_ctx.property_float("wear", 0, &app_ctx.config.active_config.skins[app_ctx.skins.current_selected_in_menu].wear, 1, 0.01, 0.01)
+			m.nk_ctx.layout_row_end()
+
+			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
+			m.nk_ctx.layout_row_push(1)
+			m.nk_ctx.property_int("paint kit", 0, &app_ctx.config.active_config.skins[app_ctx.skins.current_selected_in_menu].paint_kit, 10_000, 1, 1)
+			m.nk_ctx.layout_row_end()
+
+			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
+			m.nk_ctx.layout_row_push(1)
+			m.nk_ctx.property_int("seed", 0, &app_ctx.config.active_config.skins[app_ctx.skins.current_selected_in_menu].seed, 1000, 1, 1)
+			m.nk_ctx.layout_row_end()
+
+			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+			m.nk_ctx.layout_row_push(0.6)
+			m.nk_ctx.label("quality", C.NK_TEXT_LEFT)
+			if app_ctx.config.active_config.knife_changer {
+				m.nk_ctx.layout_row_push(0.4)
+				unsafe { m.table_combo(mut &int(&app_ctx.config.active_config.skins[app_ctx.skins.current_selected_in_menu].quality), mut m.item_quality, fn (mut app_ctx &App) {}) }
+			}
+			m.nk_ctx.layout_row_end()
+		}
 
 		m.nk_ctx.group_end()
 	}

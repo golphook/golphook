@@ -23,11 +23,13 @@ pub mut:
 	rnd_queue &RenderQueue = 0
 	ent_cacher &EntityCacher = 0
 	config &ConfigManager = 0
+
 	engine &Engine = 0
 	visuals &Visuals = 0
 	menu &NMenu = 0
 	chams &Chams = 0
 	kill_sound &KillSound = 0
+	skins &Skins = 0
 
 	is_ok bool
 }
@@ -70,6 +72,7 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	a.engine = &Engine{}
 	a.visuals = &Visuals{}
 	a.chams = &Chams{}
+	a.skins = &Skins{}
 
 	a.menu = &NMenu{}
 

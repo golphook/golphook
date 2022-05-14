@@ -148,7 +148,7 @@ pub fn (mut v Visuals) weapon() {
 	mut box_data := v.calculate_box(v.adjust_text_spacing_by_zoom()) or { return }
 
 	weapon := ent_weapon(v.current_ent) or { return }
-	weapon_data := app_ctx.interfaces.i_weapon_system.weapon_data(weapon.definition_index())
+	weapon_data := app_ctx.interfaces.i_weapon_system.weapon_data(weapon.definition_index().get())
 
 	mut text := weapon_data.name()
 

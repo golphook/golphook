@@ -70,6 +70,8 @@ pub:
 	freeze_period u32 [json: m_bFreezePeriod]
 	m_has_helmet u32 [json: m_bHasHelmet]
 	m_armor_value u32 [json: m_ArmorValue]
+	m_fallback_seed u32 [json: m_nFallbackSeed]
+
 }
 
 struct Offsets {

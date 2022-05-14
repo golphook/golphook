@@ -11,9 +11,9 @@ pub fn others_on_frame() {
 		unsafe { bop() }
 	}
 
-	if app_ctx.config.active_config.knife_changer {
-		kalambite()
-	}
+	// if app_ctx.config.active_config.knife_changer {
+	// 	kalambite()
+	// }
 
 	if app_ctx.config.active_config.spectator {
 		specs()
@@ -38,70 +38,76 @@ pub fn bop() {
 	}
 }
 
-pub fn kalambite() {
-
-	mut app_ctx := unsafe { app() }
-	mut local_player := app_ctx.ent_cacher.local_player
-
-	if !local_player.is_alive() {
-		return
-	}
-
-	knife_id, knife_model_name := get_knife_data(app_ctx.config.active_config.knife_type)
-
-	for i in 0..8 {
-
-		mut current_weapon := local_player.weapons(i, 0x4) & 0xFFF
-		current_weapon = *(&u32(usize(app_ctx.h_client) + usize(offsets.db.signatures.entity_list) + usize(current_weapon - 1) * 0x10))
-		if current_weapon == 0 { continue }
-		mut current_weapon_id := *(&i16(current_weapon + offsets.db.netvars.m_item_definition_index))
-		if current_weapon_id == 0 { continue }
-		cs_current_weapon_id := valve.ItemDefinitionIndex(current_weapon_id)
-
-		if cs_current_weapon_id == .weapon_knife || cs_current_weapon_id == .weapon_knife_t || int(cs_current_weapon_id) == knife_id {
-			knife_model_index := u32(app_ctx.interfaces.i_model_info.get_model_index("models/weapons/$knife_model_name"))
-			mut item_def_inde := (&i16(current_weapon + offsets.db.netvars.m_item_definition_index))
-			unsafe { *item_def_inde = i16(knife_id) }
-
-			mut model_index := (&u32(current_weapon + offsets.db.netvars.m_model_index))
-			unsafe { *model_index = knife_model_index }
-
-			mut view_model_index := (&u32(current_weapon + offsets.db.netvars.m_view_model_index))
-			unsafe { *view_model_index = knife_model_index }
-
-			mut ent_quality := (&int(current_weapon + offsets.db.netvars.m_entity_quality))
-			unsafe { *ent_quality = 7 }
-
-			mut item_id_hight := (&int(current_weapon + offsets.db.netvars.m_item_id_high))
-			unsafe { *item_id_hight = -1 }
-
-			mut fallback_p_kit := (&u32(current_weapon + offsets.db.netvars.m_fallback_paint_kit))
-			unsafe { *fallback_p_kit = 0 }
-
-			mut fallback_wear := (&f32(current_weapon + offsets.db.netvars.m_fallback_wear))
-			unsafe { *fallback_wear = f32(0.0670)}
-
-			mut active_weapon := local_player.active_weapon() & 0xFFF
-			active_weapon = *(&u32(usize(app_ctx.h_client) + usize(offsets.db.signatures.entity_list) + usize(active_weapon - 1) * 0x10))
-
-			if active_weapon == 0 { continue }
-
-			mut active_weapon_id := *(&i16(active_weapon + offsets.db.netvars.m_item_definition_index))
-			if active_weapon_id != knife_id { continue }
-
-			mut active_view_model := local_player.viewmodel() & 0xFFF
-			active_view_model = *(&u32(usize(app_ctx.h_client) + usize(offsets.db.signatures.entity_list) + usize(active_view_model - 1) * 0x10))
-			if active_view_model == 0 { continue }
-
-			mut set := &u32(active_view_model + offsets.db.netvars.m_model_index)
-			unsafe { *set = knife_model_index }
-
-
-		}
-
-	}
-
-}
+// pub fn kalambite() {
+//
+// 	mut app_ctx := unsafe { app() }
+// 	mut local_player := app_ctx.ent_cacher.local_player
+//
+// 	if !local_player.is_alive() {
+// 		return
+// 	}
+//
+// 	knife_id, knife_model_name := get_knife_data(app_ctx.config.active_config.knife_type)
+//
+// 	mut knife_model_index := 0
+//
+// 	mut weapons := local_player.weapons()
+// 	for i in 0..8 {
+//
+// 		unsafe {
+// 			if weapons[i] == 0 || weapons[i] == -1 { continue }
+// 		}
+//
+// 		current_weapon := unsafe { &valve.Weapon_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(u32(weapons[i]))) }
+// 		current_view_mod := current_weapon.to_viewmodel()
+// 		current_item:= current_weapon.to_item()
+//
+// 		mut current_weapon_id := current_weapon.definition_index().get()
+// 		mut cs_current_weapon_id := valve.ItemDefinitionIndex(current_weapon_id)
+//
+// 		if int(cs_current_weapon_id) == 0 || cs_current_weapon_id == .weapon_invalid { continue }
+//
+// 		if cs_current_weapon_id == .weapon_knife || cs_current_weapon_id == .weapon_knife_t || int(cs_current_weapon_id) == knife_id {
+// 			knife_model_index = app_ctx.interfaces.i_model_info.get_model_index("models/weapons/$knife_model_name")
+//
+// 			current_weapon.definition_index().set(i16(knife_id))
+//
+// 			current_view_mod.model_index().set(knife_model_index)
+//
+// 			current_view_mod.viewmodel_index().set(knife_model_index)
+//
+// 			current_item.entity_quality().set(7)
+//
+// 			current_item.item_id_high().set(-1)
+//
+// 			current_item.fallback_paint_kit().set(0)
+//
+// 			current_item.fallback_wear().set(0.0670)
+// 		}
+//
+// 		if cs_current_weapon_id == .weapon_ak47 {
+//
+// 			current_item.item_id_high().set(-1)
+//
+// 			current_item.entity_quality().set(4)
+// 			current_item.fallback_paint_kit().set(44)
+// 			current_item.fallback_wear().set(0.0670)
+// 			current_item.fallback_seed().set(123)
+//
+// 		}
+//
+// 	}
+//
+// 	active_weapon := &valve.Weapon_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(local_player.active_weapon()))
+// 	if int(active_weapon) == 0 { return }
+// 	if active_weapon.definition_index().get() != knife_id { return }
+//
+// 	active_view_model := &valve.Viewmodel(app_ctx.interfaces.i_entity_list.get_client_entity_handle(local_player.viewmodel()))
+// 	if int(active_view_model) == 0 { return }
+//
+// 	active_view_model.model_index().set(knife_model_index)
+//
+// }
 
 pub fn specs() {
 	mut app_ctx := unsafe { app() }

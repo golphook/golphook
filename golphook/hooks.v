@@ -123,6 +123,7 @@ fn hk_frame_stage_notify(stage u32) {
 			app_ctx.visuals.on_frame()
 			others_on_frame()
 			app_ctx.kill_sound.on_frame()
+			app_ctx.skins.on_frame()
 		}
 	}
 

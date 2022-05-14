@@ -141,6 +141,21 @@ pub fn (e &Entity_t) set_abs_angle(with_angle utils.Angle) {
 	ofn(e, 0, with_angle)
 }
 
+pub fn (e &Entity_t) to_weapon() &Weapon_t {
+	return &Weapon_t(voidptr(e))
+}
+
+pub fn (e &Entity_t) to_player() &Player {
+	return &Player(voidptr(e))
+}
+
+pub fn (e &Entity_t) to_item() &Item {
+	return &Item(voidptr(e))
+}
+
+pub fn (e &Entity_t) to_viewmodel() &Viewmodel {
+	return &Viewmodel(voidptr(e))
+}
 
 struct Weapon_t {
 	Entity_t
@@ -170,13 +185,14 @@ pub fn (w &Weapon_t) clip1() int {
 	return *(utils.get_val_offset<int>(w, offsets.db.netvars.clip1))
 }
 
-pub fn (w &Weapon_t) definition_index() i16 {
-	return *(utils.get_val_offset<i16>(w, offsets.db.netvars.m_item_definition_index))
+pub fn (w &Weapon_t) definition_index_() ItemDefinitionIndex {
+	return *(utils.get_val_offset<ItemDefinitionIndex>(w, offsets.db.netvars.m_item_definition_index))
 }
 
-pub fn (w &Weapon_t) quality() int {
-	return *(utils.get_val_offset<int>(w, offsets.db.netvars.m_entity_quality))
+pub fn (w &Weapon_t) definition_index() utils.Value<i16> {
+	return utils.Value<i16>{ptr: utils.get_val_offset<i16>(w, offsets.db.netvars.m_item_definition_index)}
 }
+
 
 // Player
 
@@ -208,8 +224,8 @@ pub fn (p &Player) is_scoped() bool {
 	return *(utils.get_val_offset<bool>(p, offsets.db.netvars.m_is_scoped))
 }
 
-pub fn (p &Player) weapons(with_weapon_idx u32 , and_offset u32) u32 {
-	return *(utils.get_val_offset<u32>(p, offsets.db.netvars.m_my_weapons + with_weapon_idx * and_offset))
+pub fn (p &Player) weapons() &usize {
+	return &usize( usize(p) + offsets.db.netvars.m_my_weapons )
 }
 
 pub fn (p &Player) active_weapon() u32 {
@@ -289,17 +305,28 @@ struct Item {
 	Entity_t
 }
 
-pub fn (i &Item) item_id_high() int {
-	return *(utils.get_val_offset<int>(i, offsets.db.netvars.m_item_id_high))
+pub fn (i &Item) fallback_seed() utils.Value<int> {
+	return utils.Value<int>{ptr: utils.get_val_offset<int>(i, offsets.db.netvars.m_fallback_seed)}
 }
 
-pub fn (i &Item) fallback_paint_kit() int {
-	return *(utils.get_val_offset<int>(i, offsets.db.netvars.m_fallback_paint_kit))
+pub fn (i &Item) fallback_wear() utils.Value<f32> {
+	return utils.Value<f32>{ptr: utils.get_val_offset<f32>(i, offsets.db.netvars.m_fallback_wear)}
 }
 
-pub fn (i &Item) fallback_wear() f32 {
-	return *(utils.get_val_offset<f32>(i, offsets.db.netvars.m_fallback_wear))
+pub fn (i &Item) fallback_paint_kit() utils.Value<int> {
+	return utils.Value<int>{ptr: utils.get_val_offset<int>(i, offsets.db.netvars.m_fallback_paint_kit)}
 }
+
+pub fn (i &Item) item_id_high() utils.Value<int> {
+	return utils.Value<int>{ptr: utils.get_val_offset<int>(i, offsets.db.netvars.m_item_id_high)}
+}
+
+pub fn (i &Item) entity_quality() utils.Value<int> {
+	return utils.Value<int>{ptr: utils.get_val_offset<int>(i, offsets.db.netvars.m_entity_quality)}
+}
+
+
+
 
 // Viewmodel
 
@@ -307,10 +334,10 @@ struct Viewmodel {
 	Entity_t
 }
 
-pub fn (v &Viewmodel) model_index() int {
-	return *(utils.get_val_offset<int>(v, offsets.db.netvars.m_model_index))
+pub fn (v &Viewmodel) model_index() utils.Value<int> {
+	return utils.Value<int>{ptr: utils.get_val_offset<int>(v, offsets.db.netvars.m_model_index)}
 }
 
-pub fn (v &Viewmodel) viewmodel_index() int {
-	return *(utils.get_val_offset<int>(v, offsets.db.netvars.m_view_model_index))
+pub fn (v &Viewmodel) viewmodel_index() utils.Value<int> {
+	return utils.Value<int>{ptr: utils.get_val_offset<int>(v, offsets.db.netvars.m_view_model_index)}
 }
