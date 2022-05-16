@@ -35,14 +35,20 @@ pub mut:
 }
 
 pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
-	utils.pront('[+] initializing the golp !')
 	a.h_mod = withModuleHandle
-	a.h_client = voidptr(C.GetModuleHandleA(c"client.dll"))
-	a.v_mod = vmod.decode(@VMOD_FILE) or { panic(err.msg()) }
 
 	$if debug {
 		utils.load_unload_console(true, a.file)
 	}
+
+	utils.pront('[+] initializing the golp !\n')
+
+	utils.pront('[-] waiting for modules to load...')
+	mut modules := ["client.dll", "engine.dll", "vstdlib.dll", "vguimatsurface.dll", "inputsystem.dll", "studiorender.dll", "materialsystem.dll"]
+	utils.wait_for_module(mut modules, 40)
+
+	a.h_client = voidptr(C.GetModuleHandleA(c"client.dll"))
+	a.v_mod = vmod.decode(@VMOD_FILE) or { panic(err.msg()) }
 
 	a.h_wnd = C.FindWindowA(0, c"Counter-Strike: Global Offensive - Direct3D 9")
 

@@ -11,6 +11,7 @@ const errors = {
 	"Failed to create ressource configs": 7
 	"Failed to access ressource configs": 8
 	"Failed to resolve resolve sig": 9
+	"Some module arn't loaded": 10
 }
 
 pub fn error_critical(withError string, andErrorComplement string) {

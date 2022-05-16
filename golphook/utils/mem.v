@@ -1,5 +1,7 @@
 module utils
 
+import time
+
 #include "windows.h"
 
 [inline]
@@ -96,5 +98,30 @@ pub fn (r &Value<T>) set(with_new_val T) {
 	// bypass v cannot mut return value
 	unsafe {
 		*&T(r.ptr) = with_new_val
+	}
+}
+
+pub fn wait_for_module(mut with_modules []string, and_max_timeout int) {
+
+	mut total_waited := 0
+
+	for {
+
+		for idx, mod in with_modules {
+			if int(C.GetModuleHandleA(&char(mod.str))) != 0 {
+				utils.pront(mod)
+				with_modules.delete(idx)
+			}
+		}
+
+		if with_modules.len != 0 {
+			if total_waited > and_max_timeout {
+				utils.error_critical("Some module arn't loaded", with_modules.join(", "))
+			}
+			total_waited++
+		} else {
+			break
+		}
+		C.Sleep(1000)
 	}
 }
