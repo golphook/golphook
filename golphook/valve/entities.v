@@ -97,8 +97,8 @@ pub fn (e &Entity_t) abs_origin() &utils.Vec3 {
 	return utils.call_vfunc<P_abs_origin>(e, 10)(e, 0)
 }
 
-pub fn (e &Entity_t) observer_target() &Entity_t {
-	return utils.call_vfunc<P_observer_target>(e, 294)(e, 0)
+pub fn (e &Entity_t) observer_target() u32 {
+	return *(utils.get_val_offset<u32>(e, offsets.db.netvars.m_observer_target))
 }
 
 pub fn (e &Entity_t) dormant() bool {
@@ -297,6 +297,10 @@ pub fn (p &Player) eye_pos() utils.Vec3 {
 
 pub fn (p &Player) is_alive() bool {
 	return int(p.life_state()) == 0 && p.health() > 0
+}
+
+pub fn (p &Player) observer_mode() ObserverModes {
+	return *(utils.get_val_offset<ObserverModes>(p, offsets.db.netvars.m_observer_mode))
 }
 
 // item

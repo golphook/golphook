@@ -452,3 +452,15 @@ pub:
 pub fn (c &CCLientClass) name() string {
 	return unsafe { cstring_to_vstring(c.network_name) }
 }
+
+pub enum ObserverModes {
+	mode_none = 0	// not in spectator mode
+	mode_deathcam	// special mode for death cam animation
+	mode_freezecam	// zooms to a target and freeze-frames on them
+	mode_fixed		// view from a fixed camera position
+	mode_in_eye	// follow a player in first person view
+	mode_chase		// follow a player in third person view
+	mode_poi		// passtime point of interest - game objective big fight anything interesting; added in the middle of the enum due to tons of hard-coded "<roaming" enum compares
+	mode_roaming	// free roaming
+	num_observer_modes
+}
