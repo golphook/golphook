@@ -44,6 +44,8 @@ fn C.SetWindowLongA(C.HWND, i32, i32) i32
 fn C.GetWindowRect(C.HWND, &C.RECT) bool
 
 fn C.GetCurrentProcessId() u32
+
+fn C.rand() int
 // minhook defs
 
 fn C.MH_Initialize() int

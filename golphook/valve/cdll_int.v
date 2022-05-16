@@ -27,6 +27,9 @@ struct IVEngineClient {}
 type P_get_screen_size = fn (voidptr, usize, &int, &int)
 
 [callconv: "fastcall"]
+type P_client_cmd = fn (voidptr, usize, &char)
+
+[callconv: "fastcall"]
 type P_get_player_info = fn (voidptr, usize, int, &PlayerInfo) bool
 
 [callconv: "fastcall"]
@@ -58,6 +61,10 @@ type P_execute_client_cmd_unrectricted = fn (voidptr, usize, &char)
 
 pub fn (i &IVEngineClient) get_screen_size(to_width &int, and_height &int) {
 	utils.call_vfunc<P_get_screen_size>(i, 5)(i, 0, to_width, and_height)
+}
+
+pub fn (i &IVEngineClient) client_cmd(with_cmd string) {
+	utils.call_vfunc<P_client_cmd>(i, 7)(i, 0, &char(with_cmd.str))
 }
 
 pub fn (i &IVEngineClient) get_player_info(for_ent_id int, to_p_info_struct &PlayerInfo) bool {

@@ -69,6 +69,8 @@ pub mut:
 
 	no_flash bool
 
+	killsay bool = true
+
 	// skins
 	skins_changer bool = true
 	skins []SkinEntry = [

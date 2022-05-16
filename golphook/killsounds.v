@@ -2,6 +2,7 @@ module golphook
 
 import utils
 import offsets
+import rand
 
 #flag -lwinmm
 
@@ -80,31 +81,63 @@ fn (mut k KillSound) is_freeze_time() bool {
 fn (mut k KillSound) on_frame() {
 	mut app_ctx := unsafe { app() }
 
-	if !app_ctx.config.active_config.killsound {
-		return
-	}
-
 	if k.is_freeze_time() {
 		k.kill_streak = 0
 	}
 
 	if k.get_kill() > k.old_kill {
-		if k.get_kill_hs() > k.old_kill_hs {
-			k.kill_streak++
-			if app_ctx.config.active_config.killsound_type == 1  {
-				k.play_sound("hs")
-			} else {
-				k.play_sound("db_woof")
+
+		if app_ctx.config.active_config.killsay {
+			// using rand module cause crash
+			// user array[idx] cause crash ...
+			// using a const array don't give any result
+
+			messages := [
+				"level 180 sur steam mais je cheat, t'as raison oui",
+			    "mon steam vaut plus cher que ta vie",
+			    "jsuis a moitié dans l'coma les yeux rouges et jrecois des nudes",
+			    "Depuis le vacban les filles on prit leur jambe à leur cou",
+			    "ya des fois jaimerais etre gay, les mecs c moins compliqués",
+			    "facile a hacker les succes steam mdrr",
+				"Tout mon détail, j’le foutais dans ma p'tite trousse",
+				"Et j'm'en rappelle du premier jour d'la rentrée: cent-trente euros en barrette",
+				"ma Beyoncé elle msuce la bite negro",
+				"mon gar je trouve que jeter de l'argent sur un account sa va servir a rien je gaspile de l'argent sur quelque chose qui vaut la peine sale geek et mon main coute dans les 800 dollar il est locked par volvo"
+			]
+
+
+			a := C.rand() % 10
+			mut f_msg := ""
+
+			for idx, msg in messages {
+				if idx == a {
+					f_msg = msg
+				}
 			}
 
-		} else {
-			k.kill_streak++
-			if app_ctx.config.active_config.killsound_type == 1 {
-				k.play_sound(get_sound_for_kill(k.kill_streak))
+			app_ctx.interfaces.cdll_int.client_cmd("say $f_msg")
+		}
+
+		if app_ctx.config.active_config.killsound {
+			if k.get_kill_hs() > k.old_kill_hs {
+				k.kill_streak++
+				if app_ctx.config.active_config.killsound_type == 1  {
+					k.play_sound("hs")
+				} else {
+					k.play_sound("db_woof")
+				}
+
 			} else {
-				k.play_sound("woof")
+				k.kill_streak++
+				if app_ctx.config.active_config.killsound_type == 1 {
+					k.play_sound(get_sound_for_kill(k.kill_streak))
+				} else {
+					k.play_sound("woof")
+				}
 			}
 		}
+
+
 	}
 
 	k.old_kill = k.get_kill()
