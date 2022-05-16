@@ -71,6 +71,7 @@ pub:
 	m_has_helmet u32 [json: m_bHasHelmet]
 	m_armor_value u32 [json: m_ArmorValue]
 	m_fallback_seed u32 [json: m_nFallbackSeed]
+	m_observer_mode u32 [json: m_iObserverMode]
 
 }
 
