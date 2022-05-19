@@ -91,8 +91,8 @@ pub fn load() Offsets {
 		return Offsets{timestamp: -1}
 	}
 
-	// yes its definitly againt v rules but in plain v yout can do const my_const = load()
-	// but il this situation its not working the load() fn dont get call
+	// yes its definitly againt v rules but in plain v you can do const my_const = load()
+	// but in this situation its not working the load() fn never get called
 	// so initialized the const with an empty struct and initialized manualy here :/
 	// but it will stay "const" after
 	unsafe {

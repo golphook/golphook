@@ -11,9 +11,9 @@ move_to_temp=xcopy /e /y * $(temp_project_path) &&
 move_back=&& del $(temp_project_path)\*.c.exp && del $(temp_project_path)\*.c.lib && xcopy /e /y $(temp_project_path)\* .
 
 build-prod:
-	$(move_to_temp) v $(cc) -prod -shared -autofree  -o $(bin_folder)\$(project_name).dll $(temp_project_path) $(move_back)
+	$(move_to_temp) v $(cc) -prod -shared -showcc -autofree -o $(bin_folder)\$(project_name).dll $(temp_project_path) $(move_back)
 build-debug:
-	$(move_to_temp) v $(cc) -g -shared -autofree -o $(bin_folder)\$(project_name)-debug.dll $(temp_project_path) $(move_back)
+	$(move_to_temp) v $(cc) -g -showcc -shared -autofree -o $(bin_folder)\$(project_name)-debug.dll $(temp_project_path) $(move_back)
 debug-c:
 	$(move_to_temp) v $(cc) -g -shared -autofree -o $(bin_folder)\$(project_name)-debug.c $(temp_project_path)  $(move_back)
 debug-cp:
@@ -22,6 +22,8 @@ fmt:
 	$(move_to_temp) v fmt -w . $(move_back)
 
 ci-build-prod:
-	v $(cc) -prod -shared -o build\$(project_name).dll .
+	v $(cc) -prod -autofree -shared -showcc -keep-c -o build\$(project_name).dll .
+ci-build-cp:
+	v $(cc) -prod -autofree -shared -keep-c -o build\$(project_name)-debug_p.c .
 ci-build-debug:
 	v $(cc) -g -shared -o build\$(project_name)-debug.dll .

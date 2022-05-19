@@ -85,7 +85,7 @@ fn (d D3d9line) release() u32 {
 		o_fn = &P_dx_release(utils.get_virtual(d.i_dxline, 2))
 	}
 	// someone have to know that i spent litteraly 2h+ to debug this shit just
-	//beacuse calling o_fn without handming it's return make a crash to a random place in csgo pls kill me
+	// beacuse calling o_fn without handling it's return make a crash to a random place in csgo pls kill me
 	return o_fn(d.i_dxline)
 }
 
