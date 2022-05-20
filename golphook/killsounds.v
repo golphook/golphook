@@ -102,11 +102,15 @@ fn (mut k KillSound) on_frame() {
 				"Tout mon détail, j’le foutais dans ma p'tite trousse",
 				"Et j'm'en rappelle du premier jour d'la rentrée: cent-trente euros en barrette",
 				"ma Beyoncé elle msuce la bite negro",
-				"mon gar je trouve que jeter de l'argent sur un account sa va servir a rien je gaspile de l'argent sur quelque chose qui vaut la peine sale geek et mon main coute dans les 800 dollar il est locked par volvo"
+				"mon gar je trouve que jeter de l'argent sur un account sa va servir a rien je gaspile de l'argent sur quelque chose qui vaut la peine sale geek et mon main coute dans les 800 dollar il est locked par volvo",
+				"merci qd mm la mission local pr la garantie jeune ca ma bien depannnn",
+				"Mets ça sur ton pain ça sera moins sec",
+				"Attention les filles en mode enflure",
+				"et ma bitch a toujours le xanax et la og dans le purse",
+				"truc d'africain de ce lever pour le pain"
 			]
 
-
-			a := C.rand() % 10
+			a := C.rand() % messages.len
 			mut f_msg := ""
 
 			for idx, msg in messages {
