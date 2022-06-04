@@ -9,6 +9,7 @@ Known issues
 >- memory leaks
 >- exp texts are a bit shaky
 >- aimbot don't shoot when too close
+>- chams are fucked up
 >- and other minor bugs
 
 Features
