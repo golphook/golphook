@@ -1,5 +1,5 @@
 
-# golphook
+# golphook [![wakatime](https://wakatime.com/badge/user/2b86f537-5196-4e3e-8540-a0a78663539d/project/a6ce3541-9e78-429f-9a45-b561c0fb01fd.svg)](https://wakatime.com/badge/user/2b86f537-5196-4e3e-8540-a0a78663539d/project/a6ce3541-9e78-429f-9a45-b561c0fb01fd)
 
 > Another attempt to make a csgo internal for my personal use but this time written in [V](https://vlang.io) :) it use [nuklear](https://github.com/TsudaKageyu/minhook) for the menu and [minhook](https://github.com/TsudaKageyu/minhook) for hooking
 
