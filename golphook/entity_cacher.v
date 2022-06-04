@@ -9,6 +9,7 @@ pub mut:
 }
 
 pub fn (mut e EntityCacher) on_frame() {
+
 	mut app_ctx := unsafe { app() }
 
 	lock e.cache {
@@ -32,13 +33,11 @@ pub fn (mut e EntityCacher) on_frame() {
 }
 
 pub fn (mut e EntityCacher) filter_player(ent_filter fn(&valve.Player, &EntityCacher) bool) []&valve.Player {
+
 	mut ret := []&valve.Player{}
+
 	rlock e.cache {
 		for ent in e.cache {
-			// if !ent.is_player() {
-			// 	continue
-			// }
-
 			p_ent := unsafe { &valve.Player(ent) }
 
 			if ent_filter(p_ent, e) {

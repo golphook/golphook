@@ -5,6 +5,7 @@ import offsets
 import valve
 
 pub fn others_on_frame() {
+
 	mut app_ctx := unsafe { app() }
 
 	if app_ctx.config.active_config.bop {
@@ -22,6 +23,7 @@ pub fn others_on_frame() {
 
 [unsafe]
 pub fn bop() {
+
 	mut app_ctx := unsafe { app() }
 
 	if !app_ctx.ent_cacher.local_player.is_moving() {
@@ -35,6 +37,7 @@ pub fn bop() {
 }
 
 pub fn specs() {
+
 	mut app_ctx := unsafe { app() }
 
 	ents := app_ctx.ent_cacher.filter_player(fn (e &valve.Player, ctx &EntityCacher) bool {
@@ -45,7 +48,6 @@ pub fn specs() {
 	for ent in ents {
 
 		mut p_info := valve.PlayerInfo{}
-
 
 		h_observer_target := ent.observer_target()
 		observer_target := &valve.Entity_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(h_observer_target))
@@ -75,6 +77,7 @@ pub fn specs() {
 }
 
 pub fn no_flash() {
+	
 	mut app_ctx := unsafe { app() }
 
 	if !app_ctx.ent_cacher.local_player.is_alive() {

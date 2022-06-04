@@ -1,12 +1,10 @@
 module valve
 
-
 #flag -I @VMODROOT/golphook/c
 
 #include "reg.h"
 
 fn C.load_this(voidptr)
-
 
 pub enum ItemDefinitionIndex {
     weapon_invalid = -1
@@ -450,6 +448,7 @@ pub:
 }
 
 pub fn (c &CCLientClass) name() string {
+
 	return unsafe { cstring_to_vstring(c.network_name) }
 }
 

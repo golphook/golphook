@@ -45,7 +45,7 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 }
 
 fn (mut i Interfaces) get_interface_pattern<T>(with_name string, in_module string, with_pattern string, ptr_manipulation 	fn(voidptr) voidptr) &T {
-	ptn_res := utils.patter_scan(in_module, with_pattern) or {
+	ptn_res := utils.pattern_scan(in_module, with_pattern) or {
 		utils.error_critical('Failed to get inferface', with_name)
 	}
 

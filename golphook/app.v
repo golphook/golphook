@@ -10,12 +10,14 @@ import d3d
 pub struct App {
 pub mut:
 	h_mod voidptr
-	v_mod vmod.Manifest
-	file  &C.FILE = 0
 	h_wnd C.HWND
 	h_client voidptr
+
 	wnd_height int
 	wnd_width int
+
+	v_mod vmod.Manifest
+	file  &C.FILE = 0
 
 	interfaces &Interfaces = 0
 	hooks      &Hooks = 0
@@ -34,8 +36,9 @@ pub mut:
 	is_ok bool
 }
 
-pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
-	a.h_mod = withModuleHandle
+pub fn (mut a App) bootstrap(with_module_handle voidptr) {
+
+	a.h_mod = with_module_handle
 
 	$if debug {
 		utils.load_unload_console(true, a.file)
@@ -57,31 +60,21 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 	}
 
 	offsets.load()
-
 	a.config = &ConfigManager{}
 	a.config.bootstrap()
-
 	a.interfaces = &Interfaces{}
 	a.interfaces.bootstrap()
-
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
-
 	a.d3d = &d3d.D3d9{}
 	a.d3d.bootstrap()
-
 	a.kill_sound = &KillSound{}
-	a.kill_sound.bootstrap()
-
 	a.rnd_queue = &RenderQueue{}
 	a.ent_cacher = &EntityCacher{}
-
 	a.engine = &Engine{}
 	a.visuals = &Visuals{}
 	a.chams = &Chams{}
 	a.skins = &Skins{}
-
 	a.menu = &NMenu{}
-
 	a.hooks = &Hooks{}
 	a.hooks.bootstrap()
 
@@ -93,27 +86,32 @@ pub fn (mut a App) bootstrap(withModuleHandle voidptr) {
 }
 
 pub fn (mut a App) release() {
+
 	a.hooks.release()
 	a.menu.release(false)
 	a.d3d.release()
+
 	utils.pront('\n[*] bye golpy\n')
+
 	unsafe { utils.load_unload_console(false, a.file) }
+
 	C.FreeLibraryAndExitThread(a.h_mod, 0)
 }
 
 pub fn (mut a App) on_frame() {
+
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
-	//C.printf(c"%d - %d",a.wnd_width, a.wnd_height)
 }
 
 [unsafe]
 pub fn app() &App {
+
 	mut static ctx := voidptr(0)
 
-	if int(ctx) == 0 {
+	if isnil(ctx) {
 		ctx = voidptr(&App{})
 
-		if int(ctx) == 0 {
+		if isnil(ctx) {
 			utils.error_critical('Failed to initialize app', '')
 		}
 	}

@@ -5,8 +5,8 @@ import time
 #include "windows.h"
 
 [inline]
-pub fn get_virtual(inThis voidptr, at_index int) voidptr {
-	return unsafe { ((*(&&voidptr(inThis)))[at_index]) }
+pub fn get_virtual(in_this_obj voidptr, at_index int) voidptr {
+	return unsafe { ((*(&&voidptr(in_this_obj)))[at_index]) }
 }
 
 [inline]
@@ -14,13 +14,34 @@ pub fn call_vfunc<T>(from_class voidptr, at_idx int) T {
 	return T(get_virtual(from_class, at_idx))
 }
 
+// ne pas passer de voidptr dans T sinon ca fait un &voidptr ce qui est egal a void**
+// alors que si a la palce on passe un usize ca fait usize*
+pub fn get_val_offset<T>(in_this_obj voidptr, at_offset usize) &T {
+	return unsafe { &T(usize(in_this_obj) + at_offset) }
+}
+
+struct Value<T> {
+	ptr voidptr
+}
+
+pub fn (r &Value<T>) get<T>() T {
+
+	return *&T(r.ptr)
+}
+
+pub fn (r &Value<T>) set(with_new_val T) {
+	// bypass v cannot mut return value
+	unsafe {
+		*&T(r.ptr) = with_new_val
+	}
+}
 
 [typedef]
 struct C.IMAGE_DOS_HEADER {
 	pad [14]u16
-	padd [4]u16
-	paddd [2]u16
-	padddd [10]u16
+	pud [4]u16
+	ped [2]u16
+	pyd [10]u16
 	e_lfanew int
 }
 
@@ -39,13 +60,13 @@ struct C.IMAGE_NT_HEADERS {
 }
 
 
-pub fn patter_scan(inModule string, andSing string) ?voidptr {
+pub fn pattern_scan(in_module string, with_sig string) ?voidptr {
 
-	r := C.GetModuleHandleA(&char(inModule.str))
-	dos := &C.IMAGE_DOS_HEADER(r)
-	nt := &C.IMAGE_NT_HEADERS(voidptr(usize(voidptr(r)) + usize(dos.e_lfanew)))
+	module_base := C.GetModuleHandleA(&char(in_module.str))
+	dos := &C.IMAGE_DOS_HEADER(module_base)
+	nt := &C.IMAGE_NT_HEADERS(voidptr(usize(voidptr(module_base)) + usize(dos.e_lfanew)))
 
-	mut bytes_patten := andSing.split(" ").map(fn (i string) i16 {
+	mut bytes_patten := with_sig.split(" ").map(fn (i string) i16 {
 		if i == "?" {
 			return -1
 		} else {
@@ -54,7 +75,7 @@ pub fn patter_scan(inModule string, andSing string) ?voidptr {
 	})
 
 	pattern_size := bytes_patten.len
-	base_addr := byteptr(r)
+	base_addr := &u8(module_base)
 
 	max := nt.OptionalHeader.SizeOfImage - u32(pattern_size)
 
@@ -67,38 +88,14 @@ pub fn patter_scan(inModule string, andSing string) ?voidptr {
 					break
 				}
 			}
-
 		}
-
 
 		if is_match_pattern {
 			unsafe { return voidptr(&base_addr[i]) }
 		}
-
 	}
 
-	return error("Cannot find address with pattern: $andSing")
-}
-
-// ne pas passer de voidptr dans T sinon ca fait un &voidptr ce qui est egal a void**
-// alors que si a la palce on passe un usize ca fait usize*
-pub fn get_val_offset<T>(inThis voidptr, withOffset usize) &T {
-	return unsafe { &T(usize(inThis) + withOffset) }
-}
-
-struct Value<T> {
-	ptr voidptr
-}
-
-pub fn (r &Value<T>) get<T>() T {
-	return *&T(r.ptr)
-}
-
-pub fn (r &Value<T>) set(with_new_val T) {
-	// bypass v cannot mut return value
-	unsafe {
-		*&T(r.ptr) = with_new_val
-	}
+	return error("Cannot find address with pattern: $with_sig")
 }
 
 pub fn wait_for_module(mut with_modules []string, and_max_timeout int) {
@@ -106,7 +103,6 @@ pub fn wait_for_module(mut with_modules []string, and_max_timeout int) {
 	mut total_waited := 0
 
 	for {
-
 		for idx, mod in with_modules {
 			if int(C.GetModuleHandleA(&char(mod.str))) != 0 {
 				utils.pront(mod)

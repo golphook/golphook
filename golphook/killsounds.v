@@ -7,9 +7,11 @@ import rand
 #flag -lwinmm
 
 #include "mmsystem.h"
+
 fn C.PlaySound(voidptr, voidptr, u32) bool
 
 fn get_sound_for_kill(kills int) string {
+
 	if kills > 5 {
 		return "k_five"
 	}
@@ -29,10 +31,6 @@ pub mut:
 	old_kill int
 	old_kill_hs int
 	kill_streak int
-}
-
-fn (mut k KillSound) bootstrap() {
-
 }
 
 fn (k &KillSound) play_sound(withSound string) {
@@ -55,7 +53,9 @@ fn (k &KillSound) play_sound(withSound string) {
 }
 
 fn (mut k KillSound) get_kill() int {
+
 	mut app_ctx := unsafe { app() }
+
 	a := *(&usize(usize(app_ctx.h_client) + offsets.db.signatures.player_resource))
 	lcp_id := app_ctx.ent_cacher.local_player.index()
 	kills_total := &int(a + usize(offsets.db.netvars.match_stats_kills_total) + usize(lcp_id * 0x4))
@@ -63,7 +63,9 @@ fn (mut k KillSound) get_kill() int {
 }
 
 fn (mut k KillSound) get_kill_hs() int {
+
 	mut app_ctx := unsafe { app() }
+
 	a := *(&usize(usize(app_ctx.h_client) + offsets.db.signatures.player_resource))
 	lcp_id := app_ctx.ent_cacher.local_player.index()
 	hs_kills := &int(a + usize(offsets.db.netvars.match_stats_headshot_kills_total) + usize(lcp_id * 0x4))
@@ -71,7 +73,9 @@ fn (mut k KillSound) get_kill_hs() int {
 }
 
 fn (mut k KillSound) is_freeze_time() bool {
+
 	mut app_ctx := unsafe { app() }
+
 	a := *(&usize(usize(app_ctx.h_client) + offsets.db.signatures.game_rules_proxy))
 	is_freeze_time := &bool(a + usize(offsets.db.netvars.freeze_period))
 	return *is_freeze_time
@@ -79,6 +83,7 @@ fn (mut k KillSound) is_freeze_time() bool {
 
 
 fn (mut k KillSound) on_frame() {
+	
 	mut app_ctx := unsafe { app() }
 
 	if k.is_freeze_time() {

@@ -34,7 +34,13 @@ pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 	return can_see, tr_
 }
 
-pub fn i_can_see_with_offset(player &valve.Player, bone	 usize, offset f32) bool {
+// this addittion changed everyting how the aimbot shoot, what it does is adding
+// an offset on all side of the player eye pos this result to mark the player visible faster
+// and add a 'legit awall' a value btw 0-2 juste make shoot faster but 3-7 add a little
+// awall and with this dumb trick 4 times in 10 i can kill a bad/medium spinner
+// no joke this shit changed everyting
+pub fn i_can_see_with_offset(player &valve.Player, bone	usize, offset f32) bool {
+
 	mut app_ctx := unsafe { app() }
 
 	for o in 0..3 {
@@ -73,69 +79,12 @@ pub fn i_can_see_with_offset(player &valve.Player, bone	 usize, offset f32) bool
 	return false
 }
 
-pub fn check_ent_visible_by_mask(ent &valve.Player) bool {
-	mut app_ctx := unsafe { app() }
-	r := ent.spotted_by_mask() & (1 << ( app_ctx.ent_cacher.local_player.index() - 1))
-	if r > 0 {
-		return true
-	}
-	return false
-}
-
-pub fn my_speed_angles() utils.Vec3 {
-	mut app_ctx := unsafe { app() }
-	v_vel := app_ctx.ent_cacher.local_player.velocity()
-	a_angles := utils.new_angle(0,0,0)
-	app_ctx.interfaces.cdll_int.get_view_angle(&a_angles)
-
-	mut v_final := utils.new_vec3(0,0,0)
-	view_angle_rad := a_angles.yaw * utils.radian
-
-	v_final.x = ( math.cosf(view_angle_rad) * v_vel.x ) - ( math.sinf(view_angle_rad) * ( -v_vel.y ) )
-	v_final.y = ( math.sinf(view_angle_rad) * v_vel.x ) + ( math.cosf(view_angle_rad) * ( -v_vel.y ) )
-	return v_final
-}
-
-pub fn stopp()  {
-	mut app_ctx := unsafe { app() }
-
-	// zz := C.GetAsyncKeyState(0x5A) > 1
-	// qq := C.GetAsyncKeyState(0x51) > 1
-	// ss := C.GetAsyncKeyState(0x53) > 1
-	// dd := C.GetAsyncKeyState(0x44) > 1
-
-	mut force_forward := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_forward)
-	mut force_backward := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_backward)
-	mut force_left := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_left)
-	mut force_right := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_right)
-
-	v_vel := app_ctx.ent_cacher.local_player.velocity()
-	vel := math.sqrtf(v_vel.x * v_vel.x + v_vel.y * v_vel.y)
-	v_avel := my_speed_angles()
-
-	if vel >=30&& ( app_ctx.ent_cacher.local_player.flags() == 257 ) {
-
-		if v_avel.x >= 30 {
-			unsafe { *force_backward = 6 }
-		}
-		if v_avel.x <= -30 {
-			unsafe { *force_forward = 6 }
-		}
-		if v_avel.y >= 30 {
-			unsafe { *force_left = 6 }
-		}
-		if v_avel.y <= -30 {
-			unsafe { *force_right = 6 }
-		}
-
-	}
-}
-
 pub fn ent_weapon(for_ent &valve.Player) ?&valve.Weapon_t {
+
 	mut app_ctx := unsafe { app() }
 
 	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(for_ent.active_weapon())
-	if int(prob_weapon) != 0 {
+	if isnil(prob_weapon) {
 		weapon := &valve.Weapon_t(prob_weapon)
 		return weapon
 	}

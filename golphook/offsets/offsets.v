@@ -1,8 +1,11 @@
 module offsets
 
-import utils
+// Why did i use offsets instead of netvars dumper ?
+// first and it's the main reason why: every update it break all copies if the cheat was 'leaked'
+// secondly: im lazy ^^ sigs offsets are pretty usefull too
 
 import json
+import utils
 
 pub const db = Offsets{}
 
@@ -47,7 +50,6 @@ pub:
 	m_active_weapon u32 [json: m_hActiveWeapon]
 	m_view_model u32 [json: m_hViewModel]
 	m_is_scoped u32 [json: m_bIsScoped]
-	//m_iShotsFired u32 [json: m_iShotsFired]
 	m_move_type u32 [json: m_MoveType]
 	m_observer_target u32 [json: m_hObserverTarget]
 	glow_index u32 [json: m_iGlowIndex]
@@ -82,22 +84,21 @@ pub:
 	netvars    Offset_nets
 }
 
-pub fn load() Offsets {
+pub fn load() {
+
 	file := $embed_file('../../ressources/offsets.json')
 	file_content := file.to_string()
 
-	offsets_ := json.decode(Offsets, file_content) or {
+	offsets := json.decode(Offsets, file_content) or {
 		utils.error_critical("Failed to load offsets", "$err")
-		return Offsets{timestamp: -1}
+		return
 	}
 
-	// yes its definitly againt v rules but in plain v you can do const my_const = load()
+	// yes its definitly against v rules but in a normal context you can do const my_const = load()
 	// but in this situation its not working the load() fn never get called
 	// so initialized the const with an empty struct and initialized manualy here :/
 	// but it will stay "const" after
 	unsafe {
-		C.memcpy(voidptr(&db), voidptr(&offsets_), sizeof(Offsets))
+		C.memcpy(voidptr(&db), voidptr(&offsets), sizeof(Offsets))
 	}
-
-	return offsets_
 }

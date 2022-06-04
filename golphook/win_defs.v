@@ -14,8 +14,6 @@ module golphook
 
 #include "minhook.h"
 
-// windows defs
-
 [typedef]
 struct C.FILE {}
 
@@ -46,7 +44,6 @@ fn C.GetWindowRect(C.HWND, &C.RECT) bool
 fn C.GetCurrentProcessId() u32
 
 fn C.rand() int
-// minhook defs
 
 fn C.MH_Initialize() int
 fn C.MH_CreateHook(voidptr, voidptr, &voidptr) int

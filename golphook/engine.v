@@ -1,5 +1,8 @@
 module golphook
 
+// no big improvement since the last c++ since its the same except for the visible check
+// but ngl it does the job fr
+
 import utils
 import valve
 import math
@@ -31,15 +34,17 @@ pub mut:
 }
 
 fn (mut e Engine) on_frame() {
+
 	mut app_ctx := unsafe { app() }
 
-	mut force_attack := utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack)
+	mut force_attack := utils.Value<int>{ ptr: utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack) }
 
-	if unsafe { *force_attack } == 4 {
+	if force_attack.get() == 4 {
 		e.is_spraying = false
 	}
 
 	e.fov = app_ctx.config.active_config.fov
+
 	e.handle_keys()
 
 	if app_ctx.config.active_config.engine_adjust_fov_scope {
@@ -71,13 +76,14 @@ fn (mut e Engine) on_frame() {
 			}
 
 			e.aim_at(closest_target)
-			unsafe { *force_attack = 6 }
+			force_attack.set(6)
 			e.is_spraying = true
 		}
 	}
 }
 
 fn (mut e Engine) handle_keys() {
+
 	mut app_ctx := unsafe { app() }
 
 	if !app_ctx.config.active_config.engine  {
@@ -109,8 +115,11 @@ fn (mut e Engine) handle_keys() {
 	}
 }
 
+// most beautiful copy pasta from gh
 fn (e &Engine) aim_at(ent TargetedEntity) {
+
 	mut app_ctx := unsafe { app() }
+
 	local_player_eye_pos := app_ctx.ent_cacher.local_player.eye_pos()
 	mut target_bone_pos := ent.ent.bone(usize(ent.closest_bone.id)) or { return }
 
@@ -131,7 +140,9 @@ fn (e &Engine) aim_at(ent TargetedEntity) {
 }
 
 fn (e &Engine) is_in_fov(bone_pos_on_screen &utils.Vec3) (bool, f32) {
+
 	mut app_ctx := unsafe { app() }
+
 	a := math.abs(bone_pos_on_screen.x - ( app_ctx.wnd_width / 2 ))
 	b := math.abs(bone_pos_on_screen.y - ( app_ctx.wnd_height / 2 ))
 
@@ -144,6 +155,7 @@ fn (e &Engine) is_in_fov(bone_pos_on_screen &utils.Vec3) (bool, f32) {
 }
 
 pub fn can_shoot() bool {
+
 	mut app_ctx := unsafe { app() }
 
 	weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return false }
@@ -159,12 +171,15 @@ pub fn can_shoot() bool {
 }
 
 pub fn (mut e Engine) adjust_fov_by_zoom() {
+
 	mut app_ctx := unsafe { app() }
+
 	weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return }
 	e.fov *= (weapon.zoom_level() + 1)
 }
 
 fn (mut e Engine) collect_targeted_ents() {
+
 	mut app_ctx := unsafe { app() }
 
 	ents := app_ctx.ent_cacher.filter_player(fn (e &valve.Player, ctx &EntityCacher) bool {
@@ -192,21 +207,22 @@ fn (mut e Engine) collect_targeted_ents() {
 
 				if in_fov {
 
+					// see entity_fns.v:37 for explaination
 					awall_mult := if app_ctx.config.active_config.engine_vhv_mode {
 						app_ctx.config.active_config.engine_vhv_aw_factor
 					} else {
 						0.0
 					}
 
-					if e.do_force_awal || i_can_see_with_offset(ent,usize(b_id), awall_mult) {
+					if e.do_force_awal || i_can_see_with_offset(ent, usize(b_id), awall_mult) {
 						target.bones_on_screen << Bone{id: b_id, pos: bone_screen}
-
+						// pov i don't even understand this part anymore ^^
 						if bone_screen.z < target.closest_bone.pos.z || b_id == app_ctx.config.active_config.engine_force_bone_id || b_id == app_ctx.config.active_config.engine_pref_bone_id {
 							if target.closest_bone.id != app_ctx.config.active_config.engine_pref_bone_id {
-								target.closest_bone = target.bones_on_screen.last(	)
+								target.closest_bone = target.bones_on_screen.last()
 							}
 							if target.closest_bone.id != app_ctx.config.active_config.engine_force_bone_id && e.do_force_bone {
-								target.closest_bone = target.bones_on_screen.last(	)
+								target.closest_bone = target.bones_on_screen.last()
 							}
 						}
 					}

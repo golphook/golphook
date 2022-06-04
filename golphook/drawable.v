@@ -1,5 +1,7 @@
 module golphook
 
+// all free() are freeing strings or some interfaces allocation and help reducing memory leaks,
+
 import utils
 import math
 
@@ -11,20 +13,29 @@ struct Line {
 }
 
 pub fn (l &Line) draw() {
+
 	mut app_ctx := unsafe { app() }
+
 	unsafe {
 		app_ctx.d3d.line.draw(l.from_pos, l.to_pos, l.thickness, l.color)
 	}
 }
 
 fn (l &Line) free() {
+
 	unsafe {
 		free(l)
 	}
 }
 
-pub fn new_line(fromPos utils.Vec3, toPos utils.Vec3, withThickness f32, andColor utils.Color) Line {
-	return Line {from_pos: fromPos, to_pos: toPos, thickness: withThickness, color: andColor}
+pub fn new_line(from_pos utils.Vec3, to_pos utils.Vec3, with_thickness f32, and_color utils.Color) Line {
+
+	return Line {
+		from_pos: from_pos
+		to_pos: to_pos
+		thickness: with_thickness
+		color: and_color
+	}
 }
 
 struct Text {
@@ -38,28 +49,43 @@ struct Text {
 }
 
 pub fn (t &Text) draw() {
+
 	mut app_ctx := unsafe { app() }
+
 	unsafe {
 		mut font := app_ctx.d3d.get_font("Lucida Console", t.font_size)
+
 		if t.bold {
 			font = app_ctx.d3d.get_font("Lucida Console bold", t.font_size)
 		}
+
 		if t.shadow {
 			font.draw_text(t.content, t.pos + utils.op_vec(1), t.format_falgs, utils.color_rbga(1,1,1,255))
 		}
+
 		font.draw_text(t.content, t.pos, t.format_falgs, t.color)
 	}
 }
 
 fn (t &Text) free() {
+
 	unsafe {
 		t.content.free()
 		free(t)
 	}
 }
 
-pub fn new_text(atPos utils.Vec3, withContent string, withFontSize u16, isBold bool, withShadow bool, withTextFormatFlags int, andColor utils.Color) Text {
-	return Text {pos: atPos, content: withContent, color: andColor, font_size:withFontSize, format_falgs: u32(withTextFormatFlags), bold: isBold, shadow: withShadow}
+pub fn new_text(at_pos utils.Vec3, with_content string, with_font_size u16, is_bold bool, has_shadow bool, with_fmt_flags int, and_color utils.Color) Text {
+
+	return Text {
+		pos: at_pos
+		content: with_content
+		color: and_color
+		font_size:with_font_size
+		format_falgs: u32(with_fmt_flags)
+		bold: is_bold
+		shadow: has_shadow
+	}
 }
 
 struct Rectangle {
@@ -72,7 +98,8 @@ pub mut:
 	color utils.Color
 }
 
-pub fn (_ Rectangle) draw_rect(r Rectangle) {
+pub fn (r &Rectangle) draw() {
+
 	mut app_ctx := unsafe { app() }
 
 		/*
@@ -113,49 +140,23 @@ pub fn (_ Rectangle) draw_rect(r Rectangle) {
 	}
 }
 
-pub fn (r &Rectangle) draw() {
-
-	if r.outline_thickness == f32(0) {
-		r.draw_rect(r)
-	} else {
-		mut new_rect := *(r)
-		new_rect.pos.x = new_rect.pos.x + r.thickness
-		new_rect.pos.y = new_rect.pos.y - r.thickness
-		new_rect.height = new_rect.height - (r.thickness * 2)
-		new_rect.width = new_rect.width - (r.thickness * 2)
-		new_rect.color = utils.color_rbga(245, 59, 87,255)
-		r.draw_rect(new_rect)
-		r.draw_rect(r)
-		new_rect = *(r)
-		new_rect.pos.x = new_rect.pos.x - r.thickness
-		new_rect.pos.y = new_rect.pos.y + r.thickness
-		new_rect.height = new_rect.height + (r.thickness * 2)
-		new_rect.width = new_rect.width + (r.thickness * 2)
-		new_rect.color = utils.color_rbga(245, 59, 87,255)
-		r.draw_rect(new_rect)
-	}
-	// if r.outline_thickness == f32(0) {
-	// 	//r.draw_rect()
-	// 	utils.pront("no thi")
-	// } else {
-	// 	mut app_ctx := unsafe { app() }
-	// 	mut inter_outline := r.pos
-	// 	//app_ctx.rnd_queue.push(new_rectangle(inter_outline, 30, 50, 3, 0, utils.color_rbga(255,255,255,255)))
-	// 	//r.draw_rect()
-	// 	utils.pront("thi")
-	// 	//app_ctx.rnd_queue.push(new_rectangle(screen_pos, 30, 50, 2, 2, utils.color_rbga(255,255,255,255)))
-	// }
-
-}
-
 fn (r &Rectangle) free() {
+
 	unsafe {
 		free(r)
 	}
 }
 
-pub fn new_rectangle(atPos utils.Vec3, withHeight f32, withWidth f32, withThickness f32, withOutlineThickness f32, andColor utils.Color) Rectangle {
-	return Rectangle { pos: atPos, height: withHeight, width: withWidth, thickness: withThickness, outline_thickness: withOutlineThickness, color: andColor }
+pub fn new_rectangle(at_pos utils.Vec3, with_height f32, with_width f32, with_thickness f32, with_outline_thickness f32, and_color utils.Color) Rectangle {
+
+	return Rectangle {
+		pos: at_pos
+		height: with_height
+		width: with_width
+		thickness: with_thickness // not used
+		outline_thickness: with_outline_thickness // not used
+		color: and_color
+	}
 }
 
 
@@ -167,7 +168,9 @@ struct Circle {
 }
 
 pub fn (c &Circle) draw() {
+
 	mut app_ctx := unsafe { app() }
+
 	for i := f32(1); i <= 360; i += 10 {
 		mut x := f32(i + 10)
 		mut from := utils.new_vec2( c.at_pos.x + ( c.radius * math.cosf( i * math.pi / 180 ) ), c.at_pos.y + ( c.radius * math.sinf( i* math.pi / 180 ) ) )
@@ -179,13 +182,20 @@ pub fn (c &Circle) draw() {
 }
 
 fn (c &Circle) free() {
+
 	unsafe {
 		free(c)
 	}
 }
 
-pub fn new_circle(atPos utils.Vec3, withThickness f32, withRadius f32, andColor utils.Color) Circle {
-	return Circle {at_pos: atPos, thickness: withThickness, radius: withRadius, color: andColor}
+pub fn new_circle(at_pos utils.Vec3, with_thickness f32, with_radius f32, and_color utils.Color) Circle {
+
+	return Circle {
+		at_pos: at_pos
+		thickness: with_thickness
+		radius: with_radius
+		color: and_color
+	}
 }
 
 interface Drawable {

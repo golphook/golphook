@@ -9,8 +9,6 @@ module d3d
 #include "d3d9.h"
 #include "d3dx9.h"
 
-// hi
-
 [typedef]
 struct C.RECT {
 pub mut:
@@ -32,7 +30,5 @@ fn C.D3DXCreateLine(voidptr, &voidptr) int
 
 type P_idx_line_set_width = fn (voidptr, f32) int
 type P_idx_line_draw = fn(voidptr, voidptr, u32, u32) int
-
-type P_dx_draw_text_a = fn(voidptr, voidptr, &char, int, &C.RECT, u32, u32) int
-
-type P_dx_release = fn (voidptr) u32
+type P_idx_draw_text_a = fn(voidptr, voidptr, &char, int, &C.RECT, u32, u32) int
+type P_idx_release = fn (voidptr) u32

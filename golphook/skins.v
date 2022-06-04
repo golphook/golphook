@@ -21,6 +21,7 @@ pub mut:
 }
 
 pub fn (mut s Skins) on_frame() {
+
 	mut app_ctx := unsafe { app() }
 
 	if app_ctx.config.active_config.skins_changer {
@@ -29,6 +30,7 @@ pub fn (mut s Skins) on_frame() {
 }
 
 pub fn (mut s Skins) skin_changer() {
+
 	mut app_ctx := unsafe { app() }
 
 	if !app_ctx.ent_cacher.local_player.is_alive() {

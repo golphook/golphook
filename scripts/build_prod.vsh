@@ -1,4 +1,8 @@
 import os
+
+// this file is necessary to build a 'production' version
+// you can't inject with any of /Ox optimizations
+
 mut ls := os.ls(".") or { panic("$err") }
 if "build" !in ls {
 	os.mkdir("build") or { panic("$err") }

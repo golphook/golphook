@@ -1,4 +1,3 @@
 module valve
 
-struct ICvar {
-}
+struct ICvar {}

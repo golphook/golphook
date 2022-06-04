@@ -3,9 +3,8 @@ module valve
 import utils
 
 #flag -I @VMODROOT/golphook/c
-#include "trace.h"
 
-// hi
+#include "trace.h"
 
 pub const (
 	contents_solid = 0x1
@@ -25,26 +24,26 @@ pub const (
 
 pub struct CTraceFilter {
 pub mut:
-    v_table voidptr
-    p_skip voidptr
+	v_table voidptr
+	p_skip voidptr
 }
 
 pub struct CSurface {
-    name &char
-    surface_prop i16
-    flags u16
+	name &char
+	surface_prop i16
+	flags u16
 }
 
 pub struct CGameTrace {
 pub mut:
-    start_pos utils.Vec3
-    end_pos utils.Vec3
+	start_pos utils.Vec3
+	end_pos utils.Vec3
 	pad [20]u8
 	fraction f32
 	contents i32
 	disp_flags u16
 	all_solid bool
-    start_solid bool
+	start_solid bool
 	pod [4]u8
 	surface CSurface
 	hit_group HitGroup
@@ -55,42 +54,46 @@ pub mut:
 
 [inline]
 pub fn (c &CGameTrace) did_hit() bool {
+
     return c.fraction < 1 || c.all_solid || c.start_solid
 }
 
 [inline]
 pub fn (c &CGameTrace) is_invisible() bool {
+
     return c.fraction > 0.97
 }
 
 pub fn (c &CGameTrace) damage_multiplier() f32 {
-    match c.hit_group {
-		.head { return 4.0 }
-		.stomach { return 1.25 }
-		.left_leg { return 0.75 }
-		.right_leg { return 0.75 }
+
+  return match c.hit_group {
+		.head { 4.0 }
+		.stomach { 1.25 }
+		.left_leg { 0.75 }
+		.right_leg { 0.75 }
 		else {
-			return 1.0
+			1.0
 		}
 	}
 }
 
 pub fn (c &CGameTrace) is_armored(hasHelmet bool) bool {
-    match c.hit_group {
-		.head { return hasHelmet }
-		.chest { return true }
-		.stomach { return true }
-		.left_arm { return true }
-		.right_arm { return true }
+
+	return match c.hit_group {
+		.head { hasHelmet }
+		.chest { true }
+		.stomach { true }
+		.left_arm { true }
+		.right_arm { true }
 		else {
-			return false
+			false
 		}
 	}
 }
 
 pub struct Ray {
 pub mut:
-    start utils.Vec3
+	start utils.Vec3
 	pad f32
 	delta utils.Vec3
 	pod [40]u8
@@ -98,17 +101,19 @@ pub mut:
 	is_swept bool
 }
 
-pub fn (mut r Ray) init(start utils.Vec3, end utils.Vec3) {
-    r.delta = end - start
+pub fn (mut r Ray) init(from_start utils.Vec3, to_end utils.Vec3) {
+
+    r.delta = to_end - from_start
     r.is_swept = (r.delta.lenght_sqr() != 0.0)
     r.is_ray = true
-    r.start = start
+    r.start = from_start
 }
 
 struct IEngineTrace {}
 
 fn C.IEngineTrace_trace(voidptr, voidptr, u32, voidptr, voidptr)
 
-pub fn (i &IEngineTrace) trace_ray(withRay &Ray, withMask u32, withFilter &CTraceFilter, andTrace &CGameTrace) {
-	C.IEngineTrace_trace(i, withRay, withMask, withFilter, andTrace)
+pub fn (i &IEngineTrace) trace_ray(with_ray &Ray, with_mask u32, and_filter &CTraceFilter, to_trace &CGameTrace) {
+
+	C.IEngineTrace_trace(i, with_ray, with_mask, and_filter, to_trace)
 }

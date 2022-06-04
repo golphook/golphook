@@ -18,6 +18,7 @@ pub struct PlayerInfo {
 }
 
 pub fn (p &PlayerInfo) player_name() string {
+
 	return unsafe { cstring_to_vstring(voidptr(&p.sz_name[0])) }
 }
 
@@ -60,50 +61,62 @@ type P_get_app_id = fn (voidptr, usize) int
 type P_execute_client_cmd_unrectricted = fn (voidptr, usize, &char)
 
 pub fn (i &IVEngineClient) get_screen_size(to_width &int, and_height &int) {
+
 	utils.call_vfunc<P_get_screen_size>(i, 5)(i, 0, to_width, and_height)
 }
 
 pub fn (i &IVEngineClient) client_cmd(with_cmd string) {
+
 	utils.call_vfunc<P_client_cmd>(i, 7)(i, 0, &char(with_cmd.str))
 }
 
 pub fn (i &IVEngineClient) get_player_info(for_ent_id int, to_p_info_struct &PlayerInfo) bool {
+
 	return utils.call_vfunc<P_get_player_info>(i, 8)(i, 0, for_ent_id, to_p_info_struct)
 }
 
 pub fn (i &IVEngineClient) is_con_visible() bool {
+
 	return utils.call_vfunc<P_is_con_visible>(i, 11)(i, 0)
 }
 
 pub fn (i &IVEngineClient) get_local_player() int {
+
 	return utils.call_vfunc<P_get_local_player>(i, 12)(i, 0)
 }
 
 pub fn (i &IVEngineClient) get_view_angle(with_angle &utils.Angle) {
+
 	utils.call_vfunc<P_set_view_angle>(i, 18)(i, 0, with_angle)
 }
 
 pub fn (i &IVEngineClient) set_view_angle(with_angle &utils.Angle) {
+
 	utils.call_vfunc<P_set_view_angle>(i, 19)(i, 0, with_angle)
 }
 
 pub fn (i &IVEngineClient) is_in_game() bool {
+
 	return utils.call_vfunc<P_is_in_game>(i, 26)(i, 0)
 }
 
 pub fn (i &IVEngineClient) is_connected() bool {
+
 	return utils.call_vfunc<P_is_connected>(i, 27)(i, 0)
 }
 
 pub fn (i &IVEngineClient) execute_client_cmd(with_text string) {
+
 	utils.call_vfunc<P_execute_client_cmd>(i, 108)(i, 0, &char(with_text.str))
 }
 
 pub fn (i &IVEngineClient) get_app_id() int {
+
 	return utils.call_vfunc<P_get_app_id>(i, 111)(i, 0)
 }
 
 pub fn (i &IVEngineClient) execute_client_cmd_unrectricted(with_text string) {
+
 	utils.call_vfunc<P_execute_client_cmd_unrectricted>(i, 114)(i, 0, &char(with_text.str))
 }
 

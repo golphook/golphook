@@ -1,42 +1,46 @@
 module utils
 
+type P_con_color_msg = fn (&Color, &char)
+type P_con_msg = fn (&char)
+
 fn C.puts(&char)
 
-pub fn load_unload_console(switch bool, andFile &C.FILE) {
-	if switch {
+pub fn load_unload_console(with_switch bool, and_file &C.FILE) {
+
+	if with_switch {
 		if !C.AllocConsole() {
 			error_critical('Failed to initialize console', 'AllocConsole()')
 		}
-		if C.freopen_s(&andFile, c'CONOUT$', c'w', C.stdout) != 0 {
+
+		if C.freopen_s(&and_file, c'CONOUT$', c'w', C.stdout) != 0 {
 			error_critical('Failed to initialize console', 'freopen_s()')
 		}
 	} else {
+		// crash the game see later
 		// C.fclose(andFile)
 		// C.FreeConsole()
 	}
 }
 
-type P_con_color_msg = fn (&Color, &char)
-type P_con_msg = fn (&char)
-
 [unsafe]
-pub fn msg_c(withColor Color, text string) {
-	color := withColor
+pub fn msg_c(with_text string, and_color Color) {
 
-	mut static fn_add := voidptr(0)
-	if int(fn_add) == 0 {
-		fn_add = C.GetProcAddress(C.GetModuleHandleA(c'tier0.dll'), c'?ConColorMsg@@YAXABVColor@@PBDZZ')
+	color_ref := and_color
+
+	mut static o_fn := &P_con_color_msg(0)
+	if isnil(o_fn) {
+		o_fn = &P_con_color_msg(C.GetProcAddress(C.GetModuleHandleA(c'tier0.dll'), c'?ConColorMsg@@YAXABVColor@@PBDZZ'))
 	}
-	o_fn := &P_con_color_msg(fn_add)
 
-	mut final := '[golphook] $text \n'
+	mut final := '[golphook] $with_text \n'
 
-	o_fn(&color, &char(final.str))
+	o_fn(&color_ref, &char(final.str))
 }
 
-pub fn pront(withContent string) {
+pub fn pront(with_text string) {
+
 	$if debug {
-		C.puts(&char(withContent.str))
+		C.puts(&char(with_text.str))
 	}
 	// unsafe {msg_c(utils.Color{142, 68, 173, 255}, withContent)}
 }

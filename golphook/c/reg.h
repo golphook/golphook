@@ -1,7 +1,7 @@
- __declspec( naked ) void load_this(void* a) {
-    __asm {
-        mov ecx, a
-        ret
-    }
-}
+//  __declspec( naked ) void load_this(void* a) {
+//     __asm {
+//         mov ecx, a
+//         ret
+//     }
+// }
 //

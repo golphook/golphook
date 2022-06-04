@@ -81,10 +81,10 @@ fn (mut h Hooks) bootstrap() {
 	h.wnd_proc.original_save = voidptr( C.SetWindowLongA( C.FindWindowA(c"Valve001", &char(0)), -4, i32(h.wnd_proc.hooked)) )
 	utils.pront(utils.str_align("[+] WndProc()", 40, "| Ok!"))
 
-	set_viewmodel_offets_add := utils.patter_scan("client.dll", "55 8B EC 8B 45 08 F3 0F 7E 45") or { panic("$err") }
+	set_viewmodel_offets_add := utils.pattern_scan("client.dll", "55 8B EC 8B 45 08 F3 0F 7E 45") or { panic("$err") }
 	h.set_viewmodel_offets = add_hook<O_set_viewmodel_offets>("SetViewmodelOffsets()", set_viewmodel_offets_add, &hk_set_viewmodel_offets)
 
-	get_viewmodel_fov_add := utils.patter_scan("client.dll", "55 8B EC 8B 4D 04 83 EC 08 57") or { panic("$err") }
+	get_viewmodel_fov_add := utils.pattern_scan("client.dll", "55 8B EC 8B 4D 04 83 EC 08 57") or { panic("$err") }
 	h.get_viewmodel_fov = add_hook<O_get_viewmodel_fov>("GetViewModelFov()", get_viewmodel_fov_add, &hk_get_viewmodel_fov)
 
 	if C.MH_EnableHook(C.MH_ALL_HOOKS) != C.MH_OK {

@@ -1,38 +1,34 @@
 module valve
 
-import golphook.utils
+import utils
 
 type P_con_color_msg = fn (&utils.Color, &char)
-
 type P_con_msg = fn (&char)
 
 [unsafe]
-pub fn msg_c(withColor utils.Color, text string) {
+pub fn msg_c(with_color utils.Color, and_text string) {
+	// TODO: ici memory leak a cause de color =
+	color := &with_color
 
-	// TODO: ici memory leak a cause de color = 
-
-	color := &withColor
-
-	mut static fn_add := voidptr(0)
-	if int(fn_add) == 0 {
-		fn_add = C.GetProcAddress(C.GetModuleHandleA(c'tier0.dll'), c'?ConColorMsg@@YAXABVColor@@PBDZZ')
+	mut static o_fn := &P_con_color_msg(0)
+	if isnil(o_fn) {
+		o_fn = &P_con_color_msg(C.GetProcAddress(C.GetModuleHandleA(c'tier0.dll'), c'?ConColorMsg@@YAXABVColor@@PBDZZ'))
 	}
-	o_fn := &P_con_color_msg(fn_add)
 
-	mut final := '[golphook] $text \n'
+	mut final := '[golphook] $and_text \n'
 
 	o_fn(color, &char(final.str))
 }
 
 [unsafe]
-pub fn msg(text string) {
-	mut static fn_add := voidptr(0)
-	if int(fn_add) == 0 {
-		fn_add = C.GetProcAddress(C.GetModuleHandleA(c'tier0.dll'), c'?ConMsg@@YAXPBDZZ')
-	}
-	o_fn := &P_con_msg(fn_add)
+pub fn msg(with_text string) {
 
-	mut final := '[golphook] $text \n'
+	mut static o_fn := &P_con_msg(0)
+	if isnil(o_fn) {
+		o_fn = &P_con_msg(C.GetProcAddress(C.GetModuleHandleA(c'tier0.dll'), c'?ConMsg@@YAXPBDZZ'))
+	}
+
+	mut final := '[golphook] $with_text \n'
 
 	o_fn(&char(final.str))
 }

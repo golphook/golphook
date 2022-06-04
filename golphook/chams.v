@@ -1,5 +1,7 @@
 module golphook
 
+// this part is made by following cazz video about chams
+
 import valve
 import utils
 
@@ -10,34 +12,35 @@ pub mut:
 }
 
 pub fn (mut c Chams) on_draw_model(ecx voidptr, edx voidptr, result voidptr, info &valve.CDrawModelInfo, bones voidptr, flex_weights &f32, flex_deleyed_weight &f32, model_origin &utils.Vec3, flags int) bool {
+
 	mut app_ctx := unsafe { app() }
 
 	if !app_ctx.config.active_config.chams {
 		return false
 	}
 
-	if int(info.renderable) == 0 {
+	if isnil(info.renderable) {
 		return false
 	}
 
 	mut ent := info.renderable.get_i_client_unknown().get_base_entity()
 
-	if int(ent) == 0 || !ent.is_player() {
+	if isnil(ent) || !ent.is_player() {
 		return false
 	}
 
 	plr := &valve.Player(voidptr(ent))
 
-	if int(plr) == 0 {
+	if isnil(plr) {
 		return false
 	}
 
 	if plr.team() != app_ctx.ent_cacher.local_player.team() {
 
-		if int(c.current_material) == 0 || c.current_material_name != get_material_str(app_ctx.config.active_config.chams_material) {
+		if isnil(c.current_material) || c.current_material_name != get_material_str(app_ctx.config.active_config.chams_material) {
 			c.current_material = app_ctx.interfaces.i_material_system.find_material(get_material_str(app_ctx.config.active_config.chams_material))
-			if int(c.current_material) == 0 {
-				utils.pront("material ${get_material_str(app_ctx.config.active_config.chams_material)} not working !")
+			if isnil(c.current_material) {
+				// this material is probably not working
 				return false
 			}
 			c.current_material_name = get_material_str(app_ctx.config.active_config.chams_material)
@@ -69,5 +72,4 @@ pub fn (mut c Chams) on_draw_model(ecx voidptr, edx voidptr, result voidptr, inf
 
 	}
 	return false
-
 }

@@ -12,25 +12,26 @@ const errors = {
 	"Failed to access ressource configs": 8
 	"Failed to resolve resolve sig": 9
 	"Some module arn't loaded": 10
+	"Failed to scan for patern:": 11
 }
 
-pub fn error_critical(withError string, andErrorComplement string) {
+pub fn error_critical(with_error string, and_error_complement string) {
 
-	mut err_msg := '$withError: $andErrorComplement'
+	mut err_msg := '$with_error: $and_error_complement'
 
 	$if prod {
-		err_msg = 'Error code: ${errors["withError"]}'
+		err_msg = 'Error code: ${errors["with_error"]}'
 	}
 
 	C.MessageBoxA(0, &char(err_msg.str), c'[golphook] Critical error', u32(C.MB_OK | C.MB_ICONERROR))
 
 	$if prod {
-		//panic(err_msg)
+		panic(err_msg)
 	}
 }
 
-pub fn client_error(withError string) {
+pub fn client_error(with_error string) {
 
-	C.MessageBoxA(0, &char(withError.str), c'[golphook] error', u32(C.MB_OK | C.MB_ICONERROR))
+	C.MessageBoxA(0, &char(with_error.str), c'[golphook] error', u32(C.MB_OK | C.MB_ICONERROR))
 
 }

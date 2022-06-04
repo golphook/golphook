@@ -1,5 +1,7 @@
 module golphook
 
+// nuklear is my favourite ui lib even it was so long to wrap it
+
 import nuklear
 import utils
 import clipboard
@@ -87,6 +89,7 @@ pub mut:
 }
 
 fn (mut m NMenu) bootstrap(dev voidptr) {
+
 	mut app_ctx := unsafe { app() }
 
 	m.nk_ctx.bootstrap(dev, app_ctx.wnd_width, app_ctx.wnd_height)
@@ -94,7 +97,9 @@ fn (mut m NMenu) bootstrap(dev voidptr) {
 }
 
 fn (mut m NMenu) release(isReset bool) {
+
 	mut app_ctx := unsafe { app() }
+
 	m.is_opened = false
 
 	if !isReset {
@@ -105,12 +110,14 @@ fn (mut m NMenu) release(isReset bool) {
 }
 
 fn (mut m NMenu) on_send_scene() {
+
 	if m.is_opened {
 		m.render()
 	}
 }
 
 fn (mut m NMenu) apply_style() {
+
 	mut col_table := []C.nk_color{len: C.NK_COLOR_COUNT}
 
 	col_table[C.NK_COLOR_TEXT] = C.nk_color{171, 158, 179, 255}
@@ -132,6 +139,7 @@ fn (mut m NMenu) apply_style() {
 }
 
 fn (mut m NMenu) menu_item(itemName string, itemId int) {
+
 	if m.nk_ctx.selectable_label(itemName, C.NK_TEXT_CENTERED, &m.tabs[itemId]) {
 
 		for mut item in m.tabs {
@@ -153,6 +161,7 @@ fn (mut m NMenu) menu_item(itemName string, itemId int) {
 
 
 fn (mut m NMenu) menu_bar() {
+
 	m.nk_ctx.layout_row_dynamic(item_height, 4)
 
 	m.menu_item("visuals", 0)
@@ -162,7 +171,9 @@ fn (mut m NMenu) menu_bar() {
 }
 
 fn (mut m NMenu) table_combo(mut val &int, mut table []map[string]int, callback fn (&App)) {
+
 	mut app_ctx := unsafe { app() }
+
 	combo_vec := C.nk_vec2{x:m.nk_ctx.widget_width(), y:200.0}
 
 	mut current_index := 0
@@ -186,6 +197,7 @@ fn (mut m NMenu) table_combo(mut val &int, mut table []map[string]int, callback 
 }
 
 fn (mut m NMenu) color_picker(mut col &utils.Color) {
+
 	mut tmp_colf := col.nk_colorf()
 
 	color_vec := C.nk_vec2{300, 400}
@@ -210,6 +222,7 @@ fn (mut m NMenu) color_picker(mut col &utils.Color) {
 }
 
 fn (mut m NMenu) tab_visuals() {
+
 	mut app_ctx := unsafe { app() }
 
 	m.nk_ctx.layout_row_dynamic(menu_height-41, 2)
@@ -442,6 +455,7 @@ fn (mut m NMenu) tab_misc() {
 }
 
 fn (mut m NMenu) tab_engine() {
+
 	mut app_ctx := unsafe { app() }
 
 	m.nk_ctx.layout_row_dynamic(menu_height-41, 2)
@@ -529,6 +543,7 @@ fn (mut m NMenu) tab_engine() {
 }
 
 fn (mut m NMenu) tab_config() {
+
 	mut app_ctx := unsafe { app() }
 
 	m.configs.clear()
@@ -560,7 +575,7 @@ fn (mut m NMenu) tab_config() {
 		if m.nk_ctx.button_label("export") {
 			mut c := clipboard.new()
 			exported_cfg := app_ctx.config.export(app_ctx.config.selected_config_in_menu)
-			unsafe { utils.msg_c(utils.color_rbga(108, 92, 231, 255), exported_cfg) }
+			unsafe { utils.msg_c(exported_cfg, utils.color_rbga(108, 92, 231, 255)) }
 			c.copy(exported_cfg)
 		}
 		m.nk_ctx.layout_row_push(0.25)
@@ -654,6 +669,7 @@ fn (mut m NMenu) tab_config() {
 }
 
 fn (mut m NMenu) render() {
+
 	m.apply_style()
 	m.nk_ctx.begin("golphook", C.nk_rect{x: 27 y:27, w:menu_width, h:menu_height}, u32(C.NK_WINDOW_MOVABLE | C.NK_WINDOW_NO_SCROLLBAR))
 

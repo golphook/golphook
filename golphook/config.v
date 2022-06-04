@@ -1,6 +1,8 @@
 module golphook
 import utils
 
+// export config is horrible but base64 module don't work in dlls
+
 import json
 import rand
 import os
@@ -178,12 +180,16 @@ pub fn (mut c ConfigManager) bootstrap() {
 	home := os.home_dir()
 	golphook_folder := "$home\\golphook"
 	if !os.exists(golphook_folder) {
-		os.mkdir(golphook_folder) or { utils.error_critical("Failed to create ressource configs", "folder") }
+		os.mkdir(golphook_folder) or {
+			utils.error_critical("Failed to create ressource configs", "folder")
+		}
 	}
 
 	configs_file := "$home\\golphook\\.configs"
 	if !os.exists(configs_file) {
-		os.write_file(configs_file, "text string") or { utils.error_critical("Failed to create ressource configs", "file") }
+		os.write_file(configs_file, "text string") or {
+			utils.error_critical("Failed to create ressource configs", "file")
+		}
 	}
 
 	configs_file_content := os.read_file(configs_file) or {
@@ -192,7 +198,9 @@ pub fn (mut c ConfigManager) bootstrap() {
 	}
 
 	mut configs := json.decode([]Config, configs_file_content) or {
-		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "failed to read configs default one will be set") }
+		unsafe {
+			utils.msg_c("failed to read configs default one will be set", utils.color_rbga(255, 255 ,255, 255))
+		}
 		c.active_config = &c.configs[0]
 		return
 	}
@@ -205,76 +213,88 @@ pub fn (mut c ConfigManager) bootstrap() {
 
 }
 
-pub fn (mut c ConfigManager) export(configWithIndex int) string {
-	json := json.encode(c.configs[configWithIndex])
+pub fn (mut c ConfigManager) export(for_config_with_index int) string {
+
+	json := json.encode(c.configs[for_config_with_index])
 	return json
 }
 
-pub fn (mut c ConfigManager) import_fc(withConfig string) {
+pub fn (mut c ConfigManager) import_fc(from_text string) {
 
-	mut cfg := json.decode(Config, withConfig) or {
-		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "failed to decode config") }
+	mut cfg := json.decode(Config, from_text) or {
+		unsafe { utils.msg_c("failed to decode config", utils.color_rbga(255, 255 ,255, 255)) }
 		return
 	}
 
+	// in this code base there are this kind of case where casting to an it make crash
+	// and f32 is the only one which don't crash
 	cfg.name = f32(c.configs.len + 1).str()
 	c.configs << cfg
 }
 
-pub fn (mut c ConfigManager) delete(configWithIndex int) {
-	if configWithIndex == 0 {
-		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "cannot delete default config") }
+pub fn (mut c ConfigManager) delete(for_config_with_index int) {
+
+	if for_config_with_index == 0 {
+		unsafe {
+			utils.msg_c("cannot delete default config", utils.color_rbga(255, 255 ,255, 255))
+		}
 		return
 	}
-	if configWithIndex == c.active_config_idx {
+	if for_config_with_index == c.active_config_idx {
 		c.change_to(0)
 	}
-	c.configs.delete(configWithIndex)
+	c.configs.delete(for_config_with_index)
 	c.save()
 }
 
 pub fn (mut c ConfigManager) save() {
+
 	json := json.encode_pretty(c.configs)
 	home := os.home_dir()
 	configs_file := "$home\\golphook\\.configs"
-	os.write_file(configs_file, json) or { utils.error_critical("Failed to access ressource configs", "file") }
+	os.write_file(configs_file, json) or {
+		utils.error_critical("Failed to access ressource configs", "file")
+	}
 }
 
-pub fn (mut c ConfigManager) rename(configWithIndex int, andNewName string) {
-	if configWithIndex == 0 {
-		unsafe { utils.msg_c(utils.color_rbga(255, 255 ,255, 255), "cannot rename default config") }
+pub fn (mut c ConfigManager) rename(for_config_with_index int, with_new_name string) {
+
+	if for_config_with_index == 0 {
+		unsafe { utils.msg_c("cannot rename default config", utils.color_rbga(255, 255 ,255, 255)) }
 		return
 	}
 
-	c.configs[configWithIndex].name = andNewName
+	c.configs[for_config_with_index].name = with_new_name
 	c.save()
 }
 
-pub fn (mut c ConfigManager) new_blank(withName string) {
+pub fn (mut c ConfigManager) new_blank(with_name string) {
+
 	mut new_cfg := Config{}
 	new_cfg.name = f32(c.configs.len + 1).str()
-	if withName.len != 0 {
-		new_cfg.name = withName
+	if with_name.len != 0 {
+		new_cfg.name = with_name
 	}
 	c.configs << new_cfg
 }
 
-pub fn (mut c ConfigManager) change_to(configWithIndex int) {
+pub fn (mut c ConfigManager) change_to(for_config_with_index int) {
+
 	mut app_ctx := unsafe { app() }
 
-	if configWithIndex == c.active_config_idx {
+	if for_config_with_index == c.active_config_idx {
 		return
 	}
 
 	// tmp fix to keep backward compatibility with old configs
 
-	if c.configs[configWithIndex].skins.len == 0 {
-		c.configs[configWithIndex].skins = c.configs[0].skins
+	if c.configs[for_config_with_index].skins.len == 0 {
+		c.configs[for_config_with_index].skins = c.configs[0].skins
 		c.save()
 	}
 
 	app_ctx.is_ok = false
-	c.active_config = &c.configs[configWithIndex]
-	c.active_config_idx = configWithIndex
+	c.active_config = &c.configs[for_config_with_index]
+	c.active_config_idx = for_config_with_index
 	app_ctx.is_ok = true
 }
