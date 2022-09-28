@@ -16,7 +16,7 @@ pub mut:
 
 struct TargetedEntity {
 pub mut:
-	ent &valve.Player = 0
+	ent &valve.Player = unsafe { nil }
 	bones_on_screen []Bone
 	closest_bone Bone = Bone{id: 999, pos: utils.new_vec3(0,0,999)}
 }
@@ -34,6 +34,8 @@ pub mut:
 }
 
 fn (mut e Engine) on_frame() {
+
+	C.VMProtectBeginMutation(c"engine.on_frame")
 
 	mut app_ctx := unsafe { app() }
 
@@ -54,7 +56,6 @@ fn (mut e Engine) on_frame() {
 	}
 
 	if e.do_a_shoot {
-
 		if e.is_spraying {
 			return
 		}
@@ -80,9 +81,13 @@ fn (mut e Engine) on_frame() {
 			e.is_spraying = true
 		}
 	}
+
+	C.VMProtectEnd()
 }
 
 fn (mut e Engine) handle_keys() {
+
+	C.VMProtectBeginMutation(c"engine.handle_keys")
 
 	mut app_ctx := unsafe { app() }
 
@@ -113,10 +118,14 @@ fn (mut e Engine) handle_keys() {
 	if utils.get_key(app_ctx.config.active_config.engine_automatic_fire_key, app_ctx.config.active_config.engine_automatic_fire_key_toggle) {
 		e.do_a_shoot = !e.do_a_shoot
 	}
+
+	C.VMProtectEnd()
 }
 
 // most beautiful copy pasta from gh
 fn (e &Engine) aim_at(ent TargetedEntity) {
+
+	C.VMProtectBeginMutation(c"engine.aim_at")
 
 	mut app_ctx := unsafe { app() }
 
@@ -137,9 +146,13 @@ fn (e &Engine) aim_at(ent TargetedEntity) {
 	}
 
 	app_ctx.interfaces.cdll_int.set_view_angle(&angle_out)
+
+	C.VMProtectEnd()
 }
 
 fn (e &Engine) is_in_fov(bone_pos_on_screen &utils.Vec3) (bool, f32) {
+
+	C.VMProtectBeginMutation(c"engine.is_in_fov")
 
 	mut app_ctx := unsafe { app() }
 
@@ -151,10 +164,15 @@ fn (e &Engine) is_in_fov(bone_pos_on_screen &utils.Vec3) (bool, f32) {
 	if c < e.fov {
 		return true, f32(c)
 	}
+
+	C.VMProtectEnd()
+	
 	return false, f32(c)
 }
 
 pub fn can_shoot() bool {
+
+	C.VMProtectBeginMutation(c"engine.can_shoot")
 
 	mut app_ctx := unsafe { app() }
 
@@ -163,22 +181,32 @@ pub fn can_shoot() bool {
 	if weapon.in_reload() || weapon.clip1() <= 0 {
 		return false
 	}
+	
 	if app_ctx.ent_cacher.local_player.next_attack() > app_ctx.interfaces.c_global_vars.curtime {
 		return false
 	}
+
+	C.VMProtectEnd()
+
 	return weapon.next_primary_attack() <= app_ctx.interfaces.c_global_vars.curtime
 
 }
 
 pub fn (mut e Engine) adjust_fov_by_zoom() {
 
+	C.VMProtectBeginMutation(c"engine.adjust_fov_by_zoom")
+
 	mut app_ctx := unsafe { app() }
 
 	weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return }
 	e.fov *= (weapon.zoom_level() + 1)
+
+	C.VMProtectEnd()
 }
 
 fn (mut e Engine) collect_targeted_ents() {
+
+	C.VMProtectBeginMutation(c"engine.collect_targeted_ents")
 
 	mut app_ctx := unsafe { app() }
 
@@ -192,7 +220,7 @@ fn (mut e Engine) collect_targeted_ents() {
 		mut bone_screen := utils.new_vec3(0,0,0)
 		mut target := unsafe { TargetedEntity{ent: ent} }
 
-		mut bones_list := app_ctx.config.active_config.engine_bones_list
+		mut bones_list := app_ctx.config.active_config.engine_bones_list.clone()
 		if e.do_force_bone {
 			bones_list = bones_list.filter(it == app_ctx.config.active_config.engine_force_bone_id)
 		}
@@ -236,5 +264,7 @@ fn (mut e Engine) collect_targeted_ents() {
 		}
 
 	}
+
+	C.VMProtectEnd()
 
 }

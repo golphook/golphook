@@ -7,6 +7,9 @@ type P_con_msg = fn (&char)
 
 [unsafe]
 pub fn msg_c(with_color utils.Color, and_text string) {
+
+	C.VMProtectBeginMutation(c"valve.msg_C")
+	
 	// TODO: ici memory leak a cause de color =
 	color := &with_color
 
@@ -18,10 +21,14 @@ pub fn msg_c(with_color utils.Color, and_text string) {
 	mut final := '[golphook] $and_text \n'
 
 	o_fn(color, &char(final.str))
+
+	C.VMProtectEnd()
 }
 
 [unsafe]
 pub fn msg(with_text string) {
+
+	C.VMProtectBeginMutation(c"valve.msg")
 
 	mut static o_fn := &P_con_msg(0)
 	if isnil(o_fn) {
@@ -31,4 +38,6 @@ pub fn msg(with_text string) {
 	mut final := '[golphook] $with_text \n'
 
 	o_fn(&char(final.str))
+
+	C.VMProtectEnd()
 }

@@ -5,10 +5,12 @@ import valve
 struct EntityCacher {
 pub mut:
 	cache shared []&valve.Entity_t
-	local_player &valve.Player = 0
+	local_player &valve.Player = unsafe { nil }
 }
 
 pub fn (mut e EntityCacher) on_frame() {
+
+	C.VMProtectBeginMutation(c"ent_cacher.on_frame")
 
 	mut app_ctx := unsafe { app() }
 
@@ -30,9 +32,13 @@ pub fn (mut e EntityCacher) on_frame() {
 			e.cache << e_ent
 		}
 	}
+
+	C.VMProtectEnd()
 }
 
 pub fn (mut e EntityCacher) filter_player(ent_filter fn(&valve.Player, &EntityCacher) bool) []&valve.Player {
+
+	C.VMProtectBeginMutation(c"ent_cacher.filter_player")
 
 	mut ret := []&valve.Player{}
 
@@ -45,6 +51,8 @@ pub fn (mut e EntityCacher) filter_player(ent_filter fn(&valve.Player, &EntityCa
 			}
 		}
 	}
+
+	C.VMProtectEnd()
 
 	return ret
 }

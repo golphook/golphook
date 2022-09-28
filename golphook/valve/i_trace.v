@@ -29,7 +29,7 @@ pub mut:
 }
 
 pub struct CSurface {
-	name &char
+	name &char = unsafe { nil }
 	surface_prop i16
 	flags u16
 }
@@ -103,17 +103,25 @@ pub mut:
 
 pub fn (mut r Ray) init(from_start utils.Vec3, to_end utils.Vec3) {
 
+	C.VMProtectBeginMutation(c"trace.init")
+
     r.delta = to_end - from_start
     r.is_swept = (r.delta.lenght_sqr() != 0.0)
     r.is_ray = true
     r.start = from_start
+
+	C.VMProtectEnd()
 }
 
-struct IEngineTrace {}
+pub struct IEngineTrace {}
 
 fn C.IEngineTrace_trace(voidptr, voidptr, u32, voidptr, voidptr)
 
 pub fn (i &IEngineTrace) trace_ray(with_ray &Ray, with_mask u32, and_filter &CTraceFilter, to_trace &CGameTrace) {
 
+	C.VMProtectBeginMutation(c"trace.trace_ray")
+
 	C.IEngineTrace_trace(i, with_ray, with_mask, and_filter, to_trace)
+
+	C.VMProtectEnd()
 }

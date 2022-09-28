@@ -16,6 +16,8 @@ pub fn sin_cos(with_radion f32) (f32, f32) {
 
 pub fn angle_to_vectors(with_angle Angle) (Vec3, Vec3, Vec3) {
 
+	C.VMProtectBeginMutation(c"utils.angle_to_vec")
+
 	sp, cp := sin_cos(radian * with_angle.pitch)
 	sy, cy := sin_cos(radian * with_angle.yaw)
 	sr, cr := sin_cos(radian * with_angle.roll)
@@ -35,6 +37,8 @@ pub fn angle_to_vectors(with_angle Angle) (Vec3, Vec3, Vec3) {
 	up_dwn.x = cr * sp * cy + -sr * -sy
 	up_dwn.y = cr * sp * sy + -sr * cy
 	up_dwn.z = cr * cp
+
+	C.VMProtectEnd()
 
 	return fwd_bwd, lft_rght, up_dwn
 }

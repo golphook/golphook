@@ -5,6 +5,8 @@ import offsets
 import valve
 
 pub fn others_on_frame() {
+	
+	C.VMProtectBeginMutation(c"others.on_frame")
 
 	mut app_ctx := unsafe { app() }
 
@@ -19,10 +21,14 @@ pub fn others_on_frame() {
 	if app_ctx.config.active_config.no_flash {
 		no_flash()
 	}
+
+	C.VMProtectEnd()
 }
 
 [unsafe]
 pub fn bop() {
+
+	C.VMProtectBeginMutation(c"others.bop")
 
 	mut app_ctx := unsafe { app() }
 
@@ -34,9 +40,13 @@ pub fn bop() {
 		mut force_jump := utils.get_val_offset<u32>(app_ctx.h_client, offsets.db.signatures.force_jump)
 		unsafe { *force_jump = 6 }
 	}
+
+	C.VMProtectEnd()
 }
 
 pub fn specs() {
+
+	C.VMProtectBeginMutation(c"others.specs")
 
 	mut app_ctx := unsafe { app() }
 
@@ -74,10 +84,14 @@ pub fn specs() {
 	if specs_cout != 0 {
 		app_ctx.rnd_queue.push(new_text(utils.new_vec2(20, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_count_color))
 	}
+
+	C.VMProtectEnd()
 }
 
 pub fn no_flash() {
 	
+	C.VMProtectBeginMutation(c"others.no_flash")
+
 	mut app_ctx := unsafe { app() }
 
 	if !app_ctx.ent_cacher.local_player.is_alive() {
@@ -88,4 +102,6 @@ pub fn no_flash() {
 	if flash_dur.get() > 0.0 {
 		flash_dur.set(0.0)
 	}
+
+	C.VMProtectEnd()
 }

@@ -34,20 +34,20 @@ menu release
 
 // hi
 
-struct C.nk_context {}
-struct C.nk_rect {
+pub struct C.nk_context {}
+pub struct C.nk_rect {
 	x f32
 	y f32
 	w f32
 	h f32
 }
 
-struct C.nk_vec2 {
+pub struct C.nk_vec2 {
 	x f32
 	y f32
 }
 
-struct C.nk_color {
+pub struct C.nk_color {
 mut:
 	r u8
 	g u8
@@ -55,7 +55,7 @@ mut:
 	a u8
 }
 
-struct C.nk_colorf {
+pub struct C.nk_colorf {
 	r f32
 	g f32
 	b f32

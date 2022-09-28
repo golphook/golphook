@@ -13,7 +13,7 @@ move_back=&& del $(temp_project_path)\*.c.exp && del $(temp_project_path)\*.c.li
 build-prod:
 	$(move_to_temp) v $(cc) -prod -shared -showcc -autofree -o $(bin_folder)\$(project_name).dll $(temp_project_path) $(move_back)
 build-debug:
-	$(move_to_temp) v $(cc) -cflags /NODEFAULTLIB:library -g -showcc -keepc -shared -autofree -o $(bin_folder)\$(project_name)-debug.dll $(temp_project_path) $(move_back)
+	$(move_to_temp) v $(cc) -cflags /NODEFAULTLIB:library -g -showcc -keepc -shared -autofree -gc none -o $(bin_folder)\$(project_name)-debug.dll $(temp_project_path) $(move_back)
 debug-c:
 	$(move_to_temp) v $(cc) -g -shared -autofree -o $(bin_folder)\$(project_name)-debug.c $(temp_project_path)  $(move_back)
 debug-cp:

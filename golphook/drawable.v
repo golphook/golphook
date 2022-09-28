@@ -14,18 +14,26 @@ struct Line {
 
 pub fn (l &Line) draw() {
 
+	C.VMProtectBeginMutation(c"line.draw")
+
 	mut app_ctx := unsafe { app() }
 
 	unsafe {
 		app_ctx.d3d.line.draw(l.from_pos, l.to_pos, l.thickness, l.color)
 	}
+
+	C.VMProtectEnd()
 }
 
 fn (l &Line) free() {
 
+	C.VMProtectBeginMutation(c"line.free")
+
 	unsafe {
 		free(l)
 	}
+	
+	C.VMProtectEnd()
 }
 
 pub fn new_line(from_pos utils.Vec3, to_pos utils.Vec3, with_thickness f32, and_color utils.Color) Line {
@@ -50,6 +58,8 @@ struct Text {
 
 pub fn (t &Text) draw() {
 
+	C.VMProtectBeginMutation(c"text.draw")
+
 	mut app_ctx := unsafe { app() }
 
 	unsafe {
@@ -65,14 +75,20 @@ pub fn (t &Text) draw() {
 
 		font.draw_text(t.content, t.pos, t.format_falgs, t.color)
 	}
+
+	C.VMProtectEnd()
 }
 
 fn (t &Text) free() {
+
+	C.VMProtectBeginMutation(c"text.free")
 
 	unsafe {
 		t.content.free()
 		free(t)
 	}
+
+	C.VMProtectEnd()
 }
 
 pub fn new_text(at_pos utils.Vec3, with_content string, with_font_size u16, is_bold bool, has_shadow bool, with_fmt_flags int, and_color utils.Color) Text {
@@ -99,6 +115,8 @@ pub mut:
 }
 
 pub fn (r &Rectangle) draw() {
+
+	C.VMProtectBeginMutation(c"rect.draw")
 
 	mut app_ctx := unsafe { app() }
 
@@ -138,13 +156,19 @@ pub fn (r &Rectangle) draw() {
 	unsafe {
 		app_ctx.d3d.line.draw(v1.vec_3(), v2.vec_3(), r.thickness, r.color)
 	}
+
+	C.VMProtectEnd()
 }
 
 fn (r &Rectangle) free() {
 
+	C.VMProtectBeginMutation(c"rect.free")
+
 	unsafe {
 		free(r)
 	}
+
+	C.VMProtectEnd()
 }
 
 pub fn new_rectangle(at_pos utils.Vec3, with_height f32, with_width f32, with_thickness f32, with_outline_thickness f32, and_color utils.Color) Rectangle {
@@ -169,6 +193,8 @@ struct Circle {
 
 pub fn (c &Circle) draw() {
 
+	C.VMProtectBeginMutation(c"circle.draw")
+
 	mut app_ctx := unsafe { app() }
 
 	for i := f32(1); i <= 360; i += 10 {
@@ -179,13 +205,19 @@ pub fn (c &Circle) draw() {
 			app_ctx.d3d.line.draw(from.vec_3(), to.vec_3(), c.thickness, c.color)
 		}
 	}
+	
+	C.VMProtectEnd()
 }
 
 fn (c &Circle) free() {
 
+	C.VMProtectBeginMutation(c"circle.free")
+
 	unsafe {
 		free(c)
 	}
+
+	C.VMProtectEnd()
 }
 
 pub fn new_circle(at_pos utils.Vec3, with_thickness f32, with_radius f32, and_color utils.Color) Circle {

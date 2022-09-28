@@ -8,6 +8,7 @@ import rand
 import os
 
 fn get_knife_data(knife_id int) string {
+
 	return match knife_id {
 		507 { "v_knife_karam.mdl" }
 		508 { "v_knife_m9_bay.mdl" }
@@ -19,10 +20,14 @@ fn get_knife_data(knife_id int) string {
 		520 { "v_knife_gypsy_jackknife.mdl" }
 		else { "v_knife_karam.mdl" }
 	}
+
 }
 
 
 fn get_material_str(for_material_id int) string {
+
+	C.VMProtectBeginMutation(c"cfg.get_material_str")
+
 	match int(for_material_id) {
 		0 { return "debug/debugambientcube" }
 		1 { return "models/inventory_items/trophy_majors/gold" }
@@ -33,9 +38,14 @@ fn get_material_str(for_material_id int) string {
 		6 { return "models/inventory_items/trophy_majors/velvet" }
 		else { return "debug/debugambientcube" }
 	}
+
+	C.VMProtectEnd()
 }
 
 fn get_material_id(for_material_name string) int {
+
+	C.VMProtectBeginMutation(c"cfg.get_material_id")
+
 	match for_material_name {
 		"debug/debugambientcube" { return 0 }
 		"models/inventory_items/trophy_majors/gold" { return 1 }
@@ -46,6 +56,8 @@ fn get_material_id(for_material_name string) int {
 		"models/inventory_items/trophy_majors/velvet" { return 6 }
 		else { return 0 }
 	}
+
+	C.VMProtectEnd()
 }
 
 struct Config {
@@ -170,12 +182,14 @@ pub mut:
 struct ConfigManager {
 pub mut:
 	configs []Config = [Config{}]
-	active_config &Config = 0
+	active_config &Config = unsafe { nil }
 	active_config_idx int
 	selected_config_in_menu int
 }
 
 pub fn (mut c ConfigManager) bootstrap() {
+
+	C.VMProtectBeginMutation(c"cfg.bootstrap")
 
 	home := os.home_dir()
 	golphook_folder := "$home\\golphook"
@@ -211,15 +225,23 @@ pub fn (mut c ConfigManager) bootstrap() {
 	c.configs[0] = Config{}
 	c.active_config = &c.configs[0]
 
+	C.VMProtectEnd()
 }
 
 pub fn (mut c ConfigManager) export(for_config_with_index int) string {
 
+	C.VMProtectBeginMutation(c"cfg.export")
+
 	json := json.encode(c.configs[for_config_with_index])
+
+	C.VMProtectEnd()
+
 	return json
 }
 
 pub fn (mut c ConfigManager) import_fc(from_text string) {
+
+	C.VMProtectBeginMutation(c"cfg.import_fc")
 
 	mut cfg := json.decode(Config, from_text) or {
 		unsafe { utils.msg_c("failed to decode config", utils.color_rbga(255, 255 ,255, 255)) }
@@ -230,9 +252,13 @@ pub fn (mut c ConfigManager) import_fc(from_text string) {
 	// and f32 is the only one which don't crash
 	cfg.name = f32(c.configs.len + 1).str()
 	c.configs << cfg
+
+	C.VMProtectEnd()
 }
 
 pub fn (mut c ConfigManager) delete(for_config_with_index int) {
+
+	C.VMProtectBeginMutation(c"cfg.delete")
 
 	if for_config_with_index == 0 {
 		unsafe {
@@ -245,9 +271,13 @@ pub fn (mut c ConfigManager) delete(for_config_with_index int) {
 	}
 	c.configs.delete(for_config_with_index)
 	c.save()
+
+	C.VMProtectEnd()
 }
 
 pub fn (mut c ConfigManager) save() {
+
+	C.VMProtectBeginMutation(c"cfg.save")
 
 	json := json.encode_pretty(c.configs)
 	home := os.home_dir()
@@ -255,9 +285,13 @@ pub fn (mut c ConfigManager) save() {
 	os.write_file(configs_file, json) or {
 		utils.error_critical("Failed to access ressource configs", "file")
 	}
+
+	C.VMProtectEnd()
 }
 
 pub fn (mut c ConfigManager) rename(for_config_with_index int, with_new_name string) {
+
+	C.VMProtectBeginMutation(c"cfg.rename")
 
 	if for_config_with_index == 0 {
 		unsafe { utils.msg_c("cannot rename default config", utils.color_rbga(255, 255 ,255, 255)) }
@@ -266,9 +300,13 @@ pub fn (mut c ConfigManager) rename(for_config_with_index int, with_new_name str
 
 	c.configs[for_config_with_index].name = with_new_name
 	c.save()
+
+	C.VMProtectEnd()
 }
 
 pub fn (mut c ConfigManager) new_blank(with_name string) {
+
+	C.VMProtectBeginMutation(c"cfg.new_blank")
 
 	mut new_cfg := Config{}
 	new_cfg.name = f32(c.configs.len + 1).str()
@@ -276,9 +314,13 @@ pub fn (mut c ConfigManager) new_blank(with_name string) {
 		new_cfg.name = with_name
 	}
 	c.configs << new_cfg
+
+	C.VMProtectEnd()
 }
 
 pub fn (mut c ConfigManager) change_to(for_config_with_index int) {
+
+	C.VMProtectBeginMutation(c"cfg.change_to")
 
 	mut app_ctx := unsafe { app() }
 
@@ -297,4 +339,6 @@ pub fn (mut c ConfigManager) change_to(for_config_with_index int) {
 	c.active_config = &c.configs[for_config_with_index]
 	c.active_config_idx = for_config_with_index
 	app_ctx.is_ok = true
+
+	C.VMProtectEnd()
 }

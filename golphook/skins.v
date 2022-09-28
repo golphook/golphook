@@ -22,14 +22,20 @@ pub mut:
 
 pub fn (mut s Skins) on_frame() {
 
+	C.VMProtectBeginMutation(c"skins.on_frame")
+
 	mut app_ctx := unsafe { app() }
 
 	if app_ctx.config.active_config.skins_changer {
 		s.skin_changer()
 	}
+
+	C.VMProtectEnd()
 }
 
 pub fn (mut s Skins) skin_changer() {
+
+	C.VMProtectBeginMutation(c"skins.skin_changer")
 
 	mut app_ctx := unsafe { app() }
 
@@ -95,4 +101,6 @@ pub fn (mut s Skins) skin_changer() {
 	if int(active_view_model) == 0 { return }
 
 	active_view_model.model_index().set(knife_model_index)
+
+	C.VMProtectEnd()
 }

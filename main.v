@@ -19,8 +19,11 @@ fn hello(h_mod voidptr) {
 
 [export: "DllMain"; callconv: "stdcall"]
 fn dll_main(h_mod voidptr, reason i32, res voidptr) bool {
-	
+
 	if reason == u32(C.DLL_PROCESS_ATTACH) {
+
+		C.DisableThreadLibraryCalls(h_mod)
+
 		go hello(h_mod)
 	}
 

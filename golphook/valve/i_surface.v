@@ -2,7 +2,7 @@ module valve
 
 import utils
 
-struct ISurface {}
+pub struct ISurface {}
 
 [callconv: "fastcall"]
 type P_lock_cursor = fn (voidptr, usize)

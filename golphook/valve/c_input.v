@@ -2,7 +2,7 @@ module valve
 
 import utils
 
-struct IInputSystem {}
+pub struct IInputSystem {}
 
 [callconv: "fastcall"]
 type P_enable_input = fn (voidptr, usize, bool)

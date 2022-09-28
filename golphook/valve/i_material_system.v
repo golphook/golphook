@@ -7,7 +7,7 @@ pub enum EMaterialVarFlag {
 	wireframe = 1 << 28
 }
 
-struct IMaterial {}
+pub struct IMaterial {}
 
 [callconv: "fastcall"]
 type P_set_material_flag = fn(voidptr, usize, EMaterialVarFlag, bool)
@@ -17,7 +17,7 @@ pub fn (i &IMaterial) set_material_flag(with_flag EMaterialVarFlag, is_on bool) 
 	utils.call_vfunc<P_set_material_flag>(i, 29)(i, 0, with_flag, is_on)
 }
 
-struct IMaterialSystem {}
+pub struct IMaterialSystem {}
 
 [callconv: "fastcall"]
 type P_find_material = fn(voidptr, usize, &char, voidptr, bool, voidptr) &IMaterial

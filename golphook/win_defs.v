@@ -1,21 +1,25 @@
 module golphook
 
 #flag -I @VMODROOT/exts/bass
-#flag -I @VMODROOT/exts/subhook
 #flag -I @VMODROOT/exts/minhook
+#flag -I @VMODROOT/exts/vmp
 
 #flag -L @VMODROOT/exts/bass
 #flag -L @VMODROOT/exts/minhook
 
+#flag -L @VMODROOT/exts/vmp
+
 #flag -l minhook
+#flag -l vmp32
 
 #include "windows.h"
 #include "TlHelp32.h"
 
 #include "minhook.h"
+#include "vmp.h"
 
 [typedef]
-struct C.FILE {}
+pub struct C.FILE {}
 
 fn C.MessageBoxA(int, &char, &char, int) int
 fn C.FreeLibraryAndExitThread(voidptr, u32) bool
@@ -43,6 +47,8 @@ fn C.GetWindowRect(C.HWND, &C.RECT) bool
 
 fn C.GetCurrentProcessId() u32
 
+fn C.DisableThreadLibraryCalls(C.HMODULE) bool
+
 fn C.rand() int
 
 fn C.MH_Initialize() int
@@ -50,3 +56,6 @@ fn C.MH_CreateHook(voidptr, voidptr, &voidptr) int
 fn C.MH_EnableHook(voidptr) int
 fn C.MH_DisableHook(voidptr) int
 fn C.MH_Uninitialize() int
+
+fn C.VMProtectBeginMutation(&u8)
+fn C.VMProtectEnd()

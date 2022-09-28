@@ -1,3 +1,3 @@
 module valve
 
-struct ICvar {}
+pub struct ICvar {}

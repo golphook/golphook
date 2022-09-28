@@ -7,6 +7,8 @@ import offsets
 
 pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 
+	C.VMProtectBeginMutation(c"entity_fns.i_can_see")
+
 	mut app_ctx := unsafe { app() }
 
 	mut from := app_ctx.ent_cacher.local_player.eye_pos()
@@ -31,6 +33,9 @@ pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 			break
 		}
 	}
+	
+	C.VMProtectEnd()
+
 	return can_see, tr_
 }
 
@@ -40,6 +45,8 @@ pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 // awall and with this dumb trick 4 times in 10 i can kill a bad/medium spinner
 // no joke this shit changed everyting
 pub fn i_can_see_with_offset(player &valve.Player, bone	usize, offset f32) bool {
+
+	C.VMProtectBeginMutation(c"entity_fns.i_can_see_with_offets")
 
 	mut app_ctx := unsafe { app() }
 
@@ -76,17 +83,25 @@ pub fn i_can_see_with_offset(player &valve.Player, bone	usize, offset f32) bool 
 			return true
 		}
 	}
+
+	C.VMProtectEnd()
+
 	return false
 }
 
 pub fn ent_weapon(for_ent &valve.Player) ?&valve.Weapon_t {
 
+	C.VMProtectBeginMutation(c"entity_fns.ent_weapon")
+
 	mut app_ctx := unsafe { app() }
 
 	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(for_ent.active_weapon())
-	if isnil(prob_weapon) {
+	if !isnil(prob_weapon) {
 		weapon := &valve.Weapon_t(prob_weapon)
 		return weapon
 	}
+	
+	C.VMProtectEnd()
+	
 	return error("")
 }

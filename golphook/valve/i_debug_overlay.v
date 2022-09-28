@@ -2,7 +2,7 @@ module valve
 
 import utils
 
-struct IVDebugOverlay {}
+pub struct IVDebugOverlay {}
 
 [callconv: "fastcall"]
 type P_screen_pos = fn (voidptr, usize, &utils.Vec3, &utils.Vec3) int

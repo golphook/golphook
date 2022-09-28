@@ -17,26 +17,29 @@ pub mut:
 	wnd_width int
 
 	v_mod vmod.Manifest
-	file  &C.FILE = 0
+	file  &C.FILE = unsafe { nil }
 
-	interfaces &Interfaces = 0
-	hooks      &Hooks = 0
-	d3d &d3d.D3d9 = 0
-	rnd_queue &RenderQueue = 0
-	ent_cacher &EntityCacher = 0
-	config &ConfigManager = 0
+	interfaces &Interfaces = unsafe { nil }
 
-	engine &Engine = 0
-	visuals &Visuals = 0
-	menu &NMenu = 0
-	chams &Chams = 0
-	kill_sound &KillSound = 0
-	skins &Skins = 0
+	hooks      &Hooks = unsafe { nil }
+	d3d &d3d.D3d9 = unsafe { nil }
+	rnd_queue &RenderQueue = unsafe { nil }
+	ent_cacher &EntityCacher = unsafe { nil }
+	config &ConfigManager = unsafe { nil }
+
+	engine &Engine = unsafe { nil }
+	visuals &Visuals = unsafe { nil }
+	menu &NMenu = unsafe { nil }
+	chams &Chams = unsafe { nil }
+	kill_sound &KillSound = unsafe { nil }
+	skins &Skins = unsafe { nil }
 
 	is_ok bool
 }
 
 pub fn (mut a App) bootstrap(with_module_handle voidptr) {
+
+	C.VMProtectBeginMutation(c"app.bootstrap")
 
 	a.h_mod = with_module_handle
 
@@ -83,6 +86,7 @@ pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 
 	utils.pront('\n[*] golp is ready | Hi golphook v$a.v_mod.version :)\n')
 	a.is_ok = true
+	C.VMProtectEnd()
 }
 
 pub fn (mut a App) release() {
@@ -100,11 +104,18 @@ pub fn (mut a App) release() {
 
 pub fn (mut a App) on_frame() {
 
+	C.VMProtectBeginMutation(c"app.on_frame")
+
+
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
+	C.VMProtectEnd()
+
 }
 
 [unsafe]
 pub fn app() &App {
+
+	C.VMProtectBeginMutation(c"app")
 
 	mut static ctx := voidptr(0)
 
@@ -115,5 +126,8 @@ pub fn app() &App {
 			utils.error_critical('Failed to initialize app', '')
 		}
 	}
+	
+	C.VMProtectEnd()
+
 	return &App(ctx)
 }

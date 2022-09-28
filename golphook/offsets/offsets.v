@@ -86,6 +86,8 @@ pub:
 
 pub fn load() {
 
+	C.VMProtectBeginMutation(c"offsets.load")
+
 	file := $embed_file('../../ressources/offsets.json')
 	file_content := file.to_string()
 
@@ -101,4 +103,6 @@ pub fn load() {
 	unsafe {
 		C.memcpy(voidptr(&db), voidptr(&offsets), sizeof(Offsets))
 	}
+
+	C.VMProtectEnd()
 }

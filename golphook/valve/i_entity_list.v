@@ -2,7 +2,7 @@ module valve
 
 import utils
 
-struct IEntityList {}
+pub struct IEntityList {}
 
 [callconv: "fastcall"]
 type P_get_client_entity = fn (voidptr, usize, i32) voidptr

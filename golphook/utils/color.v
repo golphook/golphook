@@ -32,7 +32,7 @@ pub mut:
 	a u8
 }
 
-union Color {
+pub union Color {
 	ColorRgba
 mut:
 	rgba u32 [skip]
@@ -79,10 +79,14 @@ pub fn (c &Color) d3d() u32 {
 [inline]
 pub fn (c &Color) rgbaf() ColorRgbaF {
 
+	C.VMProtectBeginMutation(c"color.rgbaf")
+
 	mut r_ := f32(c.r()) / 255.0
 	mut g_ := f32(c.g()) / 255.0
 	mut b_ := f32(c.b()) / 255.0
 	mut a_ := f32(c.a()) / 255.0
+
+	C.VMProtectEnd()
 
 	return ColorRgbaF{r: r_, g: g_, b: b_, a: a_}
 }
@@ -90,9 +94,13 @@ pub fn (c &Color) rgbaf() ColorRgbaF {
 [inline]
 pub fn (c &Color) rgbf() ColorRgbF {
 
+	C.VMProtectBeginMutation(c"color.rgbf")
+
 	mut r_ := f32(c.r()) / 255.0
 	mut g_ := f32(c.g()) / 255.0
 	mut b_ := f32(c.b()) / 255.0
+
+	C.VMProtectEnd()
 
 	return ColorRgbF{r: r_, g: g_, b: b_}
 }
@@ -100,10 +108,14 @@ pub fn (c &Color) rgbf() ColorRgbF {
 [inline]
 pub fn (c &Color) nk_colorf() C.nk_colorf {
 
+	C.VMProtectBeginMutation(c"color.nkcolf")
+	
 	mut r_ := f32(c.r()) / 255.0
 	mut g_ := f32(c.g()) / 255.0
 	mut b_ := f32(c.b()) / 255.0
 	mut a_ := f32(c.a()) / 255.0
+
+	C.VMProtectEnd()
 
 	return C.nk_colorf{r: r_, g: g_, b: b_, a: a_}
 }

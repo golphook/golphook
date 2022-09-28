@@ -1,6 +1,6 @@
 module valve
 
-struct CGlobalVarsBase {
+pub struct CGlobalVarsBase {
 pub:
 	realtime f32
 	framecount int

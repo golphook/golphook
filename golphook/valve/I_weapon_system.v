@@ -2,7 +2,7 @@ module valve
 
 import utils
 
-struct WeaponData {
+pub struct WeaponData {
 pub:
 	pad [4]u8
 	clean_name voidptr
@@ -28,6 +28,8 @@ pub:
 
 pub fn (w &WeaponData) name() string {
 
+	C.VMProtectBeginMutation(c"weaapon_data.name")
+
 	mut raw_name := unsafe { cstring_to_vstring(w.clean_name) }
 
 	mut cleaned_name := raw_name.replace("weapon_", "")
@@ -42,12 +44,14 @@ pub fn (w &WeaponData) name() string {
 	
 	cleaned_name = cleaned_name.replace("_", " ")
 	cleaned_name = cleaned_name.to_lower()
-	
+
+	C.VMProtectEnd()
+
 	return cleaned_name
 }
 
 
-struct IWeaponSystem {}
+pub struct IWeaponSystem {}
 
 [callconv: "fastcall"]
 type P_wp_get_data = fn (voidptr, usize, i32) &WeaponData

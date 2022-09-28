@@ -8,10 +8,12 @@ import utils
 struct Chams {
 pub mut:
 	current_material_name string
-	current_material &valve.IMaterial = 0
+	current_material &valve.IMaterial = unsafe { nil }
 }
 
 pub fn (mut c Chams) on_draw_model(ecx voidptr, edx voidptr, result voidptr, info &valve.CDrawModelInfo, bones voidptr, flex_weights &f32, flex_deleyed_weight &f32, model_origin &utils.Vec3, flags int) bool {
+
+	C.VMProtectBeginMutation(c"chams.on_draw_model")
 
 	mut app_ctx := unsafe { app() }
 
@@ -71,5 +73,8 @@ pub fn (mut c Chams) on_draw_model(ecx voidptr, edx voidptr, result voidptr, inf
 		return true
 
 	}
+	
+	C.VMProtectEnd()
+
 	return false
 }

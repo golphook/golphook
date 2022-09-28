@@ -2,7 +2,7 @@ module valve
 
 import utils
 
-struct IVModelInfo {}
+pub struct IVModelInfo {}
 
 [callconv: "fastcall"]
 type P_get_model_index = fn (voidptr, usize, &char) int

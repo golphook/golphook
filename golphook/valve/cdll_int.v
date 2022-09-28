@@ -22,7 +22,7 @@ pub fn (p &PlayerInfo) player_name() string {
 	return unsafe { cstring_to_vstring(voidptr(&p.sz_name[0])) }
 }
 
-struct IVEngineClient {}
+pub struct IVEngineClient {}
 
 [callconv: "fastcall"]
 type P_get_screen_size = fn (voidptr, usize, &int, &int)
@@ -120,4 +120,4 @@ pub fn (i &IVEngineClient) execute_client_cmd_unrectricted(with_text string) {
 	utils.call_vfunc<P_execute_client_cmd_unrectricted>(i, 114)(i, 0, &char(with_text.str))
 }
 
-struct IBaseClientDLL {}
+pub  struct IBaseClientDLL {}

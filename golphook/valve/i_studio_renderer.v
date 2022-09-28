@@ -2,7 +2,7 @@ module valve
 
 import utils
 
-struct CDrawModelInfo {
+pub struct CDrawModelInfo {
 pub:
 	studio_hdr voidptr
 	hardware_data voidptr
@@ -42,7 +42,7 @@ pub enum EOverrideType {
 	ssao_depth_write
 }
 
-struct IStudioRender {}
+pub struct IStudioRender {}
 
 [callconv: "fastcall"]
 type P_set_color_modulation = fn (voidptr, usize, &utils.ColorRgbF)

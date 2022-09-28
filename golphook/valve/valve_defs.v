@@ -109,7 +109,7 @@ pub enum LifeState {
 	discard_body
 }
 
-enum MoveType {
+pub enum MoveType {
 	movetype_none = 0
 	movetype_isometric
 	movetype_walk
@@ -437,7 +437,7 @@ enum ClassIds {
 	sporetrail
 }
 
-struct CCLientClass {
+pub struct CCLientClass {
 pub:
 	create_fn voidptr
 	create_event_fn voidptr

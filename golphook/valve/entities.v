@@ -41,13 +41,13 @@ type P_get_i_client_unknown = fn (voidptr, usize) &IClientUnknown
 
 // hi
 
-struct IClientUnknown {}
+pub struct IClientUnknown {}
 
 pub fn (i &IClientUnknown) get_base_entity() &Entity_t {
 	return utils.call_vfunc<P_get_base_entity>(i, 7)(i, 0)
 }
 
-struct IClientRenderable {}
+pub struct IClientRenderable {}
 
 pub fn (i &IClientRenderable) get_i_client_unknown() &IClientUnknown {
 	return utils.call_vfunc<P_get_i_client_unknown>(i, 0)(i, 0)
@@ -55,7 +55,7 @@ pub fn (i &IClientRenderable) get_i_client_unknown() &IClientUnknown {
 
 // Entity_t
 
-struct Entity_t {}
+pub struct Entity_t {}
 
 pub fn (e &Entity_t) animating() voidptr {
 
@@ -140,6 +140,8 @@ pub fn (e &Entity_t) glow_index() int {
 [unsafe]
 pub fn (e &Entity_t) set_abs_origin(with_origin utils.Vec3) {
 
+	C.VMProtectBeginMutation(c"ent.set_abs_orig")
+
 	mut static o_fn := &P_set_abs_origin(0)
 	if isnil(o_fn) {
 		raw_addr := utils.pattern_scan("client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8") or {
@@ -148,10 +150,14 @@ pub fn (e &Entity_t) set_abs_origin(with_origin utils.Vec3) {
 		o_fn = &P_set_abs_origin(raw_addr)
 	}
 	o_fn(e, 0, with_origin)
+
+	C.VMProtectEnd()
 }
 
 [unsafe]
 pub fn (e &Entity_t) set_abs_angle(with_angle utils.Angle) {
+
+	C.VMProtectBeginMutation(c"ent.set_abs_angle")
 
 	mut static o_fn := &P_set_abs_angle(0)
 	if isnil(o_fn) {
@@ -161,6 +167,8 @@ pub fn (e &Entity_t) set_abs_angle(with_angle utils.Angle) {
 		o_fn = &P_set_abs_angle(raw_addr)
 	}
 	o_fn(e, 0, with_angle)
+
+	C.VMProtectEnd()
 }
 
 pub fn (e &Entity_t) to_weapon() &Weapon_t {
@@ -183,7 +191,7 @@ pub fn (e &Entity_t) to_viewmodel() &Viewmodel {
 	return &Viewmodel(voidptr(e))
 }
 
-struct Weapon_t {
+pub struct Weapon_t {
 	Entity_t
 }
 
@@ -229,7 +237,7 @@ pub fn (w &Weapon_t) definition_index() utils.Value<i16> {
 
 // Player
 
-struct Player {
+pub struct Player {
 	Entity_t
 }
 
@@ -320,16 +328,22 @@ pub fn (p &Player) flash_duration() utils.Value<f32> {
 
 pub fn (p &Player) is_moving() bool{
 
+	C.VMProtectBeginMutation(c"player.is_moving")
+
 	v_vel := p.velocity()
 
 	if (v_vel.x + v_vel.y + v_vel.z) == 0.0 {
 		return false
 	}
 
+	C.VMProtectEnd()
+
 	return true
 }
 
 pub fn (p &Player) bone(with_bone_idx usize) ?utils.Vec3 {
+
+	C.VMProtectBeginMutation(c"player.bone")
 
 	mut res := utils.new_vec3(0, 0, 0)
 
@@ -342,6 +356,8 @@ pub fn (p &Player) bone(with_bone_idx usize) ?utils.Vec3 {
 	res.x = *(&f32(bones_mat + 0x30 * with_bone_idx + 0x0c))
 	res.y = *(&f32(bones_mat + 0x30 * with_bone_idx + 0x1c))
 	res.z = *(&f32(bones_mat + 0x30 * with_bone_idx + 0x2c))
+
+	C.VMProtectEnd()
 
 	return res
 }
@@ -394,7 +410,7 @@ pub fn (i &Item) entity_quality() utils.Value<int> {
 
 // Viewmodel
 
-struct Viewmodel {
+pub struct Viewmodel {
 	Entity_t
 }
 
