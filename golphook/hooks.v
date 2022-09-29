@@ -18,6 +18,9 @@ type O_lock_cursor = fn (voidptr, voidptr)
 [callconv: "fastcall"]
 type O_draw_model = fn (voidptr, voidptr, voidptr, &valve.CDrawModelInfo, voidptr, &f32, &f32, &utils.Vec3, int)
 
+[callconv: "fastcall"]
+type O_ret_add_check = fn (voidptr, voidptr, &u8) bool
+
 struct HookEntry<T> {
 pub mut:
 	name          string   [required]
@@ -28,19 +31,19 @@ pub mut:
 
 fn (mut h HookEntry<T>) hook() {
 
-	C.VMProtectBeginMutation(c"hooks.hook_entry")
+	$if prod { C.VMProtectBeginMutation(c"hooks.hook_entry") }
 
 	if C.MH_CreateHook(h.original_addr, h.hooked, &h.original_save) != C.MH_OK {
 		utils.error_critical('Failed to hook function', h.name)
 		return
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn add_hook<T>(with_name string, with_og_add voidptr, and_hkd_fn voidptr) HookEntry<T> {
 
-	C.VMProtectBeginMutation(c"hooks.add_hook")
+	$if prod { C.VMProtectBeginMutation(c"hooks.add_hook") }
 
 	mut hk_entry := HookEntry<T>{
 		name: with_name
@@ -50,7 +53,7 @@ fn add_hook<T>(with_name string, with_og_add voidptr, and_hkd_fn voidptr) HookEn
 	hk_entry.hook()
 	utils.pront(utils.str_align("[+] $with_name", 40, "| Ok!"))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return hk_entry
 
@@ -66,11 +69,12 @@ pub mut:
 	get_viewmodel_fov HookEntry<O_get_viewmodel_fov>
 	lock_cursor HookEntry<O_lock_cursor>
 	draw_model HookEntry<O_draw_model>
+	ret_add_check HookEntry<O_ret_add_check>
 }
 
 fn (mut h Hooks) bootstrap() {
 
-	C.VMProtectBeginMutation(c"hooks.bootstrap")
+	$if prod { C.VMProtectBeginMutation(c"hooks.bootstrap") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -80,6 +84,16 @@ fn (mut h Hooks) bootstrap() {
 		utils.error_critical('Error with a minhook fn', 'MH_Initialize()')
 		return
 	}
+
+	retadd_check_add_client := utils.pattern_scan("client.dll", "55 8B EC 56 8B F1 33 C0 57 8B 7D 08 8B 8E ? ? ? ? 85 C9 7E") or { panic("$err") }
+	retadd_check_add_studio := utils.pattern_scan("studiorender.dll", "55 8B EC 56 8B F1 33 C0 57 8B 7D 08 8B 8E ? ? ? ? 85 C9 7E") or { panic("$err") }
+	retadd_check_add_mat := utils.pattern_scan("materialsystem.dll", "55 8B EC 56 8B F1 33 C0 57 8B 7D 08 8B 8E ? ? ? ? 85 C9 7E") or { panic("$err") }
+	retadd_check_add_engine := utils.pattern_scan("engine.dll", "55 8B EC 56 8B F1 33 C0 57 8B 7D 08 8B 8E ? ? ? ? 85 C9 7E") or { panic("$err") }
+
+	h.ret_add_check = add_hook<O_ret_add_check>("ret_add_check_client()", retadd_check_add_client, &hk_ret_add_check)
+	h.ret_add_check = add_hook<O_ret_add_check>("ret_add_check_studio()", retadd_check_add_studio, &hk_ret_add_check)
+	h.ret_add_check = add_hook<O_ret_add_check>("ret_add_check_engine()", retadd_check_add_engine, &hk_ret_add_check)
+	h.ret_add_check = add_hook<O_ret_add_check>("ret_add_check_mat()", retadd_check_add_mat, &hk_ret_add_check)
 
 	h.frame_stage_notify = add_hook<O_frame_stage_notify>("FrameStageNotify()", utils.get_virtual(app_ctx.interfaces.i_base_client, 37), &hk_frame_stage_notify)
 	h.reset = add_hook<O_reset>("Reset()", utils.get_virtual(app_ctx.d3d.device, 16), &hk_reset)
@@ -106,12 +120,12 @@ fn (mut h Hooks) bootstrap() {
 		return
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut h Hooks) release() {
 
-	C.VMProtectBeginMutation(c"hook.release")
+	$if prod { C.VMProtectBeginMutation(c"hook.release") }
 
 	if C.MH_DisableHook(C.MH_ALL_HOOKS) != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_DisableHook()')
@@ -123,13 +137,13 @@ fn (mut h Hooks) release() {
 		return
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 [unsafe; callconv: "stdcall"]
 fn hk_frame_stage_notify(stage u32) {
 
-	C.VMProtectBeginMutation(c"hk_frame_stage_notify")
+	$if prod { C.VMProtectBeginMutation(c"hk_frame_stage_notify") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -153,13 +167,13 @@ fn hk_frame_stage_notify(stage u32) {
 
 	app_ctx.hooks.frame_stage_notify.original_save(stage)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 [unsafe; callconv: "stdcall"]
 fn hk_end_scene(dev voidptr) bool {
 
-	C.VMProtectBeginMutation(c"hk_end_scene")
+	$if prod { C.VMProtectBeginMutation(c"hk_end_scene") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -178,7 +192,7 @@ fn hk_end_scene(dev voidptr) bool {
 
 	app_ctx.menu.on_send_scene()
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return app_ctx.hooks.end_scene.original_save(dev)
 }
@@ -186,7 +200,7 @@ fn hk_end_scene(dev voidptr) bool {
 [unsafe; callconv: "stdcall"]
 fn hk_reset(dev voidptr, params voidptr) int {
 
-	C.VMProtectBeginMutation(c"hk_reset")
+	$if prod { C.VMProtectBeginMutation(c"hk_reset") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -211,7 +225,7 @@ fn hk_reset(dev voidptr, params voidptr) int {
 		app_ctx.is_ok = true
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return ret
 }
@@ -219,7 +233,7 @@ fn hk_reset(dev voidptr, params voidptr) int {
 [unsafe; callconv: "fastcall"]
 fn hk_set_viewmodel_offets(ecx voidptr, edx voidptr, smt int, x f32, y f32, z f32) int {
 
-	C.VMProtectBeginMutation(c"hk_set_viewmodel_offsets")
+	$if prod { C.VMProtectBeginMutation(c"hk_set_viewmodel_offsets") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -244,7 +258,7 @@ fn hk_set_viewmodel_offets(ecx voidptr, edx voidptr, smt int, x f32, y f32, z f3
 		}
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return app_ctx.hooks.set_viewmodel_offets.original_save(ecx, edx, smt ,og_x, og_y, og_z)
 }
@@ -252,7 +266,7 @@ fn hk_set_viewmodel_offets(ecx voidptr, edx voidptr, smt int, x f32, y f32, z f3
 [unsafe; callconv: "stdcall"]
 fn hk_get_viewmodel_fov() f32 {
 
-	C.VMProtectBeginMutation(c"hk_get_viewmodel_fov")
+	$if prod { C.VMProtectBeginMutation(c"hk_get_viewmodel_fov") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -274,7 +288,7 @@ fn hk_get_viewmodel_fov() f32 {
 		}
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return og_viewmodel_fov
 }
@@ -282,7 +296,7 @@ fn hk_get_viewmodel_fov() f32 {
 [unsafe; callconv: "stdcall"]
 fn hk_wnd_proc(with_hwnd C.HWND, with_msg u32, with_wparam u32, and_lparam int) bool {
 
-	C.VMProtectBeginMutation(c"hk_wnd_proc")
+	$if prod { C.VMProtectBeginMutation(c"hk_wnd_proc") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -307,7 +321,7 @@ fn hk_wnd_proc(with_hwnd C.HWND, with_msg u32, with_wparam u32, and_lparam int) 
 		}
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
     return C.CallWindowProcW(app_ctx.hooks.wnd_proc.original_save, with_hwnd, with_msg, with_wparam, and_lparam)
 }
@@ -315,7 +329,7 @@ fn hk_wnd_proc(with_hwnd C.HWND, with_msg u32, with_wparam u32, and_lparam int) 
 [unsafe; callconv: "fastcall"]
 fn hk_lock_cursor(ecx voidptr, edx voidptr) {
 
-	C.VMProtectBeginMutation(c"hk_lock_cursor")
+	$if prod { C.VMProtectBeginMutation(c"hk_lock_cursor") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -334,14 +348,14 @@ fn hk_lock_cursor(ecx voidptr, edx voidptr) {
 
 	app_ctx.hooks.lock_cursor.original_save(ecx,edx)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 }
 
 [unsafe; callconv: "fastcall"]
 fn hk_draw_model(ecx voidptr, edx voidptr, result voidptr, info &valve.CDrawModelInfo, bones voidptr, flex_weights &f32, flex_deleyed_weight &f32, model_origin &utils.Vec3, flags int) {
 
-	C.VMProtectBeginMutation(c"hk_draw_model")
+	$if prod { C.VMProtectBeginMutation(c"hk_draw_model") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -362,5 +376,10 @@ fn hk_draw_model(ecx voidptr, edx voidptr, result voidptr, info &valve.CDrawMode
 
 	app_ctx.hooks.draw_model.original_save(ecx, edx, result ,info, bones, flex_weights, flex_deleyed_weight, model_origin, flags)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
+}
+
+[unsafe; callconv: "fastcall"]
+fn hk_ret_add_check(ecx voidptr, edx voidptr, mod_name &u8) bool {
+	return true
 }

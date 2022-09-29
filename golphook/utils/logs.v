@@ -7,7 +7,7 @@ fn C.puts(&char)
 
 pub fn load_unload_console(with_switch bool, and_file &C.FILE) {
 
-	C.VMProtectBeginMutation(c"utils.load_unload_console")
+	$if prod { C.VMProtectBeginMutation(c"utils.load_unload_console") }
 
 	if with_switch {
 		if !C.AllocConsole() {
@@ -23,13 +23,13 @@ pub fn load_unload_console(with_switch bool, and_file &C.FILE) {
 		// C.FreeConsole()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 [unsafe]
 pub fn msg_c(with_text string, and_color Color) {
 
-	C.VMProtectBeginMutation(c"utils.msg_c")
+	$if prod { C.VMProtectBeginMutation(c"utils.msg_c") }
 
 	color_ref := and_color
 
@@ -42,17 +42,17 @@ pub fn msg_c(with_text string, and_color Color) {
 
 	o_fn(&color_ref, &char(final.str))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn pront(with_text string) {
 
-	C.VMProtectBeginMutation(c"utils.pront")
+	$if prod { C.VMProtectBeginMutation(c"utils.pront") }
 
 	$if debug {
 		C.puts(&char(with_text.str))
 	}
 	// unsafe {msg_c(utils.Color{142, 68, 173, 255}, withContent)}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }

@@ -6,7 +6,7 @@ import valve
 
 pub fn others_on_frame() {
 	
-	C.VMProtectBeginMutation(c"others.on_frame")
+	$if prod { C.VMProtectBeginMutation(c"others.on_frame") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -22,13 +22,13 @@ pub fn others_on_frame() {
 		no_flash()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 [unsafe]
 pub fn bop() {
 
-	C.VMProtectBeginMutation(c"others.bop")
+	$if prod { C.VMProtectBeginMutation(c"others.bop") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -41,12 +41,12 @@ pub fn bop() {
 		unsafe { *force_jump = 6 }
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn specs() {
 
-	C.VMProtectBeginMutation(c"others.specs")
+	$if prod { C.VMProtectBeginMutation(c"others.specs") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -85,12 +85,12 @@ pub fn specs() {
 		app_ctx.rnd_queue.push(new_text(utils.new_vec2(20, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_count_color))
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn no_flash() {
 	
-	C.VMProtectBeginMutation(c"others.no_flash")
+	$if prod { C.VMProtectBeginMutation(c"others.no_flash") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -103,5 +103,5 @@ pub fn no_flash() {
 		flash_dur.set(0.0)
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }

@@ -90,18 +90,18 @@ pub mut:
 
 fn (mut m NMenu) bootstrap(dev voidptr) {
 	
-	C.VMProtectBeginMutation(c"menu.bootstrap")
+	$if prod { C.VMProtectBeginMutation(c"menu.bootstrap") }
 
 	mut app_ctx := unsafe { app() }
 
 	m.nk_ctx.bootstrap(dev, app_ctx.wnd_width, app_ctx.wnd_height)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) release(isReset bool) {
 
-	C.VMProtectBeginMutation(c"menu.release")
+	$if prod { C.VMProtectBeginMutation(c"menu.release") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -113,23 +113,23 @@ fn (mut m NMenu) release(isReset bool) {
 
 	m.nk_ctx.release()
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) on_send_scene() {
 
-	C.VMProtectBeginMutation(c"menu.on_end_scene")
+	$if prod { C.VMProtectBeginMutation(c"menu.on_end_scene") }
 
 	if m.is_opened {
 		m.render()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) apply_style() {
 
-	C.VMProtectBeginMutation(c"mneu.apply_style")
+	$if prod { C.VMProtectBeginMutation(c"mneu.apply_style") }
 
 	mut col_table := []C.nk_color{len: C.NK_COLOR_COUNT}
 
@@ -150,12 +150,12 @@ fn (mut m NMenu) apply_style() {
 
 	m.nk_ctx.style_from_table(col_table.data)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) menu_item(itemName string, itemId int) {
 
-	C.VMProtectBeginMutation(c"menu.menu_item")
+	$if prod { C.VMProtectBeginMutation(c"menu.menu_item") }
 
 	if m.nk_ctx.selectable_label(itemName, C.NK_TEXT_CENTERED, &m.tabs[itemId]) {
 
@@ -174,13 +174,13 @@ fn (mut m NMenu) menu_item(itemName string, itemId int) {
 
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 
 fn (mut m NMenu) menu_bar() {
 
-	C.VMProtectBeginMutation(c"menu.menu_bar")
+	$if prod { C.VMProtectBeginMutation(c"menu.menu_bar") }
 
 	m.nk_ctx.layout_row_dynamic(item_height, 4)
 
@@ -189,12 +189,12 @@ fn (mut m NMenu) menu_bar() {
 	m.menu_item("engine", 2)
 	m.menu_item("config", 3)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) table_combo(mut val &int, mut table []map[string]int, callback fn (&App)) {
 
-	C.VMProtectBeginMutation(c"menu.table_combo")
+	$if prod { C.VMProtectBeginMutation(c"menu.table_combo") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -219,12 +219,12 @@ fn (mut m NMenu) table_combo(mut val &int, mut table []map[string]int, callback 
 		m.nk_ctx.combo_end()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) color_picker(mut col &utils.Color) {
 
-	C.VMProtectBeginMutation(c"menu.color_picker")
+	$if prod { C.VMProtectBeginMutation(c"menu.color_picker") }
 
 	mut tmp_colf := col.nk_colorf()
 
@@ -248,12 +248,12 @@ fn (mut m NMenu) color_picker(mut col &utils.Color) {
 		m.nk_ctx.combo_end()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) tab_visuals() {
 
-	C.VMProtectBeginMutation(c"menu.tab_visuals")
+	$if prod { C.VMProtectBeginMutation(c"menu.tab_visuals") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -384,12 +384,12 @@ fn (mut m NMenu) tab_visuals() {
 		m.nk_ctx.group_end()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) tab_misc() {
 
-	C.VMProtectBeginMutation(c"menu.tab_misc")
+	$if prod { C.VMProtectBeginMutation(c"menu.tab_misc") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -490,12 +490,12 @@ fn (mut m NMenu) tab_misc() {
 		m.nk_ctx.group_end()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) tab_engine() {
 
-	C.VMProtectBeginMutation(c"menu.tab_engine")
+	$if prod { C.VMProtectBeginMutation(c"menu.tab_engine") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -582,12 +582,12 @@ fn (mut m NMenu) tab_engine() {
 		m.nk_ctx.group_end()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) tab_config() {
 
-	C.VMProtectBeginMutation(c"menu.tab_config")
+	$if prod { C.VMProtectBeginMutation(c"menu.tab_config") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -712,12 +712,12 @@ fn (mut m NMenu) tab_config() {
 		m.nk_ctx.group_end()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut m NMenu) render() {
 
-	C.VMProtectBeginMutation(c"menu.render")
+	$if prod { C.VMProtectBeginMutation(c"menu.render") }
 
 	m.apply_style()
 	m.nk_ctx.begin("golphook", C.nk_rect{x: 27 y:27, w:menu_width, h:menu_height}, u32(C.NK_WINDOW_MOVABLE | C.NK_WINDOW_NO_SCROLLBAR))
@@ -737,5 +737,5 @@ fn (mut m NMenu) render() {
 	m.nk_ctx.input_begin()
 	m.nk_ctx.input_end()
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }

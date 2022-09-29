@@ -35,6 +35,7 @@ Resources
 >- https://github.com/withs/golphook.fun
 >- https://github.com/danielkrupinski/Anubis
 >- https://github.com/balenamiaa/rust-csgo
+>- https://github.com/extremeblackliu/CSGOReturnAddressCheckRape
 
 Medias
 ------

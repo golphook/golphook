@@ -12,7 +12,7 @@ fn C.PlaySound(voidptr, voidptr, u32) bool
 
 fn get_sound_for_kill(kills int) string {
 	
-	C.VMProtectBeginMutation(c"killsound.get_sound_for_kill")
+	$if prod { C.VMProtectBeginMutation(c"killsound.get_sound_for_kill") }
 
 	if kills > 5 {
 		return "k_five"
@@ -26,7 +26,7 @@ fn get_sound_for_kill(kills int) string {
 		else { return "k_five" }
 	}
 	
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 
@@ -39,7 +39,7 @@ pub mut:
 
 fn (k &KillSound) play_sound(withSound string) {
 
-	C.VMProtectBeginMutation(c"killsound.play_sound")
+	$if prod { C.VMProtectBeginMutation(c"killsound.play_sound") }
 
 	sounds := {
 		"k_one": $embed_file('../ressources/sounds/k_one.wav'),
@@ -57,12 +57,12 @@ fn (k &KillSound) play_sound(withSound string) {
 
 	C.PlaySound(voidptr(file.data()), 0, u32(C.SND_ASYNC | C.SND_MEMORY))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut k KillSound) get_kill() int {
 
-	C.VMProtectBeginMutation(c"killsound.get_kill")
+	$if prod { C.VMProtectBeginMutation(c"killsound.get_kill") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -70,14 +70,14 @@ fn (mut k KillSound) get_kill() int {
 	lcp_id := app_ctx.ent_cacher.local_player.index()
 	kills_total := &int(a + usize(offsets.db.netvars.match_stats_kills_total) + usize(lcp_id * 0x4))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 	
 	return *kills_total
 }
 
 fn (mut k KillSound) get_kill_hs() int {
 
-	C.VMProtectBeginMutation(c"killsound.get_kill_hs")
+	$if prod { C.VMProtectBeginMutation(c"killsound.get_kill_hs") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -85,21 +85,21 @@ fn (mut k KillSound) get_kill_hs() int {
 	lcp_id := app_ctx.ent_cacher.local_player.index()
 	hs_kills := &int(a + usize(offsets.db.netvars.match_stats_headshot_kills_total) + usize(lcp_id * 0x4))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return *hs_kills
 }
 
 fn (mut k KillSound) is_freeze_time() bool {
 
-	C.VMProtectBeginMutation(c"killsound.is_freeze_time")
+	$if prod { C.VMProtectBeginMutation(c"killsound.is_freeze_time") }
 
 	mut app_ctx := unsafe { app() }
 
 	a := *(&usize(usize(app_ctx.h_client) + offsets.db.signatures.game_rules_proxy))
 	is_freeze_time := &bool(a + usize(offsets.db.netvars.freeze_period))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return *is_freeze_time
 }
@@ -107,7 +107,7 @@ fn (mut k KillSound) is_freeze_time() bool {
 
 fn (mut k KillSound) on_frame() {
 
-	C.VMProtectBeginMutation(c"killsound.on_frame")
+	$if prod { C.VMProtectBeginMutation(c"killsound.on_frame") }
 	
 	mut app_ctx := unsafe { app() }
 
@@ -177,5 +177,5 @@ fn (mut k KillSound) on_frame() {
 	k.old_kill = k.get_kill()
 	k.old_kill_hs = k.get_kill_hs()
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }

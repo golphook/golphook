@@ -22,7 +22,7 @@ pub mut:
 
 pub fn (mut s Skins) on_frame() {
 
-	C.VMProtectBeginMutation(c"skins.on_frame")
+	$if prod { C.VMProtectBeginMutation(c"skins.on_frame") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -30,12 +30,12 @@ pub fn (mut s Skins) on_frame() {
 		s.skin_changer()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut s Skins) skin_changer() {
 
-	C.VMProtectBeginMutation(c"skins.skin_changer")
+	$if prod { C.VMProtectBeginMutation(c"skins.skin_changer") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -102,5 +102,5 @@ pub fn (mut s Skins) skin_changer() {
 
 	active_view_model.model_index().set(knife_model_index)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }

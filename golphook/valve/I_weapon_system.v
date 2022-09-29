@@ -28,7 +28,7 @@ pub:
 
 pub fn (w &WeaponData) name() string {
 
-	C.VMProtectBeginMutation(c"weaapon_data.name")
+	$if prod { C.VMProtectBeginMutation(c"weaapon_data.name") }
 
 	mut raw_name := unsafe { cstring_to_vstring(w.clean_name) }
 
@@ -45,7 +45,7 @@ pub fn (w &WeaponData) name() string {
 	cleaned_name = cleaned_name.replace("_", " ")
 	cleaned_name = cleaned_name.to_lower()
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return cleaned_name
 }

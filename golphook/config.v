@@ -26,7 +26,7 @@ fn get_knife_data(knife_id int) string {
 
 fn get_material_str(for_material_id int) string {
 
-	C.VMProtectBeginMutation(c"cfg.get_material_str")
+	$if prod { C.VMProtectBeginMutation(c"cfg.get_material_str") }
 
 	match int(for_material_id) {
 		0 { return "debug/debugambientcube" }
@@ -39,12 +39,12 @@ fn get_material_str(for_material_id int) string {
 		else { return "debug/debugambientcube" }
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn get_material_id(for_material_name string) int {
 
-	C.VMProtectBeginMutation(c"cfg.get_material_id")
+	$if prod { C.VMProtectBeginMutation(c"cfg.get_material_id") }
 
 	match for_material_name {
 		"debug/debugambientcube" { return 0 }
@@ -57,7 +57,7 @@ fn get_material_id(for_material_name string) int {
 		else { return 0 }
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 struct Config {
@@ -189,7 +189,7 @@ pub mut:
 
 pub fn (mut c ConfigManager) bootstrap() {
 
-	C.VMProtectBeginMutation(c"cfg.bootstrap")
+	$if prod { C.VMProtectBeginMutation(c"cfg.bootstrap") }
 
 	home := os.home_dir()
 	golphook_folder := "$home\\golphook"
@@ -225,23 +225,23 @@ pub fn (mut c ConfigManager) bootstrap() {
 	c.configs[0] = Config{}
 	c.active_config = &c.configs[0]
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut c ConfigManager) export(for_config_with_index int) string {
 
-	C.VMProtectBeginMutation(c"cfg.export")
+	$if prod { C.VMProtectBeginMutation(c"cfg.export") }
 
 	json := json.encode(c.configs[for_config_with_index])
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return json
 }
 
 pub fn (mut c ConfigManager) import_fc(from_text string) {
 
-	C.VMProtectBeginMutation(c"cfg.import_fc")
+	$if prod { C.VMProtectBeginMutation(c"cfg.import_fc") }
 
 	mut cfg := json.decode(Config, from_text) or {
 		unsafe { utils.msg_c("failed to decode config", utils.color_rbga(255, 255 ,255, 255)) }
@@ -253,12 +253,12 @@ pub fn (mut c ConfigManager) import_fc(from_text string) {
 	cfg.name = f32(c.configs.len + 1).str()
 	c.configs << cfg
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut c ConfigManager) delete(for_config_with_index int) {
 
-	C.VMProtectBeginMutation(c"cfg.delete")
+	$if prod { C.VMProtectBeginMutation(c"cfg.delete") }
 
 	if for_config_with_index == 0 {
 		unsafe {
@@ -272,12 +272,12 @@ pub fn (mut c ConfigManager) delete(for_config_with_index int) {
 	c.configs.delete(for_config_with_index)
 	c.save()
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut c ConfigManager) save() {
 
-	C.VMProtectBeginMutation(c"cfg.save")
+	$if prod { C.VMProtectBeginMutation(c"cfg.save") }
 
 	json := json.encode_pretty(c.configs)
 	home := os.home_dir()
@@ -286,12 +286,12 @@ pub fn (mut c ConfigManager) save() {
 		utils.error_critical("Failed to access ressource configs", "file")
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut c ConfigManager) rename(for_config_with_index int, with_new_name string) {
 
-	C.VMProtectBeginMutation(c"cfg.rename")
+	$if prod { C.VMProtectBeginMutation(c"cfg.rename") }
 
 	if for_config_with_index == 0 {
 		unsafe { utils.msg_c("cannot rename default config", utils.color_rbga(255, 255 ,255, 255)) }
@@ -301,12 +301,12 @@ pub fn (mut c ConfigManager) rename(for_config_with_index int, with_new_name str
 	c.configs[for_config_with_index].name = with_new_name
 	c.save()
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut c ConfigManager) new_blank(with_name string) {
 
-	C.VMProtectBeginMutation(c"cfg.new_blank")
+	$if prod { C.VMProtectBeginMutation(c"cfg.new_blank") }
 
 	mut new_cfg := Config{}
 	new_cfg.name = f32(c.configs.len + 1).str()
@@ -315,12 +315,12 @@ pub fn (mut c ConfigManager) new_blank(with_name string) {
 	}
 	c.configs << new_cfg
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut c ConfigManager) change_to(for_config_with_index int) {
 
-	C.VMProtectBeginMutation(c"cfg.change_to")
+	$if prod { C.VMProtectBeginMutation(c"cfg.change_to") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -340,5 +340,5 @@ pub fn (mut c ConfigManager) change_to(for_config_with_index int) {
 	c.active_config_idx = for_config_with_index
 	app_ctx.is_ok = true
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }

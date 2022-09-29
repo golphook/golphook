@@ -35,7 +35,7 @@ pub mut:
 
 fn (mut e Engine) on_frame() {
 
-	C.VMProtectBeginMutation(c"engine.on_frame")
+	$if prod { C.VMProtectBeginMutation(c"engine.on_frame") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -82,12 +82,12 @@ fn (mut e Engine) on_frame() {
 		}
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut e Engine) handle_keys() {
 
-	C.VMProtectBeginMutation(c"engine.handle_keys")
+	$if prod { C.VMProtectBeginMutation(c"engine.handle_keys") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -119,13 +119,13 @@ fn (mut e Engine) handle_keys() {
 		e.do_a_shoot = !e.do_a_shoot
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 // most beautiful copy pasta from gh
 fn (e &Engine) aim_at(ent TargetedEntity) {
 
-	C.VMProtectBeginMutation(c"engine.aim_at")
+	$if prod { C.VMProtectBeginMutation(c"engine.aim_at") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -147,12 +147,12 @@ fn (e &Engine) aim_at(ent TargetedEntity) {
 
 	app_ctx.interfaces.cdll_int.set_view_angle(&angle_out)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (e &Engine) is_in_fov(bone_pos_on_screen &utils.Vec3) (bool, f32) {
 
-	C.VMProtectBeginMutation(c"engine.is_in_fov")
+	$if prod { C.VMProtectBeginMutation(c"engine.is_in_fov") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -165,14 +165,14 @@ fn (e &Engine) is_in_fov(bone_pos_on_screen &utils.Vec3) (bool, f32) {
 		return true, f32(c)
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 	
 	return false, f32(c)
 }
 
 pub fn can_shoot() bool {
 
-	C.VMProtectBeginMutation(c"engine.can_shoot")
+	$if prod { C.VMProtectBeginMutation(c"engine.can_shoot") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -186,7 +186,7 @@ pub fn can_shoot() bool {
 		return false
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return weapon.next_primary_attack() <= app_ctx.interfaces.c_global_vars.curtime
 
@@ -194,19 +194,19 @@ pub fn can_shoot() bool {
 
 pub fn (mut e Engine) adjust_fov_by_zoom() {
 
-	C.VMProtectBeginMutation(c"engine.adjust_fov_by_zoom")
+	$if prod { C.VMProtectBeginMutation(c"engine.adjust_fov_by_zoom") }
 
 	mut app_ctx := unsafe { app() }
 
 	weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return }
 	e.fov *= (weapon.zoom_level() + 1)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 fn (mut e Engine) collect_targeted_ents() {
 
-	C.VMProtectBeginMutation(c"engine.collect_targeted_ents")
+	$if prod { C.VMProtectBeginMutation(c"engine.collect_targeted_ents") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -265,6 +265,6 @@ fn (mut e Engine) collect_targeted_ents() {
 
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 }

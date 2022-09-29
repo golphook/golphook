@@ -140,7 +140,7 @@ pub fn (e &Entity_t) glow_index() int {
 [unsafe]
 pub fn (e &Entity_t) set_abs_origin(with_origin utils.Vec3) {
 
-	C.VMProtectBeginMutation(c"ent.set_abs_orig")
+	$if prod { C.VMProtectBeginMutation(c"ent.set_abs_orig") }
 
 	mut static o_fn := &P_set_abs_origin(0)
 	if isnil(o_fn) {
@@ -151,13 +151,13 @@ pub fn (e &Entity_t) set_abs_origin(with_origin utils.Vec3) {
 	}
 	o_fn(e, 0, with_origin)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 [unsafe]
 pub fn (e &Entity_t) set_abs_angle(with_angle utils.Angle) {
 
-	C.VMProtectBeginMutation(c"ent.set_abs_angle")
+	$if prod { C.VMProtectBeginMutation(c"ent.set_abs_angle") }
 
 	mut static o_fn := &P_set_abs_angle(0)
 	if isnil(o_fn) {
@@ -168,7 +168,7 @@ pub fn (e &Entity_t) set_abs_angle(with_angle utils.Angle) {
 	}
 	o_fn(e, 0, with_angle)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (e &Entity_t) to_weapon() &Weapon_t {
@@ -328,7 +328,7 @@ pub fn (p &Player) flash_duration() utils.Value<f32> {
 
 pub fn (p &Player) is_moving() bool{
 
-	C.VMProtectBeginMutation(c"player.is_moving")
+	$if prod { C.VMProtectBeginMutation(c"player.is_moving") }
 
 	v_vel := p.velocity()
 
@@ -336,14 +336,14 @@ pub fn (p &Player) is_moving() bool{
 		return false
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return true
 }
 
 pub fn (p &Player) bone(with_bone_idx usize) ?utils.Vec3 {
 
-	C.VMProtectBeginMutation(c"player.bone")
+	$if prod { C.VMProtectBeginMutation(c"player.bone") }
 
 	mut res := utils.new_vec3(0, 0, 0)
 
@@ -357,7 +357,7 @@ pub fn (p &Player) bone(with_bone_idx usize) ?utils.Vec3 {
 	res.y = *(&f32(bones_mat + 0x30 * with_bone_idx + 0x1c))
 	res.z = *(&f32(bones_mat + 0x30 * with_bone_idx + 0x2c))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return res
 }

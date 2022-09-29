@@ -21,7 +21,7 @@ pub mut:
 
 pub fn (mut v Visuals) on_frame() {
 
-	C.VMProtectBeginMutation(c"visual.on_frame")
+	$if prod { C.VMProtectBeginMutation(c"visual.on_frame") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -66,12 +66,12 @@ pub fn (mut v Visuals) on_frame() {
 		v.fov_circle()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) on_end_scene() {
 
-	C.VMProtectBeginMutation(c"visuals.on_end_scene")
+	$if prod { C.VMProtectBeginMutation(c"visuals.on_end_scene") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -79,12 +79,12 @@ pub fn (mut v Visuals) on_end_scene() {
 		v.watermark()
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) glow() {
 
-	C.VMProtectBeginMutation(c"visuals.glow")
+	$if prod { C.VMProtectBeginMutation(c"visuals.glow") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -103,12 +103,12 @@ pub fn (mut v Visuals) glow() {
 	mut render_when_unocluded := &bool(glow_object_manager + usize(glow_index * 0x38) + 0x28)
 	unsafe { *render_when_unocluded = true }
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) name() {
 	
-	C.VMProtectBeginMutation(c"visuals.name")
+	$if prod { C.VMProtectBeginMutation(c"visuals.name") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -134,12 +134,12 @@ pub fn (mut v Visuals) name() {
 
 	app_ctx.rnd_queue.push(new_text(utils.new_vec2((box_data.screen_pos.y - box_data.height), box_data.screen_pos.x - off).vec_3(), text, u16(font), false, false, C.DT_LEFT | C.DT_NOCLIP, color))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) box() {
 
-	C.VMProtectBeginMutation(c"visuals.box")
+	$if prod { C.VMProtectBeginMutation(c"visuals.box") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -152,12 +152,12 @@ pub fn (mut v Visuals) box() {
 	}
 	app_ctx.rnd_queue.push(new_rectangle(screen_pos, v.current_ent_box.height, v.current_ent_box.width, 1, 0, color))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) snapline() {
 
-	C.VMProtectBeginMutation(c"visuals.snapline")
+	$if prod { C.VMProtectBeginMutation(c"visuals.snapline") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -167,12 +167,12 @@ pub fn (mut v Visuals) snapline() {
 	}
 	app_ctx.rnd_queue.push(new_line(utils.new_vec2(app_ctx.wnd_width /2, app_ctx.wnd_height).vec_3(), v.current_ent_box.screen_pos, 1, color))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) weapon() {
 
-	C.VMProtectBeginMutation(c"visuals.weapon")
+	$if prod { C.VMProtectBeginMutation(c"visuals.weapon") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -198,12 +198,12 @@ pub fn (mut v Visuals) weapon() {
 
 	app_ctx.rnd_queue.push(new_text(utils.new_vec2((box_data.screen_pos.y + 2), box_data.screen_pos.x - off).vec_3(), text, u16(font), false, false, C.DT_LEFT | C.DT_NOCLIP, color))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) indicators() {
 
-	C.VMProtectBeginMutation(c"visuals.indicators")
+	$if prod { C.VMProtectBeginMutation(c"visuals.indicators") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -237,12 +237,12 @@ pub fn (mut v Visuals) indicators() {
 		app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20) + (indicators_cnt*10), (app_ctx.wnd_width / 2)).vec_3(), "Force $bone_str", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_on))
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) fov_circle() {
 
-	C.VMProtectBeginMutation(c"visuals.fov_circle")
+	$if prod { C.VMProtectBeginMutation(c"visuals.fov_circle") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -252,31 +252,31 @@ pub fn (mut v Visuals) fov_circle() {
 
 	app_ctx.rnd_queue.push(new_circle(utils.new_vec2(app_ctx.wnd_width / 2, app_ctx.wnd_height / 2).vec_3(), 1, f32(app_ctx.engine.fov), app_ctx.config.active_config.fov_circle_color))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) radar() {
 	
-	C.VMProtectBeginMutation(c"visuals.radar")
+	$if prod { C.VMProtectBeginMutation(c"visuals.radar") }
 
 	v.current_ent.spotted().set(true)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) watermark() {
 
-	C.VMProtectBeginMutation(c"visuals.watermark")
+	$if prod { C.VMProtectBeginMutation(c"visuals.watermark") }
 
 	mut app_ctx := unsafe { app() }
 	app_ctx.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v$app_ctx.v_mod.version", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.watermark_color))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) calculate_box(with_z_offset f32) ?BoxData {
 
-	C.VMProtectBeginMutation(c"visuals.calculate_box")
+	$if prod { C.VMProtectBeginMutation(c"visuals.calculate_box") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -299,14 +299,14 @@ pub fn (mut v Visuals) calculate_box(with_z_offset f32) ?BoxData {
 	mut box_height := screen_pos.y - head_screen_pos.y
 	box_width := box_height / 1.7
 	
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return BoxData{screen_pos: screen_pos, height: box_height, width: box_width}
 }
 
 pub fn (mut v Visuals) adjust_text_spacing_by_zoom() f32 {
 
-	C.VMProtectBeginMutation(c"visuals.adjust_text_spacing_by_zoom")
+	$if prod { C.VMProtectBeginMutation(c"visuals.adjust_text_spacing_by_zoom") }
 
  	mut app_ctx := unsafe { app() }
 
@@ -319,14 +319,14 @@ pub fn (mut v Visuals) adjust_text_spacing_by_zoom() f32 {
 	weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return dist / r}
  	r += 67 * (weapon.zoom_level() + 1)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return dist / r
 }
 
 pub fn calculate_text(with_font int, with_text_len int, and_max_width f32) (u16, f32) {
 
-	C.VMProtectBeginMutation(c"visuals.calculate_text")
+	$if prod { C.VMProtectBeginMutation(c"visuals.calculate_text") }
 
 	mut font := with_font
 	mut text_size := f32( (font * with_text_len)) * 0.57
@@ -341,7 +341,7 @@ pub fn calculate_text(with_font int, with_text_len int, and_max_width f32) (u16,
 		off = text_size / 2
 	}
 	
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return u16(font), off
 }

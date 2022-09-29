@@ -7,7 +7,7 @@ pub mut:
 
 pub fn (mut n Nuklear) bootstrap(with_dev voidptr, withWidth int, and_ans_height i32) {
 
-	C.VMProtectBeginMutation(c"nuklear.bootstrap")
+	$if prod { C.VMProtectBeginMutation(c"nuklear.bootstrap") }
 
 	// TODO: use function param
 	n.nk_ctx = C.nk_d3d9_init(with_dev, 1280, 900)
@@ -17,7 +17,7 @@ pub fn (mut n Nuklear) bootstrap(with_dev voidptr, withWidth int, and_ans_height
 	C.nk_d3d9_font_stash_begin(&font_stash)
 	C.nk_d3d9_font_stash_end()
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut n Nuklear) release() {
@@ -77,7 +77,7 @@ pub fn (n &Nuklear) layout_row_end() {
 
 pub fn (n &Nuklear) checkbox_label(with_label string, mut and_active &bool) bool {
 	
-	C.VMProtectBeginMutation(c"nuklear.checkbox_label")
+	$if prod { C.VMProtectBeginMutation(c"nuklear.checkbox_label") }
 
 	// since nuklear is a C lib and v use C as a backend, it use nk_bool as bool value but
 	// nk_bool is 4 bytes and v bool is 1 bytes, so when giving v bool directly it overwrite
@@ -86,7 +86,7 @@ pub fn (n &Nuklear) checkbox_label(with_label string, mut and_active &bool) bool
 	is_checkbox := C.nk_checkbox_label(n.nk_ctx, &char(with_label.str), &tmp_int_bool) == 1
 	and_active = (tmp_int_bool == 1)
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 	return is_checkbox
 }
 

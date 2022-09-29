@@ -4,7 +4,7 @@ import golphook
 
 fn hello(h_mod voidptr) {
 
-	C.VMProtectBeginMutation(c"hello")
+	$if prod { C.VMProtectBeginMutation(c"hello") }
 	
 	mut ctx := unsafe { golphook.app() }
 	ctx.bootstrap(h_mod)
@@ -18,13 +18,13 @@ fn hello(h_mod voidptr) {
 
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 [export: "DllMain"; callconv: "stdcall"]
 fn dll_main(h_mod voidptr, reason i32, res voidptr) bool {
 
-	C.VMProtectBeginMutation(c"dll_main")
+	$if prod { C.VMProtectBeginMutation(c"dll_main") }
 
 	if reason == u32(C.DLL_PROCESS_ATTACH) {
 
@@ -33,7 +33,7 @@ fn dll_main(h_mod voidptr, reason i32, res voidptr) bool {
 		go hello(h_mod)
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return true
 }

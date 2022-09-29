@@ -10,7 +10,7 @@ pub mut:
 
 pub fn (mut e EntityCacher) on_frame() {
 
-	C.VMProtectBeginMutation(c"ent_cacher.on_frame")
+	$if prod { C.VMProtectBeginMutation(c"ent_cacher.on_frame") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -33,12 +33,12 @@ pub fn (mut e EntityCacher) on_frame() {
 		}
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut e EntityCacher) filter_player(ent_filter fn(&valve.Player, &EntityCacher) bool) []&valve.Player {
 
-	C.VMProtectBeginMutation(c"ent_cacher.filter_player")
+	$if prod { C.VMProtectBeginMutation(c"ent_cacher.filter_player") }
 
 	mut ret := []&valve.Player{}
 
@@ -52,7 +52,7 @@ pub fn (mut e EntityCacher) filter_player(ent_filter fn(&valve.Player, &EntityCa
 		}
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return ret
 }

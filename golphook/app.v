@@ -39,7 +39,7 @@ pub mut:
 
 pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 
-	C.VMProtectBeginMutation(c"app.bootstrap")
+	$if prod { C.VMProtectBeginMutation(c"app.bootstrap") }
 
 	a.h_mod = with_module_handle
 
@@ -86,7 +86,7 @@ pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 
 	utils.pront('\n[*] golp is ready | Hi golphook v$a.v_mod.version :)\n')
 	a.is_ok = true
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn (mut a App) release() {
@@ -104,18 +104,18 @@ pub fn (mut a App) release() {
 
 pub fn (mut a App) on_frame() {
 
-	C.VMProtectBeginMutation(c"app.on_frame")
+	$if prod { C.VMProtectBeginMutation(c"app.on_frame") }
 
 
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 }
 
 [unsafe]
 pub fn app() &App {
 
-	C.VMProtectBeginMutation(c"app")
+	$if prod { C.VMProtectBeginMutation(c"app") }
 
 	mut static ctx := voidptr(0)
 
@@ -127,7 +127,7 @@ pub fn app() &App {
 		}
 	}
 	
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return &App(ctx)
 }

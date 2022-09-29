@@ -17,7 +17,7 @@ const errors = {
 
 pub fn error_critical(with_error string, and_error_complement string) {
 
-	C.VMProtectBeginMutation(c"utils.error_critical")
+	$if prod { C.VMProtectBeginMutation(c"utils.error_critical") }
 
 	mut err_msg := '$with_error: $and_error_complement'
 
@@ -31,15 +31,15 @@ pub fn error_critical(with_error string, and_error_complement string) {
 		panic(err_msg)
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 pub fn client_error(with_error string) {
 
-	C.VMProtectBeginMutation(c"utils.client_error")
+	$if prod { C.VMProtectBeginMutation(c"utils.client_error") }
 
 	C.MessageBoxA(0, &char(with_error.str), c'[golphook] error', u32(C.MB_OK | C.MB_ICONERROR))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 }

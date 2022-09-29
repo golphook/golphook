@@ -26,7 +26,7 @@ pub mut:
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 
-	C.VMProtectBeginMutation(c"interfaces.get_interface")
+	$if prod { C.VMProtectBeginMutation(c"interfaces.get_interface") }
 
 	h_mod := C.GetModuleHandleA(&char(inModule.str))
 	if isnil(h_mod) {
@@ -44,14 +44,14 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 
 	utils.pront(utils.str_align("[+] $withName", 40, "| ${voidptr(itfc_add).str()}"))
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return &T(itfc_add)
 }
 
 fn (mut i Interfaces) get_interface_pattern<T>(with_name string, in_module string, with_pattern string, ptr_manipulation 	fn(voidptr) voidptr) &T {
 
-	C.VMProtectBeginMutation(c"interfaces.get_interface_pattern")
+	$if prod { C.VMProtectBeginMutation(c"interfaces.get_interface_pattern") }
 
 	ptn_res := utils.pattern_scan(in_module, with_pattern) or {
 		utils.error_critical('Failed to get inferface', with_name)
@@ -60,14 +60,14 @@ fn (mut i Interfaces) get_interface_pattern<T>(with_name string, in_module strin
 	if_add := ptr_manipulation(ptn_res)
 	utils.pront(utils.str_align("[+] $with_name", 40, "| ${voidptr(if_add).str()}"))
 	
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return &T(if_add)
 }
 
 fn (mut i Interfaces) bootstrap() {
 
-	C.VMProtectBeginMutation(c"interfaces.bootstrap")
+	$if prod { C.VMProtectBeginMutation(c"interfaces.bootstrap") }
 
 	utils.pront("[-] bootstraping interfaces...")
 
@@ -91,5 +91,5 @@ fn (mut i Interfaces) bootstrap() {
 		return *(&&usize(voidptr(usize(ptn_res) + 2)))
 	})
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }

@@ -31,14 +31,14 @@ pub fn (r &Value<T>) get<T>() T {
 
 pub fn (r &Value<T>) set(with_new_val T) {
 
-	C.VMProtectBeginMutation(c"utils.set_val")
+	$if prod { C.VMProtectBeginMutation(c"utils.set_val") }
 
 	// bypass v cannot mut return value
 	unsafe {
 		*&T(r.ptr) = with_new_val
 	}
 	
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }
 
 [typedef]
@@ -67,7 +67,7 @@ struct C.IMAGE_NT_HEADERS {
 
 pub fn pattern_scan(in_module string, with_sig string) ?voidptr {
 
-	C.VMProtectBeginMutation(c"utils.pattern_scan")
+	$if prod { C.VMProtectBeginMutation(c"utils.pattern_scan") }
 
 	module_base := C.GetModuleHandleA(&char(in_module.str))
 	dos := &C.IMAGE_DOS_HEADER(module_base)
@@ -102,14 +102,14 @@ pub fn pattern_scan(in_module string, with_sig string) ?voidptr {
 		}
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return error("Cannot find address with pattern: $with_sig")
 }
 
 pub fn wait_for_module(mut with_modules []string, and_max_timeout int) {
 
-	C.VMProtectBeginMutation(c"utils.wait_for_mods")
+	$if prod { C.VMProtectBeginMutation(c"utils.wait_for_mods") }
 
 	mut total_waited := 0
 
@@ -132,5 +132,5 @@ pub fn wait_for_module(mut with_modules []string, and_max_timeout int) {
 		C.Sleep(1000)
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 }

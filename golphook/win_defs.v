@@ -10,13 +10,17 @@ module golphook
 #flag -L @VMODROOT/exts/vmp
 
 #flag -l minhook
-#flag -l vmp32
+$if prod {
+	#flag -l vmp32
+}
 
 #include "windows.h"
 #include "TlHelp32.h"
 
 #include "minhook.h"
-#include "vmp.h"
+$if prod {
+	#include "vmp.h"
+}
 
 [typedef]
 pub struct C.FILE {}
@@ -59,3 +63,4 @@ fn C.MH_Uninitialize() int
 
 fn C.VMProtectBeginMutation(&u8)
 fn C.VMProtectEnd()
+

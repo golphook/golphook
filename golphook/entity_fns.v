@@ -7,7 +7,7 @@ import offsets
 
 pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 
-	C.VMProtectBeginMutation(c"entity_fns.i_can_see")
+	$if prod { C.VMProtectBeginMutation(c"entity_fns.i_can_see") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -34,7 +34,7 @@ pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 		}
 	}
 	
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return can_see, tr_
 }
@@ -46,7 +46,7 @@ pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 // no joke this shit changed everyting
 pub fn i_can_see_with_offset(player &valve.Player, bone	usize, offset f32) bool {
 
-	C.VMProtectBeginMutation(c"entity_fns.i_can_see_with_offets")
+	$if prod { C.VMProtectBeginMutation(c"entity_fns.i_can_see_with_offets") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -84,14 +84,14 @@ pub fn i_can_see_with_offset(player &valve.Player, bone	usize, offset f32) bool 
 		}
 	}
 
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 
 	return false
 }
 
 pub fn ent_weapon(for_ent &valve.Player) ?&valve.Weapon_t {
 
-	C.VMProtectBeginMutation(c"entity_fns.ent_weapon")
+	$if prod { C.VMProtectBeginMutation(c"entity_fns.ent_weapon") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -101,7 +101,7 @@ pub fn ent_weapon(for_ent &valve.Player) ?&valve.Weapon_t {
 		return weapon
 	}
 	
-	C.VMProtectEnd()
+	$if prod { C.VMProtectEnd() }
 	
 	return error("")
 }
