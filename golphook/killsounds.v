@@ -138,6 +138,10 @@ fn (mut k KillSound) on_frame() {
 				"Attention les filles en mode enflure",
 				"et ma bitch a toujours le xanax et la og dans le purse",
 				"truc d'africain de ce lever pour le pain"
+				"Transaction en monero même allah sait pas à qui j’envoie"
+				"full awall comme au bataclan s/o golphook"
+				"Nouveaux calçon vuitton, merci a mes nugget pour le coton"
+				"trop d’halu jvois les hillus en chams crystal blue"
 			]
 
 			a := C.rand() % messages.len
