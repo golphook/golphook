@@ -10,6 +10,7 @@ import os
 fn get_knife_data(knife_id int) string {
 
 	return match knife_id {
+		503 { "v_knife_css.mdl" }
 		507 { "v_knife_karam.mdl" }
 		508 { "v_knife_m9_bay.mdl" }
 		515 { "v_knife_butterfly.mdl" }

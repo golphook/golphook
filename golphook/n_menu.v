@@ -68,6 +68,7 @@ pub mut:
 		{"mayonet": 500},
 		{"hunt": 509},
 		{"navaja": 520}
+		{"classic": 503}
 	]
 	item_quality []map[string]int = [
 		{"normal": 0},
