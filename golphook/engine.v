@@ -39,10 +39,18 @@ fn (mut e Engine) on_frame() {
 
 	mut app_ctx := unsafe { app() }
 
+
+	if !app_ctx.config.active_config.engine  {
+		return
+	}
 	mut force_attack := utils.Value<int>{ ptr: utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack) }
 
 	if force_attack.get() == 4 {
 		e.is_spraying = false
+	}
+
+	if force_attack.get() == 5 {
+		e.is_spraying = true
 	}
 
 	e.fov = app_ctx.config.active_config.fov
@@ -91,9 +99,7 @@ fn (mut e Engine) handle_keys() {
 
 	mut app_ctx := unsafe { app() }
 
-	if !app_ctx.config.active_config.engine  {
-		return
-	}
+
 	if !app_ctx.config.active_config.engine_automatic_fire_key_toggle {
 		e.do_a_shoot = false
 	}
