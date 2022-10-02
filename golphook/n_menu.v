@@ -48,6 +48,7 @@ pub mut:
 		{"cz": 8},
 		{"deagle": 9},
 		{"usp": 10},
+		{"p2k": 21}
 		{"glock": 11},
 		{"dualies": 12},
 		{"revolver": 13},

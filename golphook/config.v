@@ -238,6 +238,13 @@ pub mut:
 			wear: 0.0
 			seed: 0
 		},
+		SkinEntry{
+			definition_index: .weapon_hkp2000
+			quality: 0
+			paint_kit: 0
+			wear: 0.0
+			seed: 0
+		}
 	]
 	// visuals
 	glow                      bool        = true
