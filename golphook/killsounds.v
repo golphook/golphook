@@ -115,8 +115,8 @@ fn (mut k KillSound) display_img(with_img string) {
 
 	if !isnil(k.texture.i_dxtexture) && !isnil(k.sprite.i_dxsprite) {
 		unsafe {	
-			k.texture.release()
-			k.sprite.release()
+			//k.texture.release()
+			//k.sprite.release()
 		}
 	}
 
