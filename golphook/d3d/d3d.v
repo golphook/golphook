@@ -2,6 +2,99 @@ module d3d
 
 import utils
 
+pub struct D3dSprite {
+pub:
+	i_dxsprite voidptr
+}
+
+[unsafe]
+pub fn (d &D3dSprite) begin(with_flags int) bool {
+
+	$if prod { C.VMProtectBeginMutation(c"d3d_sprite.begin") }
+
+	mut static o_fn := &P_idx_sprite_begin(0)
+	if isnil(o_fn) {
+		o_fn = &P_idx_sprite_begin(utils.get_virtual(d.i_dxsprite, 8))
+	}
+
+	o_fn(d.i_dxsprite, with_flags)
+
+	$if prod { C.VMProtectEnd() }
+
+	return true
+}
+
+[unsafe; callconv: "stdcall"]
+pub fn (d &D3dSprite) draw(texture voidptr, with_rect &utils.Vec2, at_center &utils.Vec3, at_pos &utils.Vec3, and_color utils.Color) {
+	
+	$if prod { C.VMProtectBeginMutation(c"d3d_sprite.draw") }
+
+	mut static o_fn := &P_idx_sprite_draw(0)
+	if isnil(o_fn) {
+		o_fn = &P_idx_sprite_draw(utils.get_virtual(d.i_dxsprite, 9))
+	}
+
+	// utils.h_res cause crash here ?? why not -__-
+	o_fn(d.i_dxsprite, texture, with_rect, at_center, at_pos, 0xFFFFFFFF)
+
+	$if prod { C.VMProtectEnd() }
+
+}
+
+[unsafe]
+pub fn (d &D3dSprite) end() bool {
+
+	$if prod { C.VMProtectBeginMutation(c"d3d_sprite.end") }
+
+	mut static o_fn := &P_idx_sprite_end(0)
+	if isnil(o_fn) {
+		o_fn = &P_idx_sprite_end(utils.get_virtual(d.i_dxsprite, 11))
+	}
+
+	o_fn(d.i_dxsprite)
+
+	$if prod { C.VMProtectEnd() }
+
+	return true
+}
+
+[unsafe]
+pub fn (d D3dSprite) release() u32 {
+
+	$if prod { C.VMProtectBeginMutation(c"d3d_sprite.release") }
+
+	mut static o_fn := &P_idx_release(0)
+	if isnil(o_fn) {
+		o_fn = &P_idx_release(utils.get_virtual(d.i_dxsprite, 2))
+	}
+
+	$if prod { C.VMProtectEnd() }
+
+	return o_fn(d.i_dxsprite)
+}
+
+pub struct D3dTexture {
+pub mut:
+	i_dxtexture voidptr
+}
+
+[unsafe]
+pub fn (d D3dTexture) release() u32 {
+
+	$if prod { C.VMProtectBeginMutation(c"d3d_texture.release") }
+
+	mut static o_fn := &P_idx_release(0)
+	if isnil(o_fn) {
+		o_fn = &P_idx_release(utils.get_virtual(d.i_dxtexture, 2))
+	}
+
+	$if prod { C.VMProtectEnd() }
+
+	return o_fn(d.i_dxtexture)
+}
+
+
+
 struct D3d9Font {
 pub mut:
 	name string

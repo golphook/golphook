@@ -150,6 +150,7 @@ fn hk_frame_stage_notify(stage u32) {
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
+	
 		utils.pront(utils.str_align("[*] hk_frame_stage_notify()", 40, "| Called"))
 	}
 
@@ -170,6 +171,7 @@ fn hk_frame_stage_notify(stage u32) {
 	$if prod { C.VMProtectEnd() }
 }
 
+
 [unsafe; callconv: "stdcall"]
 fn hk_end_scene(dev voidptr) bool {
 
@@ -177,15 +179,16 @@ fn hk_end_scene(dev voidptr) bool {
 
 	mut app_ctx := unsafe { app() }
 
+
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
 		utils.pront(utils.str_align("[*] hk_end_scene()", 40, "| Called"))
-
 		app_ctx.menu.bootstrap(dev)
 	}
 
 	if app_ctx.is_ok {
+		app_ctx.kill_sound.on_end_scenes()
 		app_ctx.visuals.on_end_scene()
 		app_ctx.rnd_queue.draw_queue()
 	}
