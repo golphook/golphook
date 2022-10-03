@@ -38,6 +38,8 @@ pub fn (mut v Visuals) on_frame() {
 		v.current_ent_is_visible = is_visible
 		v.current_ent_box = v.calculate_box(0) or { continue }
 
+		//v.test_hit_point()
+
 		if app_ctx.config.active_config.glow {
 			v.glow()
 		}
@@ -81,6 +83,85 @@ pub fn (mut v Visuals) on_end_scene() {
 
 	$if prod { C.VMProtectEnd() }
 }
+
+/*
+$if debug {
+	fn (mut v Visuals) caca(bone int, offset f32) {
+		mut app_ctx := unsafe { app() }
+
+		mut bone_pos := v.current_ent.bone(usize(bone)) or { return }
+
+		//head_pos.z += 13 + with_z_offset
+		bone_screen_pos := utils.new_vec3(0,0,0)
+		if !app_ctx.interfaces.i_debug_overlay.screen_pos(bone_pos, bone_screen_pos) {
+				return
+		}
+			
+		mut t := utils.new_vec3(0,0,0)
+
+		// if head add to z
+
+		for o in 0..4 {
+			mut from := bone_pos
+			mut from_yey := app_ctx.ent_cacher.local_player.eye_pos() 
+			match o {
+				0 {
+					from.x += offset
+					from_yey.x += app_ctx.config.active_config.engine_vhv_aw_factor
+				}
+				1 {
+					from.x -= offset
+					from_yey.x -= app_ctx.config.active_config.engine_vhv_aw_factor
+				}
+				2 {
+					from.y += offset
+					from_yey.y += app_ctx.config.active_config.engine_vhv_aw_factor
+				}
+				3 {
+					from.y -= offset
+					from_yey.y -= app_ctx.config.active_config.engine_vhv_aw_factor
+				}
+				else {}
+			}
+		
+			if !app_ctx.interfaces.i_debug_overlay.screen_pos(from, t) {
+					return
+			}
+
+			tr := trace_from_to_pos(from_yey, from)
+
+			if tr.hit_entity == voidptr(v.current_ent) {
+				app_ctx.rnd_queue.push(new_line(bone_screen_pos, t, 1, utils.color_rbga<u8>(192, 57, 43, 255)))
+			} else {
+				app_ctx.rnd_queue.push(new_line(bone_screen_pos, t, 1, utils.color_rbga<u8>(255, 255, 255, 255))) 
+			}	
+		}
+		mut from_yey := app_ctx.ent_cacher.local_player.eye_pos()
+		tr := trace_from_to_pos(from_yey, bone_pos)
+
+		mut e := bone_screen_pos
+		e.y -= 20
+
+		if tr.hit_entity == voidptr(v.current_ent) {
+			app_ctx.rnd_queue.push(new_line(bone_screen_pos, e, 1, utils.color_rbga<u8>(192, 57, 43, 255)))
+		} else {
+			app_ctx.rnd_queue.push(new_line(bone_screen_pos, e, 1, utils.color_rbga<u8>(255, 255, 255, 255))) 
+		}
+	}
+	pub fn (mut v Visuals) test_hit_point() {
+
+		mut app_ctx := unsafe { app() }
+
+		mut off := app_ctx.config.active_config.engine_vhv_egs_factor
+
+		for b in [0, 8, 9, 6, 5] {
+			if b == 8 { off = app_ctx.config.active_config.engine_vhv_egs_factor * 0.60 } else { app_ctx.config.active_config.engine_vhv_egs_factor }
+
+			v.caca(b, off)
+		}
+
+	}
+}*/
 
 pub fn (mut v Visuals) glow() {
 

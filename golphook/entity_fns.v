@@ -38,7 +38,7 @@ pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 
 	return can_see, tr_
 }
-
+/*
 // this addittion changed everyting how the aimbot shoot, what it does is adding
 // an offset on all side of the player eye pos this result to mark the player visible faster
 // and add a 'legit awall' a value btw 0-2 juste make shoot faster but 3-7 add a little
@@ -50,7 +50,7 @@ pub fn i_can_see_with_offset(player &valve.Player, bone	usize, offset f32) bool 
 
 	mut app_ctx := unsafe { app() }
 
-	for o in 0..3 {
+	for o in 0..4 {
 		mut from := app_ctx.ent_cacher.local_player.eye_pos()
 		match o {
 			0 {
@@ -87,6 +87,24 @@ pub fn i_can_see_with_offset(player &valve.Player, bone	usize, offset f32) bool 
 	$if prod { C.VMProtectEnd() }
 
 	return false
+}*/
+
+pub fn trace_from_to_pos(from_pos utils.Vec3, to_pos utils.Vec3) valve.CGameTrace {
+
+	mut app_ctx := unsafe { app() }
+
+	mut tr := valve.CGameTrace{}
+	mut ray := valve.Ray{}
+	mut filter := valve.CTraceFilter{}
+
+	filter.p_skip = voidptr(app_ctx.ent_cacher.local_player)
+
+	ray.init(from_pos, to_pos)
+	app_ctx.interfaces.i_engine_trace.trace_ray(&ray, 0x46004009, &filter, &tr)
+
+	$if prod { C.VMProtectEnd() }
+
+	return tr
 }
 
 pub fn ent_weapon(for_ent &valve.Player) ?&valve.Weapon_t {

@@ -306,6 +306,7 @@ pub mut:
 
 	engine_vhv_mode      bool
 	engine_vhv_aw_factor f32
+	engine_vhv_egs_factor f32
 }
 
 struct ConfigManager {

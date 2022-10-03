@@ -27,7 +27,7 @@ pub mut:
 	ent_cacher &EntityCacher = unsafe { nil }
 	config &ConfigManager = unsafe { nil }
 
-	engine &Engine = unsafe { nil }
+	engine &EngineBeta = unsafe { nil }
 	visuals &Visuals = unsafe { nil }
 	menu &NMenu = unsafe { nil }
 	chams &Chams = unsafe { nil }
@@ -73,7 +73,7 @@ pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 	a.kill_sound = &KillSound{}
 	a.rnd_queue = &RenderQueue{}
 	a.ent_cacher = &EntityCacher{}
-	a.engine = &Engine{}
+	a.engine = &EngineBeta{}
 	a.visuals = &Visuals{}
 	a.chams = &Chams{}
 	a.skins = &Skins{}

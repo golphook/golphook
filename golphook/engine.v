@@ -2,7 +2,7 @@ module golphook
 
 // no big improvement since the last c++ since its the same except for the visible check
 // but ngl it does the job fr
-
+/*
 import utils
 import valve
 import math
@@ -273,4 +273,4 @@ fn (mut e Engine) collect_targeted_ents() {
 
 	$if prod { C.VMProtectEnd() }
 
-}
+}*/
