@@ -54,7 +54,6 @@ pub fn (mut b Bone_t) is_in_fov() bool {
 
 	b.distance_to_crosshair = r
 	if r < app_ctx.engine.fov {
-		//C.printf(c"%f %f %f %f \n", r,  app_ctx.engine.fov , b.pos_on_screen.x, b.pos_on_screen.y)
 		b.is_in_fov = true
 		return true
 	}
@@ -134,8 +133,6 @@ pub mut:
 
 pub fn (mut t Target) get_bones(with_bones_ids []int) {
 	$if prod { C.VMProtectBeginMutation(c"engine.target.get_bones") }
-
-	mut app_ctx := unsafe { app() }
 
 	mut bone := Bone_t{}
 
