@@ -81,6 +81,36 @@ pub fn (mut v Visuals) on_end_scene() {
 		v.watermark()
 	}
 
+	if app_ctx.interfaces.cdll_int.is_in_game() && app_ctx.interfaces.cdll_int.is_connected() {
+		if app_ctx.config.active_config.crosshair {
+			v.crosshair()
+		}
+	}
+
+	
+	$if prod { C.VMProtectEnd() }
+}
+
+fn (mut v Visuals) crosshair() {
+
+	$if prod { C.VMProtectBeginMutation(c"visuals.crosshaire") }
+
+	mut app_ctx := unsafe { app() }
+
+	off := f32(9)
+
+	wnd_h := f32(app_ctx.wnd_height) - 1
+	wnd_w := f32(app_ctx.wnd_width) - 1
+
+	h_from := utils.new_vec2((wnd_w / 2.0) - off, wnd_h / 2.0).vec_3()
+	h_to := utils.new_vec2((wnd_w / 2.0) + off, wnd_h / 2.0).vec_3()
+	v_from := utils.new_vec2((wnd_w / 2.0), (wnd_h / 2.0) - off).vec_3()
+	v_to := utils.new_vec2((wnd_w / 2.0), (wnd_h / 2.0) + off).vec_3()
+
+
+	app_ctx.rnd_queue.push(new_line(h_from, h_to, 2.3, app_ctx.config.active_config.crosshair_color)) 
+	app_ctx.rnd_queue.push(new_line(v_from, v_to, 2.3, app_ctx.config.active_config.crosshair_color)) 
+
 	$if prod { C.VMProtectEnd() }
 }
 

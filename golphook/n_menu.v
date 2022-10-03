@@ -382,6 +382,17 @@ fn (mut m NMenu) tab_visuals() {
 		m.nk_ctx.layout_row_push(1.0)
 		m.nk_ctx.checkbox_label("radar", mut &app_ctx.config.active_config.radar)
 		m.nk_ctx.layout_row_end()
+	
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+		m.nk_ctx.layout_row_push(0.6)
+		m.nk_ctx.checkbox_label("crosshair", mut &app_ctx.config.active_config.crosshair)
+
+		if app_ctx.config.active_config.crosshair {
+			m.nk_ctx.layout_row_push(0.4)
+			m.color_picker(mut &app_ctx.config.active_config.crosshair_color)
+		}
+
+		m.nk_ctx.layout_row_end()
 
 		m.nk_ctx.group_end()
 	}
