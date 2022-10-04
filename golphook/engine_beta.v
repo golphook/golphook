@@ -69,8 +69,15 @@ pub fn (mut b Bone_t) get_best_visible_pos() ?u8 {
 
 	mut app_ctx := unsafe { app() }
 
-	laf := app_ctx.config.active_config.engine_vhv_aw_factor
-	mut egs := app_ctx.config.active_config.engine_vhv_egs_factor
+	weap_cfg_id := app_ctx.engine.current_weapon
+
+	mut laf := f32(0)
+	mut egs := f32(0)
+
+	if app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_vhv_mode {
+		laf = app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_vhv_aw_factor
+		egs = app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_vhv_egs_factor
+	}
 
 	match b.id {
 		8 {
@@ -158,8 +165,9 @@ pub fn (mut t Target) get_best_bone() {
 
 	mut app_ctx := unsafe { app() }
 
-	pref_bone := app_ctx.config.active_config.engine_pref_bone_id
-	force_bone := app_ctx.config.active_config.engine_force_bone_id 
+	weap_cfg_id := app_ctx.engine.current_weapon
+	pref_bone := app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_pref_bone_id
+	force_bone := app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_force_bone_id 
 
 	t.best_bone = Bone_t{id:123, distance_to_crosshair: 6670}
 
@@ -199,6 +207,9 @@ pub mut:
 	fov f32
 
 	is_spraying bool
+
+	selected_weap_in_menu int
+	current_weapon int
 }
 
 pub fn (mut e EngineBeta) on_frame() {
@@ -208,6 +219,15 @@ pub fn (mut e EngineBeta) on_frame() {
 
 	if !app_ctx.config.active_config.engine  {
 		return
+	}
+
+	my_weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return }
+
+	e.current_weapon = match valve.ItemDefinitionIndex(my_weapon.definition_index().get()) {
+		.weapon_deagle { 1 }
+		.weapon_awp { 2 }
+		.weapon_ssg08 { 3 }
+		else { 0 }
 	}
 
 	mut force_attack := utils.Value<int>{ ptr: utils.get_val_offset<int>(app_ctx.h_client, offsets.db.signatures.force_attack) }
@@ -277,9 +297,9 @@ pub fn (mut e EngineBeta) collect_targets() {
 		return e.is_alive() && e.team() != ctx.local_player.team() && e.dormant() == false
 	})
 
-	mut bones_list := app_ctx.config.active_config.engine_bones_list.clone()
+	mut bones_list := app_ctx.config.active_config.engine_cfgs_by_weap[e.current_weapon].engine_bones_list.clone()
 	if e.do_force_bone {
-		bones_list = bones_list.filter(it == app_ctx.config.active_config.engine_force_bone_id)
+		bones_list = bones_list.filter(it == app_ctx.config.active_config.engine_cfgs_by_weap[e.current_weapon].engine_force_bone_id)
 	}
 
 	for ent in ents {

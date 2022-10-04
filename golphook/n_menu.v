@@ -5,6 +5,7 @@ module golphook
 import nuklear
 import utils
 import clipboard
+import valve
 
 const menu_height = 212.0
 const menu_width = 512.0
@@ -32,6 +33,12 @@ pub mut:
 	configs []map[string]int = []
 	engine_keys []map[string]int = [{"mouse 1": 0x1}, {"mouse 4": 0x5}, {"mouse 5": 0x06}, {"alt": 0x12}, {"b": 0x42}, {"c": 0x43}, {"x": 0x58}]
 	engine_bones []map[string]int = [{"head": 8}, {"body": 5}, {"pelvis": 0}]
+	engine_weap []map[string]int = [
+		{"all": 0}, // setting the first entry with the full enum pth fix the bug ?? 
+		{"dig": 1}, 
+		{"avp": 2},
+		{"booster": 3}
+	]
 
 	chams_materials []map[string]int = [{"ambientcube": 0}, {"gold": 1}, {"ct_fbi_glass": 2}, {"glass": 3}, {"crystal_clear": 4}, {"crystal_blue": 5}, {"velvet": 6}]
 
@@ -194,7 +201,7 @@ fn (mut m NMenu) menu_bar() {
 	$if prod { C.VMProtectEnd() }
 }
 
-fn (mut m NMenu) table_combo(mut val &int, mut table []map[string]int, callback fn (&App)) {
+fn (mut m NMenu) table_combo<T>(mut val &T, mut table []map[string]T, callback fn (&App)) {
 
 	$if prod { C.VMProtectBeginMutation(c"menu.table_combo") }
 
@@ -511,13 +518,19 @@ fn (mut m NMenu) tab_engine() {
 	$if prod { C.VMProtectBeginMutation(c"menu.tab_engine") }
 
 	mut app_ctx := unsafe { app() }
+	weap_cfg_id := app_ctx.engine.selected_weap_in_menu
 
 	m.nk_ctx.layout_row_dynamic(menu_height-41, 2)
 
 	if m.nk_ctx.group_begin("engine_1", C.NK_WINDOW_NO_SCROLLBAR) {
-		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
-		m.nk_ctx.layout_row_push(1.0)
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+		m.nk_ctx.layout_row_push(0.6)
 		m.nk_ctx.checkbox_label("engine", mut &app_ctx.config.active_config.engine)
+		m.nk_ctx.layout_row_push(0.4)
+		m.table_combo(mut &app_ctx.engine.selected_weap_in_menu, mut m.engine_weap, fn (mut app_ctx &App) {})
+
+		//app_ctx.config.active_config.engine_cfgs_by_weap[app_ctx.engine.selected_weap_in_menu]
+		
 		m.nk_ctx.layout_row_end()
 
 		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
@@ -565,14 +578,14 @@ fn (mut m NMenu) tab_engine() {
 		m.nk_ctx.layout_row_push(0.6)
 		m.nk_ctx.label("prefered bone", C.NK_TEXT_LEFT)
 		m.nk_ctx.layout_row_push(0.4)
-		m.table_combo(mut &app_ctx.config.active_config.engine_pref_bone_id, mut m.engine_bones, fn (mut app_ctx &App) {})
+		m.table_combo(mut &app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_pref_bone_id, mut m.engine_bones, fn (mut app_ctx &App) {})
 		m.nk_ctx.layout_row_end()
 
 		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
 		m.nk_ctx.layout_row_push(0.6)
 		m.nk_ctx.label("force bone", C.NK_TEXT_LEFT)
 		m.nk_ctx.layout_row_push(0.4)
-		m.table_combo(mut &app_ctx.config.active_config.engine_force_bone_id, mut m.engine_bones, fn (mut app_ctx &App) {})
+		m.table_combo(mut &app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_force_bone_id, mut m.engine_bones, fn (mut app_ctx &App) {})
 		m.nk_ctx.layout_row_end()
 
 		m.nk_ctx.group_end()
@@ -582,18 +595,18 @@ fn (mut m NMenu) tab_engine() {
 
 		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
 		m.nk_ctx.layout_row_push(1.0)
-		m.nk_ctx.checkbox_label("vhv mode", mut &app_ctx.config.active_config.engine_vhv_mode)
+		m.nk_ctx.checkbox_label("vhv mode", mut &app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_vhv_mode)
 		m.nk_ctx.layout_row_end()
 
-		if app_ctx.config.active_config.engine_vhv_mode {
+		if app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_vhv_mode {
 			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
 			m.nk_ctx.layout_row_push(1.0)
-			m.nk_ctx.property_float("legit aw factor", 0, &app_ctx.config.active_config.engine_vhv_aw_factor, 17, 0.1, 0.1)
+			m.nk_ctx.property_float("legit aw factor", 0, &app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_vhv_aw_factor, 17, 0.1, 0.1)
 			m.nk_ctx.layout_row_end()
 
 			m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 1)
 			m.nk_ctx.layout_row_push(1.0)
-			m.nk_ctx.property_float("edge scale factor", 0, &app_ctx.config.active_config.engine_vhv_egs_factor, 17, 0.1, 0.1)
+			m.nk_ctx.property_float("edge scale factor", 0, &app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_vhv_egs_factor, 17, 0.1, 0.1)
 			m.nk_ctx.layout_row_end()
 
 		}

@@ -322,6 +322,8 @@ pub fn (mut v Visuals) indicators() {
 		return
 	}
 
+	weap_cfg_id := app_ctx.engine.current_weapon
+
 	mut indicators_cnt := 0
 	app_ctx.rnd_queue.push(new_text(utils.new_vec2(((app_ctx.wnd_height / 2) + 20), (app_ctx.wnd_width / 2)).vec_3(), "Fov: ${app_ctx.engine.fov}", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.indicator_color_if_off))
 
@@ -338,7 +340,7 @@ pub fn (mut v Visuals) indicators() {
 	if app_ctx.engine.do_force_bone {
 		indicators_cnt++
 
-		bone_str := match app_ctx.config.active_config.engine_force_bone_id {
+		bone_str := match app_ctx.config.active_config.engine_cfgs_by_weap[weap_cfg_id].engine_force_bone_id {
 			8 { "head" }
 			5 { "body" }
 			0 { "pelvis" }

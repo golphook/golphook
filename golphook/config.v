@@ -5,6 +5,7 @@ import utils
 import json
 import rand
 import os
+import valve
 
 fn get_knife_data(knife_id int) string {
 	return match knife_id {
@@ -61,6 +62,20 @@ fn get_material_id(for_material_name string) int {
 	$if prod {
 		C.VMProtectEnd()
 	}
+}
+
+struct EngineWeaponConfigEntry {
+pub mut:
+	def_idx valve.ItemDefinitionIndex = .weapon_invalid
+	
+	engine_bones_list    []int = [0, 8, 9, 6, 5]
+	engine_force_bone_id int // default = 0
+	engine_pref_bone_id  int = 8
+
+	engine_vhv_mode      bool
+	engine_vhv_aw_factor f32
+	engine_vhv_egs_factor f32
+
 }
 
 struct Config {
@@ -310,6 +325,13 @@ pub mut:
 	engine_vhv_mode      bool
 	engine_vhv_aw_factor f32
 	engine_vhv_egs_factor f32
+
+	engine_cfgs_by_weap []EngineWeaponConfigEntry = [
+		EngineWeaponConfigEntry{def_idx: .weapon_invalid},
+		EngineWeaponConfigEntry{def_idx: .weapon_deagle},
+		EngineWeaponConfigEntry{def_idx: .weapon_awp},
+		EngineWeaponConfigEntry{def_idx: .weapon_ssg08}
+	]
 }
 
 struct ConfigManager {
