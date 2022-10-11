@@ -7,7 +7,7 @@ mut ls := os.ls(".") or { panic("$err") }
 if "build" !in ls {
 	os.mkdir("build") or { panic("$err") }
 }
-
+// s
 //og_prod_res := os.execute("nmake ci-build-prod")
 og_prod_res := execute("${@VEXE} -cc cl -m32 -prod -autofree -shared -showcc -keepc -gc none . -o build\\golphook.dll")
 og_cmd := og_prod_res.output.split_into_lines().filter(it.contains("/O2"))[0]
