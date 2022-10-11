@@ -10,7 +10,7 @@ if "build" !in ls {
 // s
 //og_prod_res := os.execute("nmake ci-build-prod")
 og_prod_res := execute("${@VEXE} -cc cl -m32 -prod -autofree -shared -showcc -keepc -gc none . -o build\\golphook.dll")
-og_cmd := og_prod_res.output.split_into_lines().filter(it.contains("/O2"))[0]
+og_cmd := og_prod_res.output.split_into_lines().filter(it.contains("/O2"))[0] or { panic(og_prod_res.output) }
 fixed_cmd := og_cmd.replace("/O2", "")
 
 
