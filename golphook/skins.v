@@ -58,7 +58,7 @@ pub fn (mut s Skins) skin_changer() {
 		current_item:= current_weapon.to_item()
 
 		mut current_weapon_id := current_weapon.definition_index().get()
-		mut cs_current_weapon_id := valve.ItemDefinitionIndex(current_weapon_id)
+		mut cs_current_weapon_id := unsafe { valve.ItemDefinitionIndex(current_weapon_id) }
 
 		if int(cs_current_weapon_id) == 0 || cs_current_weapon_id == .weapon_invalid { continue }
 

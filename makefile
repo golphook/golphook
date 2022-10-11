@@ -11,7 +11,7 @@ move_to_temp=xcopy /e /y * $(temp_project_path) &&
 move_back=&& del $(temp_project_path)\*.c.exp && del $(temp_project_path)\*.c.lib && xcopy /e /y $(temp_project_path)\* .
 
 build-prod:
-	$(move_to_temp) v $(cc) -prod -shared -showcc -autofree -skip-unused -o $(bin_folder)\$(project_name).dll $(temp_project_path) $(move_back)
+	$(move_to_temp) v $(cc) -prod -shared -showcc -autofree -gc none -o $(bin_folder)\$(project_name).dll $(temp_project_path) $(move_back)
 build-debug:
 	$(move_to_temp) v $(cc) -cflags /NODEFAULTLIB:library -g -showcc -keepc -shared -autofree -gc none -o $(bin_folder)\$(project_name)-debug.dll $(temp_project_path) $(move_back)
 debug-c:

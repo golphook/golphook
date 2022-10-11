@@ -223,7 +223,7 @@ pub fn (mut e EngineBeta) on_frame() {
 
 	my_weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return }
 
-	e.current_weapon = match valve.ItemDefinitionIndex(my_weapon.definition_index().get()) {
+	e.current_weapon = match unsafe { valve.ItemDefinitionIndex(my_weapon.definition_index().get()) } {
 		.weapon_deagle { 1 }
 		.weapon_awp { 2 }
 		.weapon_ssg08 { 3 }
