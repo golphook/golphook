@@ -1,0 +1,33 @@
+name: build
+
+on: [push]
+
+jobs: 
+  build_check:
+    name: build_release
+    runs-on: windows-latest
+    steps:
+      - name: setup msvc
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+      - name: setup v
+        run: |
+          cd ..
+          git clone https://github.com/vlang/v.git --depth 1 v
+          cd v
+          ./make.bat
+          ./v.exe symlink -githubci
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: setup build
+        run: |
+          mkdir build
+          v run scripts\mod.vsh ${{ github.ref_name }}
+          v run scripts\version.vsh
+          echo "::set-output name=version::$(type version)-$(echo '${{ github.sha }}'.substring(0, 7))"
+        id: version
+      - name: build prod
+        run: v run scripts\build_prod.vsh
+      - name: build debug
+        run: nmake ci-build-debug

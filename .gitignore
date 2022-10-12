@@ -54,3 +54,5 @@ tests/
 scripts/hazedumper/csgo*
 scripts/hazedumper/*.log
 .DS_Store
+
+vls.log

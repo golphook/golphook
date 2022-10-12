@@ -26,4 +26,4 @@ ci-build-prod:
 ci-build-cp:
 	v $(cc) -prod -autofree -shared -keep-c -o build\$(project_name)-debug_p.c .
 ci-build-debug:
-	v $(cc) -g -shared -o build\$(project_name)-debug.dll .
+	v $(cc) -g -autofree -shared -gc none -o build\$(project_name)-debug.dll .

@@ -1,17 +1,17 @@
-name: Build Release
+name: pub
 
-on: [push]
+on: [workflow_dispatch]
 
-jobs:
+jobs: 
   build_release:
     name: build_release
     runs-on: windows-latest
     steps:
-      - name: Setup Developer Command Prompt
+      - name: setup msvc
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x86
-      - name: Build V and symlink
+      - name: setup v
         run: |
           cd ..
           git clone https://github.com/vlang/v.git --depth 1 v
@@ -20,23 +20,23 @@ jobs:
           ./v.exe symlink -githubci
       - name: checkout
         uses: actions/checkout@v2
-      - name: build prod
+      - name: setup build
         run: |
-          v run scripts\build_prod.vsh
-      - name: build debug
-        run: nmake ci-build-debug
-      - name: Install powershell Zip
-        shell: powershell
-        run: Install-Module 7Zip4PowerShell -Force
-      - name: version
-        run: |
+          mkdir build
+          v run scripts\mod.vsh ${{ github.ref_name }}
           v run scripts\version.vsh
           echo "::set-output name=version::$(type version)-$(echo '${{ github.sha }}'.substring(0, 7))"
         id: version
-      - name: Build Zip artifact
+      - name: build prod
+        run: v run scripts\build_prod.vsh
+      - name: build debug
+        run: nmake ci-build-debug    
+      - name: create artifact
         shell: powershell
-        run: powershell Compress-7Zip "build" -Filter *.dll -ArchiveFileName "release.zip" -Format Zip
-      - name: Create release
+        run: |
+          Install-Module 7Zip4PowerShell -Force
+          powershell Compress-7Zip "build" -Filter *.dll -ArchiveFileName "release.zip" -Format Zip
+      - name: create release
         uses: actions/create-release@v1
         id: create_release
         with:
@@ -46,7 +46,7 @@ jobs:
           tag_name: ${{ steps.version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Upload release bin
+      - name: push release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
