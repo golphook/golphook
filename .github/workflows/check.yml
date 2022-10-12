@@ -4,7 +4,7 @@ on: [push]
 
 jobs: 
   build_check:
-    name: build_release
+    name: build check
     runs-on: windows-latest
     steps:
       - name: setup msvc

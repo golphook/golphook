@@ -4,7 +4,7 @@ on: [workflow_dispatch]
 
 jobs: 
   build_release:
-    name: build_release
+    name: publish release
     runs-on: windows-latest
     steps:
       - name: setup msvc
