@@ -1,6 +1,7 @@
 module valve
 
 import golphook.utils
+import offsets
 
 pub struct PlayerInfo {
 	pad i64
@@ -121,3 +122,13 @@ pub fn (i &IVEngineClient) execute_client_cmd_unrectricted(with_text string) {
 }
 
 pub  struct IBaseClientDLL {}
+
+pub struct IClientState {}
+
+pub fn (i &IClientState) chocked_commands() int {
+
+	return *(utils.get_val_offset<int>(i, offsets.db.signatures.client_state_choked_cmds))
+}
+
+
+

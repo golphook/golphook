@@ -210,6 +210,8 @@ pub mut:
 
 	selected_weap_in_menu int
 	current_weapon int
+
+	target_locked bool
 }
 
 pub fn (mut e EngineBeta) on_frame() {
@@ -220,6 +222,9 @@ pub fn (mut e EngineBeta) on_frame() {
 	if !app_ctx.config.active_config.engine  {
 		return
 	}
+	
+	e.target_locked = false
+
 
 	my_weapon := ent_weapon(app_ctx.ent_cacher.local_player) or { return }
 
@@ -251,7 +256,7 @@ pub fn (mut e EngineBeta) on_frame() {
 	}	
 
 	if e.do_a_shoot {
-	
+		e.target_locked = true
 		if e.is_spraying {
 			return
 		}

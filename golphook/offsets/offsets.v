@@ -23,6 +23,8 @@ pub:
 	force_right u32 [json: dwForceRight]
 	player_resource u32 [json: dwPlayerResource]
 	game_rules_proxy u32 [json: dwGameRulesProxy]
+	send_packet u32 [json: dwbSendPackets]
+	client_state_choked_cmds u32 [json: clientstate_choked_commands]
 }
 
 struct Offset_nets {
@@ -74,7 +76,6 @@ pub:
 	m_armor_value u32 [json: m_ArmorValue]
 	m_fallback_seed u32 [json: m_nFallbackSeed]
 	m_observer_mode u32 [json: m_iObserverMode]
-
 }
 
 struct Offsets {

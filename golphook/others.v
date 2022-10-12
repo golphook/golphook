@@ -22,6 +22,8 @@ pub fn others_on_frame() {
 		no_flash()
 	}
 
+	unsafe { chockers() }
+
 	$if prod { C.VMProtectEnd() }
 }
 
@@ -102,6 +104,51 @@ pub fn no_flash() {
 	if flash_dur.get() > 0.0 {
 		flash_dur.set(0.0)
 	}
+
+	$if prod { C.VMProtectEnd() }
+}
+
+[unsafe]
+pub fn chockers() {
+
+	$if prod { C.VMProtectBeginMutation(c"others.chockers") }
+
+	mut app_ctx := unsafe { app() }
+
+	mut should_fake := true
+
+	if !app_ctx.config.active_config.chockers {
+		should_fake = false
+	}
+
+	if app_ctx.engine.target_locked {
+		should_fake = false
+	}
+
+	if !app_ctx.ent_cacher.local_player.is_alive() {
+		should_fake = false
+	}
+
+	if app_ctx.interfaces.i_client_state.chocked_commands() >= app_ctx.config.active_config.chockers_limit {
+		should_fake = false
+	}
+
+
+	send_packet_add := utils.get_val_offset<bool>(voidptr(C.GetModuleHandleA(c"engine.dll")), offsets.db.signatures.send_packet)
+	mut send_packet_val := utils.Value<bool>{ptr: send_packet_add}
+
+	mut static old_protect := u32(0)
+
+	C.VirtualProtect(send_packet_add, 0x16, 0x40, &old_protect)
+
+	if should_fake {
+		send_packet_val.set(false)
+	} else {
+		send_packet_val.set(true)
+	} 
+
+	C.VirtualProtect(send_packet_add, 0x16, old_protect, &old_protect)
+	
 
 	$if prod { C.VMProtectEnd() }
 }
