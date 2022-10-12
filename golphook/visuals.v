@@ -97,7 +97,7 @@ fn (mut v Visuals) crosshair() {
 
 	mut app_ctx := unsafe { app() }
 
-	off := f32(9)
+	off := f32(7)
 
 	wnd_h := f32(app_ctx.wnd_height) - 1
 	wnd_w := f32(app_ctx.wnd_width) - 1
@@ -108,8 +108,8 @@ fn (mut v Visuals) crosshair() {
 	v_to := utils.new_vec2((wnd_w / 2.0), (wnd_h / 2.0) + off).vec_3()
 
 
-	app_ctx.rnd_queue.push(new_line(h_from, h_to, 2.3, app_ctx.config.active_config.crosshair_color)) 
-	app_ctx.rnd_queue.push(new_line(v_from, v_to, 2.3, app_ctx.config.active_config.crosshair_color)) 
+	app_ctx.rnd_queue.push(new_line(h_from, h_to, 2.0, app_ctx.config.active_config.crosshair_color)) 
+	app_ctx.rnd_queue.push(new_line(v_from, v_to, 2.0, app_ctx.config.active_config.crosshair_color)) 
 
 	$if prod { C.VMProtectEnd() }
 }
