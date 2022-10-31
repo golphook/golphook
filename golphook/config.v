@@ -7,75 +7,17 @@ import rand
 import os
 import valve
 
-fn get_knife_data(knife_id int) string {
-	return match knife_id {
-		503 { 'v_knife_css.mdl' }
-		507 { 'v_knife_karam.mdl' }
-		508 { 'v_knife_m9_bay.mdl' }
-		515 { 'v_knife_butterfly.mdl' }
-		505 { 'v_knife_flip.mdl' }
-		506 { 'v_knife_gut.mdl' }
-		500 { 'v_knife_bayonet.mdl' }
-		509 { 'v_knife_tactical.mdl' }
-		520 { 'v_knife_gypsy_jackknife.mdl' }
-		else { 'v_knife_karam.mdl' }
-	}
-}
-
-fn get_material_str(for_material_id int) string {
-	$if prod {
-		C.VMProtectBeginMutation(c'cfg.get_material_str')
-	}
-
-	match int(for_material_id) {
-		0 { return 'debug/debugambientcube' }
-		1 { return 'models/inventory_items/trophy_majors/gold' }
-		2 { return 'models/player/ct_fbi/ct_fbi_glass' }
-		3 { return 'models/gibs/glass/glass' }
-		4 { return 'models/inventory_items/trophy_majors/crystal_clear' }
-		5 { return 'models/inventory_items/trophy_majors/crystal_blue' }
-		6 { return 'models/inventory_items/trophy_majors/velvet' }
-		else { return 'debug/debugambientcube' }
-	}
-
-	$if prod {
-		C.VMProtectEnd()
-	}
-}
-
-fn get_material_id(for_material_name string) int {
-	$if prod {
-		C.VMProtectBeginMutation(c'cfg.get_material_id')
-	}
-
-	match for_material_name {
-		'debug/debugambientcube' { return 0 }
-		'models/inventory_items/trophy_majors/gold' { return 1 }
-		'models/player/ct_fbi/ct_fbi_glass' { return 2 }
-		'models/gibs/glass/glass' { return 3 }
-		'models/inventory_items/trophy_majors/crystal_clear' { return 4 }
-		'models/inventory_items/trophy_majors/crystal_blue' { return 5 }
-		'models/inventory_items/trophy_majors/velvet' { return 6 }
-		else { return 0 }
-	}
-
-	$if prod {
-		C.VMProtectEnd()
-	}
-}
-
 struct EngineWeaponConfigEntry {
 pub mut:
 	def_idx valve.ItemDefinitionIndex = .weapon_invalid
-	
+
 	engine_bones_list    []int = [0, 8, 9, 6, 5]
 	engine_force_bone_id int // default = 0
 	engine_pref_bone_id  int = 8
 
-	engine_vhv_mode      bool
-	engine_vhv_aw_factor f32
+	engine_vhv_mode       bool
+	engine_vhv_aw_factor  f32
 	engine_vhv_egs_factor f32
-
 }
 
 struct Config {
@@ -103,164 +45,6 @@ pub mut:
 
 	killsay bool = true
 	// skins
-	skins_changer bool        = true
-	skins         []SkinEntry = [
-		SkinEntry{
-			definition_index: .weapon_knife_karambit
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-			is_knife: true
-		},
-		SkinEntry{
-			definition_index: .weapon_ak47
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_m4a1_silencer
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_m4a1
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_famas
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_sg556
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_awp
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_ssg08
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_cz75a
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_deagle
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_usp_silencer
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_glock
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_elite
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_revolver
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_p250
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_mac10
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_mp9
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_nova
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_mag7
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_sawedoff
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_xm1014
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		},
-		SkinEntry{
-			definition_index: .weapon_hkp2000
-			quality: 0
-			paint_kit: 0
-			wear: 0.0
-			seed: 0
-		}
-	]
 	// visuals
 	glow                      bool        = true
 	glow_color_if_visible     utils.Color = utils.color_rbga(236, 240, 241, 130)
@@ -284,7 +68,7 @@ pub mut:
 	snapline_color_if_visible     utils.Color = utils.color_rbga(1, 1, 1, 255)
 	snapline_color_if_not_visible utils.Color = utils.color_rbga(236, 240, 241, 255)
 
-	crosshair bool
+	crosshair       bool
 	crosshair_color utils.Color = utils.color_rbga(236, 240, 241, 255)
 
 	radar bool = true
@@ -322,18 +106,11 @@ pub mut:
 	engine_force_awall_key_toggle    bool = true
 	engine_force_bone_key_toggle     bool = true
 
-	engine_vhv_mode      bool
-	engine_vhv_aw_factor f32
+	engine_vhv_mode       bool
+	engine_vhv_aw_factor  f32
 	engine_vhv_egs_factor f32
 
-	engine_cfgs_by_weap []EngineWeaponConfigEntry = [
-		EngineWeaponConfigEntry{def_idx: .weapon_invalid},
-		EngineWeaponConfigEntry{def_idx: .weapon_deagle},
-		EngineWeaponConfigEntry{def_idx: .weapon_awp},
-		EngineWeaponConfigEntry{def_idx: .weapon_ssg08}
-	]
-
-	chockers bool
+	chockers       bool
 	chockers_limit int
 }
 
@@ -410,8 +187,9 @@ pub fn (mut c ConfigManager) import_fc(from_text string) {
 	}
 
 	mut cfg := json.decode(Config, from_text) or {
-		unsafe { utils.msg_c('failed to decode config', utils.color_rbga(255, 255, 255,
-			255)) }
+		unsafe {
+			utils.msg_c('failed to decode config', utils.color_rbga(255, 255, 255, 255))
+		}
 		return
 	}
 
@@ -471,8 +249,10 @@ pub fn (mut c ConfigManager) rename(for_config_with_index int, with_new_name str
 	}
 
 	if for_config_with_index == 0 {
-		unsafe { utils.msg_c('cannot rename default config', utils.color_rbga(255, 255,
-			255, 255)) }
+		unsafe {
+			utils.msg_c('cannot rename default config', utils.color_rbga(255, 255, 255,
+				255))
+		}
 		return
 	}
 
@@ -513,11 +293,6 @@ pub fn (mut c ConfigManager) change_to(for_config_with_index int) {
 	}
 
 	// tmp fix to keep backward compatibility with old configs
-
-	if c.configs[for_config_with_index].skins.len == 0 {
-		c.configs[for_config_with_index].skins = c.configs[0].skins
-		c.save()
-	}
 
 	app_ctx.is_ok = false
 	c.active_config = &c.configs[for_config_with_index]

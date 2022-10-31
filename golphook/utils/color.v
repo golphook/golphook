@@ -1,7 +1,5 @@
 module utils
 
-import nuklear
-
 #flag -I @VMODROOT/golphook/c
 
 #include "d3dh.h"
@@ -103,21 +101,6 @@ pub fn (c &Color) rgbf() ColorRgbF {
 	$if prod { C.VMProtectEnd() }
 
 	return ColorRgbF{r: r_, g: g_, b: b_}
-}
-
-[inline]
-pub fn (c &Color) nk_colorf() C.nk_colorf {
-
-	$if prod { C.VMProtectBeginMutation(c"color.nkcolf") }
-	
-	mut r_ := f32(c.r()) / 255.0
-	mut g_ := f32(c.g()) / 255.0
-	mut b_ := f32(c.b()) / 255.0
-	mut a_ := f32(c.a()) / 255.0
-
-	$if prod { C.VMProtectEnd() }
-
-	return C.nk_colorf{r: r_, g: g_, b: b_, a: a_}
 }
 
 pub fn color_rbga<T>(r_ T, g_ T, b_ T, a_ T) Color {
