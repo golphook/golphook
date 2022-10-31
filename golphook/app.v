@@ -106,6 +106,11 @@ pub fn (mut a App) on_frame() {
 
 	$if prod { C.VMProtectBeginMutation(c"app.on_frame") }
 
+	/*
+	if utils.get_key(0x59, false) {
+		ad := a.interfaces.i_cvar.get_convar("cl_crosshairsize")
+		C.printf(c"%p\n", ad)
+	}*/
 
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
 	$if prod { C.VMProtectEnd() }

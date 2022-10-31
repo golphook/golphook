@@ -33,6 +33,7 @@ fn C.GetProcAddress(C.HMODULE, &char) voidptr
 fn C.GetAsyncKeyState(int) u16
 fn C.Sleep(u32)
 fn C.FindWindowA(&char, &char) C.HWND
+fn C.VirtualProtect(voidptr, u16, u32, &u32)
 
 fn C.AllocConsole() bool
 fn C.FreeConsole() bool

@@ -461,6 +461,15 @@ fn (mut m NMenu) tab_misc() {
 		m.nk_ctx.checkbox_label("no flash", mut &app_ctx.config.active_config.no_flash)
 		m.nk_ctx.layout_row_end()
 
+		m.nk_ctx.layout_row_begin(C.NK_DYNAMIC, item_height, 2)
+		m.nk_ctx.layout_row_push(0.6)
+		m.nk_ctx.checkbox_label("chockers", mut &app_ctx.config.active_config.chockers)
+		if app_ctx.config.active_config.chockers {
+			m.nk_ctx.layout_row_push(0.4)
+			m.nk_ctx.property_int("ticks", 0, &app_ctx.config.active_config.chockers_limit, 8, 1, 1)
+		}
+		m.nk_ctx.layout_row_end()
+
 
 
 		m.nk_ctx.group_end()

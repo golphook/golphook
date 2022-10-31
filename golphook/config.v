@@ -332,6 +332,9 @@ pub mut:
 		EngineWeaponConfigEntry{def_idx: .weapon_awp},
 		EngineWeaponConfigEntry{def_idx: .weapon_ssg08}
 	]
+
+	chockers bool
+	chockers_limit int
 }
 
 struct ConfigManager {
