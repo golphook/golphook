@@ -102,7 +102,7 @@ pub mut:
 
 	killsay bool = true
 	// skins
-	skins         []SkinEntry = [
+	skins []SkinEntry = [
 		SkinEntry{
 			definition_index: .weapon_knife_m9_bayonet
 			quality: 0
@@ -110,7 +110,7 @@ pub mut:
 			wear: 0.0
 			seed: 0
 			is_knife: true
-		}
+		},
 	]
 	// visuals
 	glow                      bool        = true
