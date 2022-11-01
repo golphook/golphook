@@ -24,8 +24,6 @@ pub fn (mut s Skins) on_frame() {
 
 	$if prod { C.VMProtectBeginMutation(c"skins.on_frame") }
 
-	mut app_ctx := unsafe { app() }
-
 
 	s.skin_changer()
 
