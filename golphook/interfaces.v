@@ -22,7 +22,6 @@ pub mut:
 	i_weapon_system &valve.IWeaponSystem = unsafe { nil }
 	i_studio_renderer &valve.IStudioRender = unsafe { nil }
 	i_material_system &valve.IMaterialSystem = unsafe { nil }
-	i_client_state &valve.IClientState = unsafe { nil }
 }
 
 fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
@@ -105,8 +104,6 @@ fn (mut i Interfaces) bootstrap() {
 	i.i_weapon_system = i.get_interface_pattern<valve.IWeaponSystem>("IWeaponSystem", "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0", fn(ptn_res voidptr) voidptr {
 		return *(&&usize(voidptr(usize(ptn_res) + 2)))
 	})
-
-	i.i_client_state = i.get_interface_offset<valve.IClientState>("CCLientState", i.cdll_int, 12, 0x10)
 
 	$if prod { C.VMProtectEnd() }
 }

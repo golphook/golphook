@@ -26,9 +26,9 @@ pub fn (mut s Skins) on_frame() {
 
 	mut app_ctx := unsafe { app() }
 
-	if app_ctx.config.active_config.skins_changer {
-		s.skin_changer()
-	}
+
+	s.skin_changer()
+
 
 	$if prod { C.VMProtectEnd() }
 }

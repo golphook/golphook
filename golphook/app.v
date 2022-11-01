@@ -26,13 +26,9 @@ pub mut:
 	rnd_queue &RenderQueue = unsafe { nil }
 	ent_cacher &EntityCacher = unsafe { nil }
 	config &ConfigManager = unsafe { nil }
-
-	engine &EngineBeta = unsafe { nil }
-	visuals &Visuals = unsafe { nil }
-	menu &NMenu = unsafe { nil }
-	chams &Chams = unsafe { nil }
-	kill_sound &KillSound = unsafe { nil }
 	skins &Skins = unsafe { nil }
+
+	visuals &Visuals = unsafe { nil }
 
 	is_ok bool
 }
@@ -70,14 +66,10 @@ pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
 	a.d3d = &d3d.D3d9{}
 	a.d3d.bootstrap()
-	a.kill_sound = &KillSound{}
 	a.rnd_queue = &RenderQueue{}
 	a.ent_cacher = &EntityCacher{}
-	a.engine = &EngineBeta{}
 	a.visuals = &Visuals{}
-	a.chams = &Chams{}
 	a.skins = &Skins{}
-	a.menu = &NMenu{}
 	a.hooks = &Hooks{}
 	a.hooks.bootstrap()
 
@@ -92,7 +84,6 @@ pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 pub fn (mut a App) release() {
 
 	a.hooks.release()
-	a.menu.release(false)
 	a.d3d.release()
 
 	utils.pront('\n[*] bye golpy\n')
@@ -105,12 +96,6 @@ pub fn (mut a App) release() {
 pub fn (mut a App) on_frame() {
 
 	$if prod { C.VMProtectBeginMutation(c"app.on_frame") }
-
-	/*
-	if utils.get_key(0x59, false) {
-		ad := a.interfaces.i_cvar.get_convar("cl_crosshairsize")
-		C.printf(c"%p\n", ad)
-	}*/
 
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
 	$if prod { C.VMProtectEnd() }
