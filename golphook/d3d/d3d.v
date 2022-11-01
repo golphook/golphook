@@ -250,19 +250,6 @@ pub fn (mut d D3d9) create_line() {
 	$if prod { C.VMProtectEnd() }
 }
 
-pub fn (mut d D3d9) get_device() {
-
-	$if prod { C.VMProtectBeginMutation(c"d3d.get_device") }
-
-	mut device_scan := utils.pattern_scan("shaderapidx9.dll", "A3 ? ? ? ? 8D 47 30") or {
-		utils.error_critical("Failed to scan for patern:", "d3d device")
-	}
-
-	d.device = voidptr(**(&&&u32(voidptr(usize(device_scan) + 1))))
-
-	$if prod { C.VMProtectEnd() }
-}
-
 pub fn (d &D3d9) get_font(with_name string, has_size u16) &D3d9Font {
 
 	$if prod { C.VMProtectBeginMutation(c"d3d.get_font") }
@@ -284,8 +271,6 @@ pub fn (d &D3d9) get_font(with_name string, has_size u16) &D3d9Font {
 pub fn (mut d D3d9) bootstrap() {
 
 	$if prod { C.VMProtectBeginMutation(c"d3d.bootstrap") }
-
-	d.get_device()
 
 	for font_size in 1..20 {
 		d.create_font("Lucida Console", "", font_size, 100)

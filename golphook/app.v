@@ -65,7 +65,6 @@ pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 	a.interfaces.bootstrap()
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
 	a.d3d = &d3d.D3d9{}
-	a.d3d.bootstrap()
 	a.rnd_queue = &RenderQueue{}
 	a.ent_cacher = &EntityCacher{}
 	a.visuals = &Visuals{}

@@ -20,6 +20,9 @@ type O_draw_model = fn (voidptr, voidptr, voidptr, &valve.CDrawModelInfo, voidpt
 [callconv: "fastcall"]
 type O_ret_add_check = fn (voidptr, voidptr, &u8) bool
 
+[callconv: "stdcall"]
+type O_present = fn (voidptr, voidptr, voidptr, voidptr, voidptr) int
+
 struct HookEntry<T> {
 pub mut:
 	name          string   [required]
@@ -61,7 +64,7 @@ fn add_hook<T>(with_name string, with_og_add voidptr, and_hkd_fn voidptr) HookEn
 struct Hooks {
 pub mut:
 	frame_stage_notify HookEntry<O_frame_stage_notify>
-	end_scene HookEntry<O_end_scene>
+	present HookEntry<O_present>
 	reset HookEntry<O_reset>
 	wnd_proc HookEntry<voidptr>
 	set_viewmodel_offets HookEntry<O_set_viewmodel_offets>
@@ -95,8 +98,10 @@ fn (mut h Hooks) bootstrap() {
 	h.ret_add_check = add_hook<O_ret_add_check>("ret_add_check_mat()", retadd_check_add_mat, &hk_ret_add_check)
 
 	h.frame_stage_notify = add_hook<O_frame_stage_notify>("FrameStageNotify()", utils.get_virtual(app_ctx.interfaces.i_base_client, 37), &hk_frame_stage_notify)
-	h.reset = add_hook<O_reset>("Reset()", utils.get_virtual(app_ctx.d3d.device, 16), &hk_reset)
-	h.end_scene = add_hook<O_end_scene>("EndScene()", utils.get_virtual(app_ctx.d3d.device, 42), &hk_end_scene)
+	a := utils.pattern_scan("discordhook.dll", "53 57 FF 15 ? ? ? ? 89 C6 85 C0 78 2E") or { voidptr(0) }
+	mut b := usize(a) + 0x2
+	c := b + 0x2
+	h.present = add_hook<O_present>("Present()", voidptr(**&&usize(c)), &hk_present)	
 
 	set_viewmodel_offets_add := utils.pattern_scan("client.dll", "55 8B EC 8B 45 08 F3 0F 7E 45") or { panic("$err") }
 	h.set_viewmodel_offets = add_hook<O_set_viewmodel_offets>("SetViewmodelOffsets()", set_viewmodel_offets_add, &hk_set_viewmodel_offets)
@@ -158,7 +163,32 @@ fn hk_frame_stage_notify(stage u32) {
 	$if prod { C.VMProtectEnd() }
 }
 
+[callconv: "stdcall"; unsafe]
+fn hk_present(this voidptr, a voidptr, b voidptr, c voidptr, d voidptr) int {
 
+	mut app_ctx := unsafe { app() }
+
+	mut static called_once := false
+
+	if !called_once {
+		utils.pront(utils.str_align("[*] present()", 40, "| Called"))
+		app_ctx.d3d.device = this
+		app_ctx.d3d.bootstrap()
+		app_ctx.hooks.reset = add_hook<O_reset>("Reset()", utils.get_virtual(this, 16), &hk_reset)
+	if C.MH_EnableHook(C.MH_ALL_HOOKS) != C.MH_OK {
+		utils.error_critical('Error with a minhook fn', 'MH_EnableHook()')
+	}
+		called_once = true
+	}
+
+	if app_ctx.is_ok {
+		app_ctx.visuals.on_end_scene()
+		app_ctx.rnd_queue.draw_queue()
+	}
+
+	return app_ctx.hooks.present.original_save(this, a, b, c, d)
+}
+/*
 [unsafe; callconv: "stdcall"]
 fn hk_end_scene(dev voidptr) bool {
 
@@ -181,7 +211,7 @@ fn hk_end_scene(dev voidptr) bool {
 	$if prod { C.VMProtectEnd() }
 
 	return app_ctx.hooks.end_scene.original_save(dev)
-}
+}*/
 
 [unsafe; callconv: "stdcall"]
 fn hk_reset(dev voidptr, params voidptr) int {
