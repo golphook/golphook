@@ -82,7 +82,7 @@ pub fn (mut v Visuals) watermark() {
 	$if prod { C.VMProtectBeginMutation(c"visuals.watermark") }
 
 	mut app_ctx := unsafe { app() }
-	app_ctx.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook lite v$app_ctx.v_mod.version", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.watermark_color))
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook amber v$app_ctx.v_mod.version", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.watermark_color))
 
 	$if prod { C.VMProtectEnd() }
 }
