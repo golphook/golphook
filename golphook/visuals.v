@@ -2,7 +2,6 @@ module golphook
 
 import valve
 import utils
-import offsets
 
 struct BoxData {
 	screen_pos utils.Vec3

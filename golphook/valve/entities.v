@@ -132,108 +132,12 @@ pub fn (w &Entity_t) owner_entity() u32 {
 	return *(utils.get_val_offset<u32>(w, offsets.db.netvars.owner_entity))
 }
 
-pub fn (e &Entity_t) glow_index() int {
-
-	return *(utils.get_val_offset<int>(e, offsets.db.netvars.glow_index))
-}
-
-[unsafe]
-pub fn (e &Entity_t) set_abs_origin(with_origin utils.Vec3) {
-
-	$if prod { C.VMProtectBeginMutation(c"ent.set_abs_orig") }
-
-	mut static o_fn := &P_set_abs_origin(0)
-	if isnil(o_fn) {
-		raw_addr := utils.pattern_scan("client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8") or {
-			utils.error_critical("Failed to scan for patern:", "set_abs_origin()")
-		}
-		o_fn = &P_set_abs_origin(raw_addr)
-	}
-	o_fn(e, 0, with_origin)
-
-	$if prod { C.VMProtectEnd() }
-}
-
-[unsafe]
-pub fn (e &Entity_t) set_abs_angle(with_angle utils.Angle) {
-
-	$if prod { C.VMProtectBeginMutation(c"ent.set_abs_angle") }
-
-	mut static o_fn := &P_set_abs_angle(0)
-	if isnil(o_fn) {
-		raw_addr := utils.pattern_scan("client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1 E8") or {
-			utils.error_critical("Failed to scan for patern:", "set_abs_origin()")
-		}
-		o_fn = &P_set_abs_angle(raw_addr)
-	}
-	o_fn(e, 0, with_angle)
-
-	$if prod { C.VMProtectEnd() }
-}
-
-pub fn (e &Entity_t) to_weapon() &Weapon_t {
-
-	return &Weapon_t(voidptr(e))
-}
 
 pub fn (e &Entity_t) to_player() &Player {
 
 	return &Player(voidptr(e))
 }
 
-pub fn (e &Entity_t) to_item() &Item {
-
-	return &Item(voidptr(e))
-}
-
-pub fn (e &Entity_t) to_viewmodel() &Viewmodel {
-
-	return &Viewmodel(voidptr(e))
-}
-
-pub struct Weapon_t {
-	Entity_t
-}
-
-pub fn (w &Weapon_t) in_reload() bool {
-
-	return *(utils.get_val_offset<bool>(w, offsets.db.netvars.m_in_reload))
-}
-
-pub fn (w &Weapon_t) zoom_level() int {
-
-	return *(utils.get_val_offset<int>(w, offsets.db.netvars.m_zoom_level))
-}
-
-pub fn (w &Weapon_t) postpone_fire_ready_time() f32 {
-
-	return *(utils.get_val_offset<f32>(w, offsets.db.netvars.postpone_fire_ready_time))
-}
-
-pub fn (w &Weapon_t) last_shot_time() f32 {
-
-	return *(utils.get_val_offset<f32>(w, offsets.db.netvars.last_shot_time))
-}
-
-pub fn (w &Weapon_t) next_primary_attack() f32 {
-
-	return *(utils.get_val_offset<f32>(w, offsets.db.netvars.next_primary_attack))
-}
-
-pub fn (w &Weapon_t) clip1() int {
-
-	return *(utils.get_val_offset<int>(w, offsets.db.netvars.clip1))
-}
-
-pub fn (w &Weapon_t) definition_index_() ItemDefinitionIndex {
-
-	return *(utils.get_val_offset<ItemDefinitionIndex>(w, offsets.db.netvars.m_item_definition_index))
-}
-
-pub fn (w &Weapon_t) definition_index() utils.Value<i16> {
-
-	return utils.Value<i16>{ptr: utils.get_val_offset<i16>(w, offsets.db.netvars.m_item_definition_index)}
-}
 
 // Player
 
@@ -266,80 +170,6 @@ pub fn (p &Player) move_type() int {
 	return *(utils.get_val_offset<int>(p, offsets.db.netvars.m_move_type))
 }
 
-pub fn (p &Player) is_scoped() bool {
-
-	return *(utils.get_val_offset<bool>(p, offsets.db.netvars.m_is_scoped))
-}
-
-pub fn (p &Player) weapons() &usize {
-
-	return &usize( usize(p) + offsets.db.netvars.m_my_weapons )
-}
-
-pub fn (p &Player) active_weapon() u32 {
-
-	return *(utils.get_val_offset<u32>(p, offsets.db.netvars.m_active_weapon))
-}
-
-pub fn (p &Player) viewmodel() u32 {
-
-	return *(utils.get_val_offset<u32>(p, offsets.db.netvars.m_view_model))
-}
-
-pub fn (p &Player) spotted_by_mask() int {
-
-	return *(utils.get_val_offset<int>(p, offsets.db.netvars.spotted_by_mask))
-}
-
-pub fn (p &Player) next_attack() f32 {
-
-	return *(utils.get_val_offset<f32>(p, offsets.db.netvars.next_attack))
-}
-
-pub fn (p &Player) tick_base() int {
-
-	return *(utils.get_val_offset<int>(p, offsets.db.netvars.tick_base))
-}
-
-pub fn (p &Player) velocity() utils.Vec3 {
-
-	return *(utils.get_val_offset<utils.Vec3>(p, offsets.db.netvars.velocity))
-}
-
-pub fn (p &Player) has_helmet() bool {
-
-	return *(utils.get_val_offset<bool>(p, offsets.db.netvars.m_has_helmet))
-}
-
-pub fn (p &Player) armor() int {
-
-	return *(utils.get_val_offset<int>(p, offsets.db.netvars.m_armor_value))
-}
-
-pub fn (p &Player) spotted() utils.Value<bool> {
-
-	return utils.Value<bool>{ptr: utils.get_val_offset<bool>(p, offsets.db.netvars.spotted)}
-}
-
-pub fn (p &Player) flash_duration() utils.Value<f32> {
-
-	return utils.Value<f32>{ptr: utils.get_val_offset<f32>(p, offsets.db.netvars.flash_duration)}
-}
-
-pub fn (p &Player) is_moving() bool{
-
-	$if prod { C.VMProtectBeginMutation(c"player.is_moving") }
-
-	v_vel := p.velocity()
-
-	if (v_vel.x + v_vel.y + v_vel.z) == 0.0 {
-		return false
-	}
-
-	$if prod { C.VMProtectEnd() }
-
-	return true
-}
 
 pub fn (p &Player) bone(with_bone_idx usize) ?utils.Vec3 {
 
@@ -362,6 +192,26 @@ pub fn (p &Player) bone(with_bone_idx usize) ?utils.Vec3 {
 	return res
 }
 
+pub fn (p &Player) velocity() utils.Vec3 {
+
+	return *(utils.get_val_offset<utils.Vec3>(p, offsets.db.netvars.velocity))
+}
+
+pub fn (p &Player) is_moving() bool{
+
+	$if prod { C.VMProtectBeginMutation(c"player.is_moving") }
+
+	v_vel := p.velocity()
+
+	if (v_vel.x + v_vel.y + v_vel.z) == 0.0 {
+		return false
+	}
+
+	$if prod { C.VMProtectEnd() }
+
+	return true
+}
+
 pub fn (p &Player) eye_pos() utils.Vec3 {
 
 	return p.origin() + p.view_offset()
@@ -375,51 +225,4 @@ pub fn (p &Player) is_alive() bool {
 pub fn (p &Player) observer_mode() ObserverModes {
 
 	return *(utils.get_val_offset<ObserverModes>(p, offsets.db.netvars.m_observer_mode))
-}
-
-// item
-
-struct Item {
-	Entity_t
-}
-
-pub fn (i &Item) fallback_seed() utils.Value<int> {
-
-	return utils.Value<int>{ptr: utils.get_val_offset<int>(i, offsets.db.netvars.m_fallback_seed)}
-}
-
-pub fn (i &Item) fallback_wear() utils.Value<f32> {
-
-	return utils.Value<f32>{ptr: utils.get_val_offset<f32>(i, offsets.db.netvars.m_fallback_wear)}
-}
-
-pub fn (i &Item) fallback_paint_kit() utils.Value<int> {
-
-	return utils.Value<int>{ptr: utils.get_val_offset<int>(i, offsets.db.netvars.m_fallback_paint_kit)}
-}
-
-pub fn (i &Item) item_id_high() utils.Value<int> {
-
-	return utils.Value<int>{ptr: utils.get_val_offset<int>(i, offsets.db.netvars.m_item_id_high)}
-}
-
-pub fn (i &Item) entity_quality() utils.Value<int> {
-
-	return utils.Value<int>{ptr: utils.get_val_offset<int>(i, offsets.db.netvars.m_entity_quality)}
-}
-
-// Viewmodel
-
-pub struct Viewmodel {
-	Entity_t
-}
-
-pub fn (v &Viewmodel) model_index() utils.Value<int> {
-
-	return utils.Value<int>{ptr: utils.get_val_offset<int>(v, offsets.db.netvars.m_model_index)}
-}
-
-pub fn (v &Viewmodel) viewmodel_index() utils.Value<int> {
-
-	return utils.Value<int>{ptr: utils.get_val_offset<int>(v, offsets.db.netvars.m_view_model_index)}
 }

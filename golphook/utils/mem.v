@@ -1,7 +1,5 @@
 module utils
 
-import time
-
 #include "windows.h"
 
 [inline]

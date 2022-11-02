@@ -3,7 +3,6 @@ module golphook
 import v.vmod
 import utils
 import offsets
-import valve
 import d3d
 
 [heap]
@@ -26,7 +25,6 @@ pub mut:
 	rnd_queue &RenderQueue = unsafe { nil }
 	ent_cacher &EntityCacher = unsafe { nil }
 	config &ConfigManager = unsafe { nil }
-	skins &Skins = unsafe { nil }
 
 	visuals &Visuals = unsafe { nil }
 
@@ -68,7 +66,6 @@ pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 	a.rnd_queue = &RenderQueue{}
 	a.ent_cacher = &EntityCacher{}
 	a.visuals = &Visuals{}
-	a.skins = &Skins{}
 	a.hooks = &Hooks{}
 	a.hooks.bootstrap()
 
