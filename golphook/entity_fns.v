@@ -115,7 +115,7 @@ pub fn ent_weapon(for_ent &valve.Player) ?&valve.Weapon_t {
 
 	prob_weapon := app_ctx.interfaces.i_entity_list.get_client_entity_handle(for_ent.active_weapon())
 	if !isnil(prob_weapon) {
-		weapon := &valve.Weapon_t(prob_weapon)
+		weapon := unsafe { &valve.Weapon_t(prob_weapon) }
 		return weapon
 	}
 	

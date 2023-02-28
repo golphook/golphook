@@ -27,7 +27,7 @@ pub fn (mut e EntityCacher) on_frame() {
 		p_ent := app_ctx.interfaces.i_entity_list.get_client_entity(ent_idx)
 		if int(p_ent) == 0 { continue }
 
-		e_ent := &valve.Entity_t(p_ent)
+		e_ent := unsafe { &valve.Entity_t(p_ent) }
 		lock e.cache {
 			e.cache << e_ent
 		}

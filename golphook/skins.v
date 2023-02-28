@@ -93,11 +93,11 @@ pub fn (mut s Skins) skin_changer() {
 
 	}
 
-	active_weapon := &valve.Weapon_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.active_weapon()))
+	active_weapon := unsafe { &valve.Weapon_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.active_weapon())) }
 	if int(active_weapon) == 0 { return }
 	if active_weapon.definition_index().get() != knife_def_idx { return }
 
-	active_view_model := &valve.Viewmodel(app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.viewmodel()))
+	active_view_model := unsafe { &valve.Viewmodel(app_ctx.interfaces.i_entity_list.get_client_entity_handle(app_ctx.ent_cacher.local_player.viewmodel())) }
 	if int(active_view_model) == 0 { return }
 
 	active_view_model.model_index().set(knife_model_index)

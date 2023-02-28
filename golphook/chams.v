@@ -31,7 +31,7 @@ pub fn (mut c Chams) on_draw_model(ecx voidptr, edx voidptr, result voidptr, inf
 		return false
 	}
 
-	plr := &valve.Player(voidptr(ent))
+	plr := unsafe { &valve.Player(voidptr(ent)) }
 
 	if isnil(plr) {
 		return false

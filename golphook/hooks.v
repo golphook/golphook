@@ -23,10 +23,10 @@ type O_ret_add_check = fn (voidptr, voidptr, &u8) bool
 
 struct HookEntry<T> {
 pub mut:
-	name          string   [required]
-	original_addr voidptr  [required]
+	name          string   [required] = "hook"
+	original_addr voidptr  [required] = unsafe { nil }
 	original_save T
-	hooked        voidptr  [required]
+	hooked        voidptr  [required] = unsafe { nil }
 }
 
 fn (mut h HookEntry<T>) hook() {

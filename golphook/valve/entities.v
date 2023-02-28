@@ -173,22 +173,22 @@ pub fn (e &Entity_t) set_abs_angle(with_angle utils.Angle) {
 
 pub fn (e &Entity_t) to_weapon() &Weapon_t {
 
-	return &Weapon_t(voidptr(e))
+	return unsafe { &Weapon_t(voidptr(e)) }
 }
 
 pub fn (e &Entity_t) to_player() &Player {
 
-	return &Player(voidptr(e))
+	return unsafe { &Player(voidptr(e)) }
 }
 
 pub fn (e &Entity_t) to_item() &Item {
 
-	return &Item(voidptr(e))
+	return unsafe { &Item(voidptr(e)) }
 }
 
 pub fn (e &Entity_t) to_viewmodel() &Viewmodel {
 
-	return &Viewmodel(voidptr(e))
+	return unsafe { &Viewmodel(voidptr(e)) }
 }
 
 pub struct Weapon_t {

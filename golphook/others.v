@@ -62,7 +62,7 @@ pub fn specs() {
 		mut p_info := valve.PlayerInfo{}
 
 		h_observer_target := ent.observer_target()
-		observer_target := &valve.Entity_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(h_observer_target))
+		observer_target := unsafe { &valve.Entity_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(h_observer_target)) }
 		if u32(observer_target) != 0 {
 
 			if voidptr(observer_target) == voidptr(app_ctx.ent_cacher.local_player) {

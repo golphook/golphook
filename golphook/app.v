@@ -134,5 +134,5 @@ pub fn app() &App {
 	
 	$if prod { C.VMProtectEnd() }
 
-	return &App(ctx)
+	return unsafe { &App(ctx) }
 }

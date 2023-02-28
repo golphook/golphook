@@ -22,8 +22,8 @@ $if prod {
 	#include "vmp.h"
 }
 
-[typedef]
-pub struct C.FILE {}
+//[typedef]
+//pub struct C.FILE {}
 
 fn C.MessageBoxA(int, &char, &char, int) int
 fn C.FreeLibraryAndExitThread(voidptr, u32) bool

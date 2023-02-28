@@ -47,7 +47,7 @@ fn (mut i Interfaces) get_interface<T>(withName string, inModule string) &T {
 
 	$if prod { C.VMProtectEnd() }
 
-	return &T(itfc_add)
+	return unsafe { &T(itfc_add) }
 }
 
 fn (mut i Interfaces) get_interface_pattern<T>(with_name string, in_module string, with_pattern string, ptr_manipulation 	fn(voidptr) voidptr) &T {
@@ -63,7 +63,7 @@ fn (mut i Interfaces) get_interface_pattern<T>(with_name string, in_module strin
 	
 	$if prod { C.VMProtectEnd() }
 
-	return &T(if_add)
+	return unsafe { &T(if_add) }
 }
 
 fn (mut i Interfaces) get_interface_offset<T>(with_name string, in_module voidptr, at_index int, plus_offset usize) &T {

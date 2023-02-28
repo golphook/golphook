@@ -395,13 +395,13 @@ pub fn (mut c ConfigManager) export(for_config_with_index int) string {
 		C.VMProtectBeginMutation(c'cfg.export')
 	}
 
-	json := json.encode(c.configs[for_config_with_index])
+	json_s := json.encode(c.configs[for_config_with_index])
 
 	$if prod {
 		C.VMProtectEnd()
 	}
 
-	return json
+	return json_s
 }
 
 pub fn (mut c ConfigManager) import_fc(from_text string) {
@@ -453,10 +453,10 @@ pub fn (mut c ConfigManager) save() {
 		C.VMProtectBeginMutation(c'cfg.save')
 	}
 
-	json := json.encode_pretty(c.configs)
+	json_s := json.encode_pretty(c.configs)
 	home := os.home_dir()
 	configs_file := '$home\\golphook\\.configs'
-	os.write_file(configs_file, json) or {
+	os.write_file(configs_file, json_s) or {
 		utils.error_critical('Failed to access ressource configs', 'file')
 	}
 

@@ -26,7 +26,7 @@ struct Value<T> {
 
 pub fn (r &Value<T>) get<T>() T {
 
-	return *&T(r.ptr)
+	return unsafe { *&T(r.ptr) }
 }
 
 pub fn (r &Value<T>) set(with_new_val T) {
@@ -70,8 +70,8 @@ pub fn pattern_scan(in_module string, with_sig string) ?voidptr {
 	$if prod { C.VMProtectBeginMutation(c"utils.pattern_scan") }
 
 	module_base := C.GetModuleHandleA(&char(in_module.str))
-	dos := &C.IMAGE_DOS_HEADER(module_base)
-	nt := &C.IMAGE_NT_HEADERS(voidptr(usize(voidptr(module_base)) + usize(dos.e_lfanew)))
+	dos := unsafe { &C.IMAGE_DOS_HEADER(module_base) }
+	nt := unsafe { &C.IMAGE_NT_HEADERS(voidptr(usize(voidptr(module_base)) + usize(dos.e_lfanew))) }
 
 	mut bytes_patten := with_sig.split(" ").map(fn (i string) i16 {
 		if i == "?" {
