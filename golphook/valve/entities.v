@@ -135,7 +135,7 @@ pub fn (w &Entity_t) owner_entity() u32 {
 
 pub fn (e &Entity_t) to_player() &Player {
 
-	return &Player(voidptr(e))
+return unsafe { &Player(voidptr(e)) }
 }
 
 
@@ -171,9 +171,9 @@ pub fn (p &Player) move_type() int {
 }
 
 
-pub fn (p &Player) bone(with_bone_idx usize) ?utils.Vec3 {
+pub fn (p &Player) bone(with_bone_idx usize) !utils.Vec3 {
 
-	$if prod { C.VMProtectBeginMutation(c"player.bone") }
+	$if vm ? { C.VMProtectBeginMutation(c"player.bone") }
 
 	mut res := utils.new_vec3(0, 0, 0)
 
@@ -187,7 +187,7 @@ pub fn (p &Player) bone(with_bone_idx usize) ?utils.Vec3 {
 	res.y = *(&f32(bones_mat + 0x30 * with_bone_idx + 0x1c))
 	res.z = *(&f32(bones_mat + 0x30 * with_bone_idx + 0x2c))
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return res
 }
@@ -199,7 +199,7 @@ pub fn (p &Player) velocity() utils.Vec3 {
 
 pub fn (p &Player) is_moving() bool{
 
-	$if prod { C.VMProtectBeginMutation(c"player.is_moving") }
+	$if vm ? { C.VMProtectBeginMutation(c"player.is_moving") }
 
 	v_vel := p.velocity()
 
@@ -207,7 +207,7 @@ pub fn (p &Player) is_moving() bool{
 		return false
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return true
 }

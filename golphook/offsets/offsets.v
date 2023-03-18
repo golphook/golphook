@@ -4,7 +4,7 @@ module offsets
 // first and it's the main reason why: every update it break all copies if the cheat was 'leaked'
 // secondly: im lazy ^^ sigs offsets are pretty usefull too
 
-import json
+//import json
 import utils
 
 pub const db = Offsets{}
@@ -87,15 +87,15 @@ pub:
 
 pub fn load() {
 
-	$if prod { C.VMProtectBeginMutation(c"offsets.load") }
+	$if vm ? { C.VMProtectBeginMutation(c"offsets.load") }
 
-	file := $embed_file('../../ressources/offsets.json')
-	file_content := file.to_string()
-
-	offsets := json.decode(Offsets, file_content) or {
-		utils.error_critical("Failed to load offsets", "$err")
-		return
-	}
+	//file := $embed_file('../../ressources/offsets.json')
+	//file_content := file.to_string()
+	offsets :=Offsets{}
+	//offsets := json.decode(Offsets, file_content) or {
+	//	utils.error_critical("Failed to load offsets", "$err")
+	//	return
+	//}
 
 	// yes its definitly against v rules but in a normal context you can do const my_const = load()
 	// but in this situation its not working the load() fn never get called
@@ -105,5 +105,5 @@ pub fn load() {
 		C.memcpy(voidptr(&db), voidptr(&offsets), sizeof(Offsets))
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }

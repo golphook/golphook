@@ -7,32 +7,32 @@ pub mut:
 
 pub fn (mut r RenderQueue) push(drawable Drawable) {
 
-	$if prod { C.VMProtectBeginMutation(c"render_queur.push") }
-	
+	$if vm ? { C.VMProtectBeginMutation(c"render_queur.push") }
+
 	lock r.queue {
 		r.queue << drawable
 	}
-	
-	$if prod { C.VMProtectEnd() }
+
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (r &RenderQueue) len() int {
 
-	$if prod { C.VMProtectBeginMutation(c"render_queue.len") }
+	$if vm ? { C.VMProtectBeginMutation(c"render_queue.len") }
 
 	mut to_ret := 0
 	rlock r.queue {
 		to_ret = r.queue.len
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return to_ret
 }
 
 pub fn (mut r RenderQueue) clear(i int) {
 
-	$if prod { C.VMProtectBeginMutation(c"render_queue.clear") }
+	$if vm ? { C.VMProtectBeginMutation(c"render_queue.clear") }
 
 	lock r.queue {
 		if i == -1 {
@@ -43,23 +43,23 @@ pub fn (mut r RenderQueue) clear(i int) {
 		r.queue.clear()
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (mut r RenderQueue) draw_queue() {
 
-	$if prod { C.VMProtectBeginMutation(c"render_queue.draw_queue") }
+	$if vm ? { C.VMProtectBeginMutation(c"render_queue.draw_queue") }
 
 	queue_lenght := r.len()
 
 	rlock r.queue {
 		for d in r.queue {
 			d.draw()
-			d.free()
+			//d.free()
 		}
 	}
 
 	r.clear(queue_lenght)
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }

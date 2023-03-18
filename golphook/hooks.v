@@ -11,27 +11,27 @@ type O_end_scene = fn (voidptr) bool
 
 struct HookEntry<T> {
 pub mut:
-	name          string   [required]
-	original_addr voidptr  [required]
+	name          string   [required] = "hook"
+	original_addr voidptr  [required] = unsafe {nil}
 	original_save T
-	hooked        voidptr  [required]
+	hooked        voidptr  [required] = unsafe {nil}
 }
 
 fn (mut h HookEntry<T>) hook() {
 
-	$if prod { C.VMProtectBeginMutation(c"hooks.hook_entry") }
+	$if vm ? { C.VMProtectBeginMutation(c"hooks.hook_entry") }
 
 	if C.MH_CreateHook(h.original_addr, h.hooked, &h.original_save) != C.MH_OK {
 		utils.error_critical('Failed to hook function', h.name)
 		return
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 fn add_hook<T>(with_name string, with_og_add voidptr, and_hkd_fn voidptr) HookEntry<T> {
 
-	$if prod { C.VMProtectBeginMutation(c"hooks.add_hook") }
+	$if vm ? { C.VMProtectBeginMutation(c"hooks.add_hook") }
 
 	mut hk_entry := HookEntry<T>{
 		name: with_name
@@ -41,7 +41,7 @@ fn add_hook<T>(with_name string, with_og_add voidptr, and_hkd_fn voidptr) HookEn
 	hk_entry.hook()
 	utils.pront(utils.str_align("[+] $with_name", 40, "| Ok!"))
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return hk_entry
 
@@ -57,7 +57,7 @@ pub mut:
 
 fn (mut h Hooks) bootstrap() {
 
-	$if prod { C.VMProtectBeginMutation(c"hooks.bootstrap") }
+	$if vm ? { C.VMProtectBeginMutation(c"hooks.bootstrap") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -87,12 +87,12 @@ fn (mut h Hooks) bootstrap() {
 		return
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 fn (mut h Hooks) release() {
 
-	$if prod { C.VMProtectBeginMutation(c"hook.release") }
+	$if vm ? { C.VMProtectBeginMutation(c"hook.release") }
 
 	if C.MH_DisableHook(C.MH_ALL_HOOKS) != C.MH_OK {
 		utils.error_critical('Error with a minhook fn', 'MH_DisableHook()')
@@ -104,20 +104,20 @@ fn (mut h Hooks) release() {
 		return
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 [unsafe; callconv: "stdcall"]
 fn hk_frame_stage_notify(stage u32) {
 
-	$if prod { C.VMProtectBeginMutation(c"hk_frame_stage_notify") }
+	$if vm ? { C.VMProtectBeginMutation(c"hk_frame_stage_notify") }
 
 	mut app_ctx := unsafe { app() }
 
 	mut static is_called_once := false
 	if !is_called_once {
 		is_called_once = true
-	
+
 		utils.pront(utils.str_align("[*] hk_frame_stage_notify()", 40, "| Called"))
 	}
 
@@ -132,13 +132,13 @@ fn hk_frame_stage_notify(stage u32) {
 
 	app_ctx.hooks.frame_stage_notify.original_save(stage)
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 
 [unsafe; callconv: "stdcall"]
 fn hk_end_scene(dev voidptr) bool {
-	$if prod { C.VMProtectBeginMutation(c"hk_end_scene") }
+	$if vm ? { C.VMProtectBeginMutation(c"hk_end_scene") }
 	mut app_ctx := unsafe { app() }
 	mut static is_called_once := false
 	if !is_called_once {
@@ -149,14 +149,14 @@ fn hk_end_scene(dev voidptr) bool {
 		app_ctx.visuals.on_end_scene()
 		app_ctx.rnd_queue.draw_queue()
 	}
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 	return app_ctx.hooks.end_scene.original_save(dev)
 }
 
 [unsafe; callconv: "stdcall"]
 fn hk_reset(dev voidptr, params voidptr) int {
 
-	$if prod { C.VMProtectBeginMutation(c"hk_reset") }
+	$if vm ? { C.VMProtectBeginMutation(c"hk_reset") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -179,7 +179,7 @@ fn hk_reset(dev voidptr, params voidptr) int {
 		app_ctx.is_ok = true
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return ret
 }

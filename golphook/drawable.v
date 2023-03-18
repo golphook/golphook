@@ -14,7 +14,7 @@ struct Line {
 
 pub fn (l &Line) draw() {
 
-	$if prod { C.VMProtectBeginMutation(c"line.draw") }
+	$if vm ? { C.VMProtectBeginMutation(c"line.draw") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -22,18 +22,18 @@ pub fn (l &Line) draw() {
 		app_ctx.d3d.line.draw(l.from_pos, l.to_pos, l.thickness, l.color)
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 fn (l &Line) free() {
 
-	$if prod { C.VMProtectBeginMutation(c"line.free") }
+	$if vm ? { C.VMProtectBeginMutation(c"line.free") }
 
 	unsafe {
-		free(l)
+		//free(l)
 	}
-	
-	$if prod { C.VMProtectEnd() }
+
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn new_line(from_pos utils.Vec3, to_pos utils.Vec3, with_thickness f32, and_color utils.Color) Line {
@@ -58,7 +58,7 @@ struct Text {
 
 pub fn (t &Text) draw() {
 
-	$if prod { C.VMProtectBeginMutation(c"text.draw") }
+	$if vm ? { C.VMProtectBeginMutation(c"text.draw") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -76,19 +76,19 @@ pub fn (t &Text) draw() {
 		font.draw_text(t.content, t.pos, t.format_falgs, t.color)
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 fn (t &Text) free() {
 
-	$if prod { C.VMProtectBeginMutation(c"text.free") }
+	$if vm ? { C.VMProtectBeginMutation(c"text.free") }
 
 	unsafe {
-		t.content.free()
-		free(t)
+		//t.content.free()
+		//free(t)
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn new_text(at_pos utils.Vec3, with_content string, with_font_size u16, is_bold bool, has_shadow bool, with_fmt_flags int, and_color utils.Color) Text {
@@ -116,7 +116,7 @@ pub mut:
 
 pub fn (r &Rectangle) draw() {
 
-	$if prod { C.VMProtectBeginMutation(c"rect.draw") }
+	$if vm ? { C.VMProtectBeginMutation(c"rect.draw") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -157,18 +157,18 @@ pub fn (r &Rectangle) draw() {
 		app_ctx.d3d.line.draw(v1.vec_3(), v2.vec_3(), r.thickness, r.color)
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 fn (r &Rectangle) free() {
 
-	$if prod { C.VMProtectBeginMutation(c"rect.free") }
+	$if vm ? { C.VMProtectBeginMutation(c"rect.free") }
 
 	unsafe {
-		free(r)
+		//free(r)
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn new_rectangle(at_pos utils.Vec3, with_height f32, with_width f32, with_thickness f32, with_outline_thickness f32, and_color utils.Color) Rectangle {
@@ -193,7 +193,7 @@ struct Circle {
 
 pub fn (c &Circle) draw() {
 
-	$if prod { C.VMProtectBeginMutation(c"circle.draw") }
+	$if vm ? { C.VMProtectBeginMutation(c"circle.draw") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -205,19 +205,19 @@ pub fn (c &Circle) draw() {
 			app_ctx.d3d.line.draw(from.vec_3(), to.vec_3(), c.thickness, c.color)
 		}
 	}
-	
-	$if prod { C.VMProtectEnd() }
+
+	$if vm ? { C.VMProtectEnd() }
 }
 
 fn (c &Circle) free() {
 
-	$if prod { C.VMProtectBeginMutation(c"circle.free") }
+	$if vm ? { C.VMProtectBeginMutation(c"circle.free") }
 
 	unsafe {
-		free(c)
+		//free(c)
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn new_circle(at_pos utils.Vec3, with_thickness f32, with_radius f32, and_color utils.Color) Circle {

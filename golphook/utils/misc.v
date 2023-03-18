@@ -31,7 +31,7 @@ pub fn get_key(with_vk_code int, is_toggle bool) bool {
 
 pub fn str_align(with_og_text string, with_spaces_count i32, and_final_sep string) string {
 
-	$if prod { C.VMProtectBeginMutation(c"utils.str_align") }
+	$if vm ? { C.VMProtectBeginMutation(c"utils.str_align") }
 
 	mut final := with_og_text
 
@@ -40,6 +40,6 @@ pub fn str_align(with_og_text string, with_spaces_count i32, and_final_sep strin
 	}
 	final += and_final_sep
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 	return final
 }

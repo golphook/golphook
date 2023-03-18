@@ -24,19 +24,19 @@ struct Value<T> {
 
 pub fn (r &Value<T>) get<T>() T {
 
-	return *&T(r.ptr)
+	return unsafe { *&T(r.ptr) }
 }
 
 pub fn (r &Value<T>) set(with_new_val T) {
 
-	$if prod { C.VMProtectBeginMutation(c"utils.set_val") }
+	$if vm ? { C.VMProtectBeginMutation(c"utils.set_val") }
 
 	// bypass v cannot mut return value
 	unsafe {
 		*&T(r.ptr) = with_new_val
 	}
 	
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 [typedef]
@@ -63,13 +63,13 @@ struct C.IMAGE_NT_HEADERS {
 }
 
 
-pub fn pattern_scan(in_module string, with_sig string) ?voidptr {
+pub fn pattern_scan(in_module string, with_sig string) !voidptr {
 
-	$if prod { C.VMProtectBeginMutation(c"utils.pattern_scan") }
+	$if vm ? { C.VMProtectBeginMutation(c"utils.pattern_scan") }
 
-	module_base := C.GetModuleHandleA(&char(in_module.str))
-	dos := &C.IMAGE_DOS_HEADER(module_base)
-	nt := &C.IMAGE_NT_HEADERS(voidptr(usize(voidptr(module_base)) + usize(dos.e_lfanew)))
+	module_base := voidptr(C.GetModuleHandleA(&char(in_module.str)))
+	dos := unsafe { &C.IMAGE_DOS_HEADER(module_base) }
+	nt := unsafe { &C.IMAGE_NT_HEADERS(voidptr(usize(voidptr(module_base)) + usize(dos.e_lfanew))) }
 
 	mut bytes_patten := with_sig.split(" ").map(fn (i string) i16 {
 		if i == "?" {
@@ -100,14 +100,14 @@ pub fn pattern_scan(in_module string, with_sig string) ?voidptr {
 		}
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return error("Cannot find address with pattern: $with_sig")
 }
 
 pub fn wait_for_module(mut with_modules []string, and_max_timeout int) {
 
-	$if prod { C.VMProtectBeginMutation(c"utils.wait_for_mods") }
+	$if vm ? { C.VMProtectBeginMutation(c"utils.wait_for_mods") }
 
 	mut total_waited := 0
 
@@ -130,5 +130,5 @@ pub fn wait_for_module(mut with_modules []string, and_max_timeout int) {
 		C.Sleep(1000)
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }

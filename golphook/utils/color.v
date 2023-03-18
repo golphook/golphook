@@ -77,14 +77,14 @@ pub fn (c &Color) d3d() u32 {
 [inline]
 pub fn (c &Color) rgbaf() ColorRgbaF {
 
-	$if prod { C.VMProtectBeginMutation(c"color.rgbaf") }
+	$if vm ? { C.VMProtectBeginMutation(c"color.rgbaf") }
 
 	mut r_ := f32(c.r()) / 255.0
 	mut g_ := f32(c.g()) / 255.0
 	mut b_ := f32(c.b()) / 255.0
 	mut a_ := f32(c.a()) / 255.0
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return ColorRgbaF{r: r_, g: g_, b: b_, a: a_}
 }
@@ -92,13 +92,13 @@ pub fn (c &Color) rgbaf() ColorRgbaF {
 [inline]
 pub fn (c &Color) rgbf() ColorRgbF {
 
-	$if prod { C.VMProtectBeginMutation(c"color.rgbf") }
+	$if vm ? { C.VMProtectBeginMutation(c"color.rgbf") }
 
 	mut r_ := f32(c.r()) / 255.0
 	mut g_ := f32(c.g()) / 255.0
 	mut b_ := f32(c.b()) / 255.0
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return ColorRgbF{r: r_, g: g_, b: b_}
 }

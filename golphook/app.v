@@ -33,13 +33,12 @@ pub mut:
 
 pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 
-	$if prod { C.VMProtectBeginMutation(c"app.bootstrap") }
+	$if vm ? { C.VMProtectBeginMutation(c"app.bootstrap") }
 
 	a.h_mod = with_module_handle
 
-	$if debug {
-		utils.load_unload_console(true, a.file)
-	}
+	utils.load_unload_console(true, a.file)
+
 
 	utils.pront('[+] initializing the golp !\n')
 
@@ -75,7 +74,7 @@ pub fn (mut a App) bootstrap(with_module_handle voidptr) {
 
 	utils.pront('\n[*] golp is ready | Hi golphook v$a.v_mod.version :)\n')
 	a.is_ok = true
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (mut a App) release() {
@@ -92,17 +91,17 @@ pub fn (mut a App) release() {
 
 pub fn (mut a App) on_frame() {
 
-	$if prod { C.VMProtectBeginMutation(c"app.on_frame") }
+	$if vm ? { C.VMProtectBeginMutation(c"app.on_frame") }
 
 	a.interfaces.cdll_int.get_screen_size(&a.wnd_width, &a.wnd_height)
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 }
 
 [unsafe]
 pub fn app() &App {
 
-	$if prod { C.VMProtectBeginMutation(c"app") }
+	$if vm ? { C.VMProtectBeginMutation(c"app") }
 
 	mut static ctx := voidptr(0)
 
@@ -113,8 +112,8 @@ pub fn app() &App {
 			utils.error_critical('Failed to initialize app', '')
 		}
 	}
-	
-	$if prod { C.VMProtectEnd() }
 
-	return &App(ctx)
+	$if vm ? { C.VMProtectEnd() }
+
+	return unsafe { &App(ctx) }
 }

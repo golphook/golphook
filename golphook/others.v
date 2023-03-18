@@ -6,7 +6,7 @@ import valve
 
 pub fn others_on_frame() {
 	
-	$if prod { C.VMProtectBeginMutation(c"others.on_frame") }
+	$if vm ? { C.VMProtectBeginMutation(c"others.on_frame") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -18,13 +18,13 @@ pub fn others_on_frame() {
 		specs()
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 [unsafe]
 pub fn bop() {
 
-	$if prod { C.VMProtectBeginMutation(c"others.bop") }
+	$if vm ? { C.VMProtectBeginMutation(c"others.bop") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -37,12 +37,12 @@ pub fn bop() {
 		unsafe { *force_jump = 6 }
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn specs() {
 
-	$if prod { C.VMProtectBeginMutation(c"others.specs") }
+	$if vm ? { C.VMProtectBeginMutation(c"others.specs") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -56,7 +56,7 @@ pub fn specs() {
 		mut p_info := valve.PlayerInfo{}
 
 		h_observer_target := ent.observer_target()
-		observer_target := &valve.Entity_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(h_observer_target))
+		observer_target := unsafe { &valve.Entity_t(app_ctx.interfaces.i_entity_list.get_client_entity_handle(h_observer_target)) }
 		if u32(observer_target) != 0 {
 
 			if voidptr(observer_target) == voidptr(app_ctx.ent_cacher.local_player) {
@@ -81,6 +81,6 @@ pub fn specs() {
 		app_ctx.rnd_queue.push(new_text(utils.new_vec2(20, 4).vec_3(), "Spectators (${f32(specs_cout)})", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.spectator_count_color))
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 

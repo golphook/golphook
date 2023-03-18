@@ -20,7 +20,7 @@ pub mut:
 
 pub fn (mut v Visuals) on_frame() {
 
-	$if prod { C.VMProtectBeginMutation(c"visual.on_frame") }
+	$if vm ? { C.VMProtectBeginMutation(c"visual.on_frame") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -42,12 +42,12 @@ pub fn (mut v Visuals) on_frame() {
 		}
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) on_end_scene() {
 
-	$if prod { C.VMProtectBeginMutation(c"visuals.on_end_scene") }
+	$if vm ? { C.VMProtectBeginMutation(c"visuals.on_end_scene") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -55,13 +55,13 @@ pub fn (mut v Visuals) on_end_scene() {
 		v.watermark()
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 
 pub fn (mut v Visuals) box() {
 
-	$if prod { C.VMProtectBeginMutation(c"visuals.box") }
+	$if vm ? { C.VMProtectBeginMutation(c"visuals.box") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -74,33 +74,33 @@ pub fn (mut v Visuals) box() {
 	}
 	app_ctx.rnd_queue.push(new_rectangle(screen_pos, v.current_ent_box.height, v.current_ent_box.width, 1, 0, color))
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (mut v Visuals) watermark() {
 
-	$if prod { C.VMProtectBeginMutation(c"visuals.watermark") }
+	$if vm ? { C.VMProtectBeginMutation(c"visuals.watermark") }
 
 	mut app_ctx := unsafe { app() }
-	app_ctx.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v$app_ctx.v_mod.version", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.watermark_color))
+	app_ctx.rnd_queue.push(new_text(utils.new_vec2(4, 4).vec_3(), "golphook v", 12, true, true, C.DT_LEFT | C.DT_NOCLIP, app_ctx.config.active_config.watermark_color))
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
-pub fn (mut v Visuals) calculate_box(with_z_offset f32) ?BoxData {
+pub fn (mut v Visuals) calculate_box(with_z_offset f32) !BoxData {
 
-	$if prod { C.VMProtectBeginMutation(c"visuals.calculate_box") }
+	$if vm ? { C.VMProtectBeginMutation(c"visuals.calculate_box") }
 
 	mut app_ctx := unsafe { app() }
 
-	pos := v.current_ent.bone(1) ?
+	pos := v.current_ent.bone(1) !
 	mut screen_pos := utils.new_vec3(0,0,0)
 
 	if !app_ctx.interfaces.i_debug_overlay.screen_pos(pos, screen_pos) {
 		return error("failed to retreive screen pos")
 	}
 
-	mut head_pos := v.current_ent.bone(8) ?
+	mut head_pos := v.current_ent.bone(8) !
 	head_pos.z += 13 + with_z_offset
 	head_screen_pos := utils.new_vec3(0,0,0)
 
@@ -111,8 +111,8 @@ pub fn (mut v Visuals) calculate_box(with_z_offset f32) ?BoxData {
 	screen_pos.y += 3
 	mut box_height := screen_pos.y - head_screen_pos.y
 	box_width := box_height / 1.7
-	
-	$if prod { C.VMProtectEnd() }
+
+	$if vm ? { C.VMProtectEnd() }
 
 	return BoxData{screen_pos: screen_pos, height: box_height, width: box_width}
 }

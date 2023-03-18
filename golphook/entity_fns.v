@@ -5,7 +5,7 @@ import utils
 
 pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 
-	$if prod { C.VMProtectBeginMutation(c"entity_fns.i_can_see") }
+	$if vm ? { C.VMProtectBeginMutation(c"entity_fns.i_can_see") }
 
 	mut app_ctx := unsafe { app() }
 
@@ -32,7 +32,7 @@ pub fn i_can_see(player &valve.Player, bones []usize) (bool, valve.CGameTrace) {
 		}
 	}
 	
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return can_see, tr_
 }
@@ -51,7 +51,7 @@ pub fn trace_from_to_pos(from_pos utils.Vec3, to_pos utils.Vec3) valve.CGameTrac
 	ray.init(from_pos, to_pos)
 	app_ctx.interfaces.i_engine_trace.trace_ray(&ray, 0x46004009, &filter, &tr)
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return tr
 }

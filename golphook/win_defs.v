@@ -10,7 +10,7 @@ module golphook
 #flag -L @VMODROOT/exts/vmp
 
 #flag -l minhook
-$if prod {
+$if vm ? {
 	#flag -l vmp32
 }
 
@@ -18,12 +18,9 @@ $if prod {
 #include "TlHelp32.h"
 
 #include "minhook.h"
-$if prod {
+$if vm ?{
 	#include "vmp.h"
 }
-
-[typedef]
-pub struct C.FILE {}
 
 fn C.MessageBoxA(int, &char, &char, int) int
 fn C.FreeLibraryAndExitThread(voidptr, u32) bool
@@ -64,4 +61,3 @@ fn C.MH_Uninitialize() int
 
 fn C.VMProtectBeginMutation(&u8)
 fn C.VMProtectEnd()
-

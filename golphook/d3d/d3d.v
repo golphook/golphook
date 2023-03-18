@@ -10,7 +10,7 @@ pub:
 [unsafe]
 pub fn (d &D3dSprite) begin(with_flags int) bool {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_sprite.begin") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_sprite.begin") }
 
 	mut static o_fn := &P_idx_sprite_begin(0)
 	if isnil(o_fn) {
@@ -19,7 +19,7 @@ pub fn (d &D3dSprite) begin(with_flags int) bool {
 
 	o_fn(d.i_dxsprite, with_flags)
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return true
 }
@@ -27,7 +27,7 @@ pub fn (d &D3dSprite) begin(with_flags int) bool {
 [unsafe; callconv: "stdcall"]
 pub fn (d &D3dSprite) draw(texture voidptr, with_rect &utils.Vec2, at_center &utils.Vec3, at_pos &utils.Vec3, and_color utils.Color) {
 	
-	$if prod { C.VMProtectBeginMutation(c"d3d_sprite.draw") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_sprite.draw") }
 
 	mut static o_fn := &P_idx_sprite_draw(0)
 	if isnil(o_fn) {
@@ -37,14 +37,14 @@ pub fn (d &D3dSprite) draw(texture voidptr, with_rect &utils.Vec2, at_center &ut
 	// utils.h_res cause crash here ?? why not -__-
 	o_fn(d.i_dxsprite, texture, with_rect, at_center, at_pos, 0xFFFFFFFF)
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 }
 
 [unsafe]
 pub fn (d &D3dSprite) end() bool {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_sprite.end") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_sprite.end") }
 
 	mut static o_fn := &P_idx_sprite_end(0)
 	if isnil(o_fn) {
@@ -53,7 +53,7 @@ pub fn (d &D3dSprite) end() bool {
 
 	o_fn(d.i_dxsprite)
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return true
 }
@@ -61,14 +61,14 @@ pub fn (d &D3dSprite) end() bool {
 [unsafe]
 pub fn (d D3dSprite) release() u32 {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_sprite.release") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_sprite.release") }
 
 	mut static o_fn := &P_idx_release(0)
 	if isnil(o_fn) {
 		o_fn = &P_idx_release(utils.get_virtual(d.i_dxsprite, 2))
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return o_fn(d.i_dxsprite)
 }
@@ -81,14 +81,14 @@ pub mut:
 [unsafe]
 pub fn (d D3dTexture) release() u32 {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_texture.release") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_texture.release") }
 
 	mut static o_fn := &P_idx_release(0)
 	if isnil(o_fn) {
 		o_fn = &P_idx_release(utils.get_virtual(d.i_dxtexture, 2))
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return o_fn(d.i_dxtexture)
 }
@@ -105,7 +105,7 @@ pub mut:
 [unsafe]
 pub fn (d D3d9Font) draw_text(with_text string, at_pos utils.Vec3, with_text_format u32, and_color utils.Color) bool {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_font.draw_text") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_font.draw_text") }
 
 	mut static o_fn := &P_idx_draw_text_a(0)
 	if isnil(o_fn) {
@@ -119,7 +119,7 @@ pub fn (d D3d9Font) draw_text(with_text string, at_pos utils.Vec3, with_text_for
 
 	h_res := utils.h_res(o_fn(d.i_dxfont, voidptr(0), &char(with_text.str), -1, &rect, with_text_format, and_color.d3d()))
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return h_res.bool()
 }
@@ -127,14 +127,14 @@ pub fn (d D3d9Font) draw_text(with_text string, at_pos utils.Vec3, with_text_for
 [unsafe]
 pub fn (d D3d9Font) release() u32 {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_font.release") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_font.release") }
 
 	mut static o_fn := &P_idx_release(0)
 	if isnil(o_fn) {
 		o_fn = &P_idx_release(utils.get_virtual(d.i_dxfont, 2))
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return o_fn(d.i_dxfont)
 }
@@ -147,7 +147,7 @@ pub mut:
 [unsafe]
 fn (d D3d9line) set_width(with_new_width f32) bool {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_line.set_width") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_line.set_width") }
 
 	mut static o_fn := &P_idx_line_set_width(0)
 	if isnil(o_fn) {
@@ -156,7 +156,7 @@ fn (d D3d9line) set_width(with_new_width f32) bool {
 
 	h_res := utils.h_res(o_fn(d.i_dxline, with_new_width))
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return h_res.bool()
 }
@@ -164,7 +164,7 @@ fn (d D3d9line) set_width(with_new_width f32) bool {
 [unsafe]
 pub fn (d D3d9line) draw(at_pos utils.Vec3, to_pos utils.Vec3, has_width f32, and_color utils.Color) bool {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_line.draw") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_line.draw") }
 
 	mut static o_fn := &P_idx_line_draw(0)
 	if isnil(o_fn) {
@@ -183,7 +183,7 @@ pub fn (d D3d9line) draw(at_pos utils.Vec3, to_pos utils.Vec3, has_width f32, an
 
 	h_res := utils.h_res(o_fn(d.i_dxline, &dx_vec_2_vertex, 2, and_color.d3d()))
 
-	$if prod { C.VMProtectEnd() }	
+	$if vm ? { C.VMProtectEnd() }	
 
 	return h_res.bool()
 
@@ -192,7 +192,7 @@ pub fn (d D3d9line) draw(at_pos utils.Vec3, to_pos utils.Vec3, has_width f32, an
 [unsafe]
 fn (d D3d9line) release() u32 {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d_line.release") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d_line.release") }
 
 	mut static o_fn := &P_idx_release(0)
 	if isnil(o_fn) {
@@ -201,7 +201,7 @@ fn (d D3d9line) release() u32 {
 	// someone have to know that i spent litteraly 2h+ to debug this shit just
 	// beacuse calling o_fn without handling it's return make a crash to a random place in csgo pls kill me
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return o_fn(d.i_dxline)
 }
@@ -216,7 +216,7 @@ pub mut:
 
 pub fn (mut d D3d9) create_font(with_name string, with_name_complement string, has_size int, and_has_weight u32) {
 
-	$if prod { C.VMProtectBeginMutation(c"d3D.create_font") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3D.create_font") }
 
 	mut font := D3d9Font{name: "$with_name$with_name_complement", size: has_size}
 
@@ -234,12 +234,12 @@ pub fn (mut d D3d9) create_font(with_name string, with_name_complement string, h
 
 	d.fonts << font
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (mut d D3d9) create_line() {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d.create_line") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d.create_line") }
 
 	h_res := utils.h_res(C.D3DXCreateLine(d.device, &d.line.i_dxline))
 
@@ -247,12 +247,12 @@ pub fn (mut d D3d9) create_line() {
 		utils.error_critical("D3D failed to create drawing component", "D3DXCreateLine")
 	}
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (mut d D3d9) get_device() {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d.get_device") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d.get_device") }
 
 	mut device_scan := utils.pattern_scan("shaderapidx9.dll", "A3 ? ? ? ? 8D 47 30") or {
 		utils.error_critical("Failed to scan for patern:", "d3d device")
@@ -260,12 +260,12 @@ pub fn (mut d D3d9) get_device() {
 
 	d.device = voidptr(**(&&&u32(voidptr(usize(device_scan) + 1))))
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (d &D3d9) get_font(with_name string, has_size u16) &D3d9Font {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d.get_font") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d.get_font") }
 
 	for i in 0..(d.fonts.len - 1) {
 		font := &d.fonts[i]
@@ -276,14 +276,14 @@ pub fn (d &D3d9) get_font(with_name string, has_size u16) &D3d9Font {
 
 	utils.pront("Failed to find font retry for sure one")
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 
 	return &d.fonts[0]
 }
 
 pub fn (mut d D3d9) bootstrap() {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d.bootstrap") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d.bootstrap") }
 
 	d.get_device()
 
@@ -297,12 +297,12 @@ pub fn (mut d D3d9) bootstrap() {
 
 	d.create_line()
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
 
 pub fn (mut d D3d9) release() {
 
-	$if prod { C.VMProtectBeginMutation(c"d3d.release") }
+	$if vm ? { C.VMProtectBeginMutation(c"d3d.release") }
 
 	unsafe {
 		d.line.release()
@@ -316,5 +316,5 @@ pub fn (mut d D3d9) release() {
 
 	d.fonts.clear()
 
-	$if prod { C.VMProtectEnd() }
+	$if vm ? { C.VMProtectEnd() }
 }
